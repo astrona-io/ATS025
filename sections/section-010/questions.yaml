@@ -1,0 +1,110 @@
+schema_version: 1
+kind: question_bank
+id: ats025-section-010
+course_id: ATS025
+exam_code: CKA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: section
+  id: section-010
+  title: Manage role based access control (RBAC)
+placement:
+  position: after
+  reading: sections/section-010/module-01/course-03-summary.md
+questions:
+- id: ats025-section-010-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain roles, bindings and scope.
+  source_readings:
+  - sections/section-010/module-01/course-01-rbac-grants-and-their-consequences.md
+  prompt: What does a RoleBinding connect under its scope?
+  options:
+  - id: a
+    text: A claim directly to every node
+    explanation: Storage attachment is a different contract.
+  - id: b
+    text: Subjects to permissions expressed by a referenced role
+    explanation: Bindings connect identities to allowed actions.
+  - id: c
+    text: A Service directly to an image digest
+    explanation: Access grants do not implement image routing.
+  correct_option: b
+  explanation: Bindings connect identities to allowed actions.
+- id: ats025-section-010-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain roles, bindings and scope.
+  source_readings:
+  - sections/section-010/module-01/course-01-rbac-grants-and-their-consequences.md
+  prompt: Can a namespaced binding be assumed to grant the same access in every namespace?
+  options:
+  - id: a
+    text: No; effective scope must be evaluated
+    explanation: Namespaced authority is not universally cluster-wide.
+  - id: b
+    text: Yes; all namespaces share every RoleBinding automatically
+    explanation: Bindings have defined scope.
+  - id: c
+    text: Yes; the subject's name removes namespace boundaries
+    explanation: Identity naming does not override scope rules.
+  correct_option: a
+  explanation: Namespaced authority is not universally cluster-wide.
+- id: ats025-section-010-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Evaluate additive effective grants.
+  source_readings:
+  - sections/section-010/module-01/course-01-rbac-grants-and-their-consequences.md
+  prompt: Two applicable RBAC grants permit different actions. What matters for effective authority?
+  options:
+  - id: a
+    text: The most restrictive text always cancels the other grant
+    explanation: RBAC does not work as universal restrictive-overrides evaluation.
+  - id: b
+    text: Only the newest grant ever applies
+    explanation: Creation time is not that permission precedence rule.
+  - id: c
+    text: Their allowed actions can add together
+    explanation: Applicable grants are additive rather than a general deny ordering.
+  correct_option: c
+  explanation: Applicable grants are additive rather than a general deny ordering.
+- id: ats025-section-010-q04
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Identify indirect privilege through workload creation.
+  source_readings:
+  - sections/section-010/module-01/course-01-rbac-grants-and-their-consequences.md
+  prompt: Why review permission to create privileged workloads?
+  options:
+  - id: a
+    text: It only changes a harmless display label
+    explanation: Workload creation controls execution and its declared privileges.
+  - id: b
+    text: It can provide indirect authority beyond a simple object read
+    explanation: Created execution can expose data or infrastructure according to its privileges.
+  - id: c
+    text: It can never influence access to confidential inputs
+    explanation: A consuming workload can make such inputs observable.
+  correct_option: b
+  explanation: Created execution can expose data or infrastructure according to its privileges.
+- id: ats025-section-010-q05
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Choose least privilege for an administrative responsibility.
+  source_readings:
+  - sections/section-010/module-01/course-02-rbac-scope-and-least-privilege.md
+  prompt: A collector needs limited reads of named resource types. Which design fits?
+  options:
+  - id: a
+    text: Grant its required operations within the needed scope
+    explanation: Least privilege follows the actual responsibility.
+  - id: b
+    text: Give cluster-admin to every account
+    explanation: That exceeds a limited collection role.
+  - id: c
+    text: Allow modification of every Secret for convenience
+    explanation: That adds unrelated sensitive authority.
+  correct_option: a
+  explanation: Least privilege follows the actual responsibility.

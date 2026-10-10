@@ -1,0 +1,110 @@
+schema_version: 1
+kind: question_bank
+id: ats025-section-040
+course_id: ATS025
+exam_code: CKA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: section
+  id: section-040
+  title: Manage the lifecycle of Kubernetes clusters
+placement:
+  position: after
+  reading: sections/section-040/module-01/course-03-summary.md
+questions:
+- id: ats025-section-040-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain supported component-version and upgrade order.
+  source_readings:
+  - sections/section-040/module-01/course-01-cluster-upgrades-and-maintenance-boundaries.md
+  prompt: Why follow the target release's supported upgrade order?
+  options:
+  - id: a
+    text: The Service port determines all version compatibility
+    explanation: Traffic ports do not define component skew.
+  - id: b
+    text: Component version relationships and lifecycle steps have constraints
+    explanation: Arbitrary package order can create an unsupported state.
+  - id: c
+    text: Every minor version can always be skipped safely
+    explanation: Release transitions require the supported procedure.
+  correct_option: b
+  explanation: Arbitrary package order can create an unsupported state.
+- id: ats025-section-040-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Distinguish cordon, drain and disruption policy.
+  source_readings:
+  - sections/section-040/module-01/course-01-cluster-upgrades-and-maintenance-boundaries.md
+  prompt: What does cordoning do by itself?
+  options:
+  - id: a
+    text: Restrict normal new placement without evicting current workloads
+    explanation: Cordon and drain express different maintenance actions.
+  - id: b
+    text: Immediately delete all existing Pods
+    explanation: That is not cordon's action.
+  - id: c
+    text: Automatically restore a datastore snapshot
+    explanation: Scheduling eligibility does not restore state.
+  correct_option: a
+  explanation: Cordon and drain express different maintenance actions.
+- id: ats025-section-040-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Distinguish cordon, drain and disruption policy.
+  source_readings:
+  - sections/section-040/module-01/course-01-cluster-upgrades-and-maintenance-boundaries.md
+  prompt: A PodDisruptionBudget blocks an intended eviction. What should be considered?
+  options:
+  - id: a
+    text: Always ignore the budget because it is only decorative
+    explanation: It has a real supported effect on eviction.
+  - id: b
+    text: Assume it prevents every hardware failure
+    explanation: Voluntary disruption policy cannot provide that guarantee.
+  - id: c
+    text: The workload's allowed voluntary disruption and replacement availability
+    explanation: The budget can express a valid safety boundary.
+  correct_option: c
+  explanation: The budget can express a valid safety boundary.
+- id: ats025-section-040-q04
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Evaluate datastore snapshot scope and restore prerequisites.
+  source_readings:
+  - sections/section-040/module-01/course-02-datastore-snapshots-and-the-limits-of-recovery.md
+  prompt: What is outside an etcd snapshot's universal recovery scope?
+  options:
+  - id: a
+    text: Relevant snapshot metadata
+    explanation: The artifact can include metadata for its protected state.
+  - id: b
+    text: Application data stored in independent volumes or databases
+    explanation: Cluster state backup does not automatically protect every external data source.
+  - id: c
+    text: Stored Kubernetes resource state within its snapshot
+    explanation: That is a primary protected data set.
+  correct_option: b
+  explanation: Cluster state backup does not automatically protect every external data source.
+- id: ats025-section-040-q05
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Verify component and application recovery after lifecycle changes.
+  source_readings:
+  - sections/section-040/module-01/course-02-datastore-snapshots-and-the-limits-of-recovery.md
+  prompt: A snapshot passes integrity inspection. What still needs a separate claim?
+  options:
+  - id: a
+    text: A demonstrated full recovery with suitable topology and dependencies
+    explanation: Artifact integrity is not equivalent to a rehearsed restoration.
+  - id: b
+    text: That the artifact exists
+    explanation: The inspection already observes an artifact.
+  - id: c
+    text: That every application data source was included automatically
+    explanation: That assumption exceeds datastore snapshot scope.
+  correct_option: a
+  explanation: Artifact integrity is not equivalent to a rehearsed restoration.

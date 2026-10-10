@@ -1,9 +1,9 @@
-# Preparation scaffold. Technical pages stay draft until authoring and review.
+# Reading-only course. YAML assessments are registered separately in assessments/index.yaml.
 training:
   id: ATS025
   title: 'CKA: Cluster Architecture, Installation & Configuration'
-  description: Preparation scaffold for Cluster Architecture, Installation & Configuration. Lessons and
-    environments are planned.
+  description: Detailed reading lessons and reusable YAML knowledge checks covering the CKA domain. No
+    new labs or playgrounds. Technical content remains draft for review.
   certification:
     name: Certified Kubernetes Administrator
     code: CKA
@@ -22,7 +22,7 @@ training:
 modules:
 - id: module-intro
   title: Introduction
-  description: Planned introduction and authoring status.
+  description: Audience, learning method, reading requirements and authoring process.
   content:
   - type: reading
     title: Introduction
@@ -38,81 +38,159 @@ modules:
     path: sections/intro/course-03-how-this-course-is-made.md
 - id: module-010
   title: Manage role based access control (RBAC)
-  description: Planned coverage of this curriculum objective.
+  description: Developed explanations and application reasoning for Manage role based access control (RBAC).
+  draft: true
   content:
-  - type: reading
-    title: Section Overview
-    path: sections/section-010/README.md
   - type: reading
     title: Manage role based access control (RBAC)
+    path: sections/section-010/README.md
+  - type: reading
+    title: Role Rules, Bindings And Administrative Authority
     path: sections/section-010/module-01/course.md
+  - type: reading
+    title: RBAC Grants And Their Consequences
+    path: sections/section-010/module-01/course-01-rbac-grants-and-their-consequences.md
+  - type: reading
+    title: RBAC Scope And Least Privilege
+    path: sections/section-010/module-01/course-02-rbac-scope-and-least-privilege.md
+  - type: reading
+    title: Summary
+    path: sections/section-010/module-01/course-03-summary.md
 - id: module-020
   title: Prepare underlying infrastructure for installing a Kubernetes cluster
-  description: Planned coverage of this curriculum objective.
+  description: Developed explanations and application reasoning for Prepare underlying infrastructure
+    for installing a Kubernetes cluster.
+  draft: true
   content:
-  - type: reading
-    title: Section Overview
-    path: sections/section-020/README.md
   - type: reading
     title: Prepare underlying infrastructure for installing a Kubernetes cluster
+    path: sections/section-020/README.md
+  - type: reading
+    title: Host Prerequisites And Installation Topology
     path: sections/section-020/module-01/course.md
+  - type: reading
+    title: Preparing Hosts, Runtime And Network Infrastructure
+    path: sections/section-020/module-01/course-01-preparing-hosts-runtime-and-network-infrastructure.md
+  - type: reading
+    title: Summary
+    path: sections/section-020/module-01/course-02-summary.md
 - id: module-030
   title: Create and manage Kubernetes clusters using kubeadm
-  description: Planned coverage of this curriculum objective.
+  description: Developed explanations and application reasoning for Create and manage Kubernetes clusters
+    using kubeadm.
+  draft: true
   content:
-  - type: reading
-    title: Section Overview
-    path: sections/section-030/README.md
   - type: reading
     title: Create and manage Kubernetes clusters using kubeadm
+    path: sections/section-030/README.md
+  - type: reading
+    title: Initial Control Plane And Joining Nodes
     path: sections/section-030/module-01/course.md
+  - type: reading
+    title: Understanding kubeadm Initialization And Node Joining
+    path: sections/section-030/module-01/course-01-understanding-kubeadm-initialization-and-node-joining.md
+  - type: reading
+    title: Summary
+    path: sections/section-030/module-01/course-02-summary.md
 - id: module-040
   title: Manage the lifecycle of Kubernetes clusters
-  description: Planned coverage of this curriculum objective.
+  description: Developed explanations and application reasoning for Manage the lifecycle of Kubernetes
+    clusters.
+  draft: true
   content:
-  - type: reading
-    title: Section Overview
-    path: sections/section-040/README.md
   - type: reading
     title: Manage the lifecycle of Kubernetes clusters
+    path: sections/section-040/README.md
+  - type: reading
+    title: Supported Upgrade And Node Maintenance
     path: sections/section-040/module-01/course.md
+  - type: reading
+    title: Cluster Upgrades And Maintenance Boundaries
+    path: sections/section-040/module-01/course-01-cluster-upgrades-and-maintenance-boundaries.md
+  - type: reading
+    title: Datastore Snapshots And The Limits Of Recovery
+    path: sections/section-040/module-01/course-02-datastore-snapshots-and-the-limits-of-recovery.md
+  - type: reading
+    title: Summary
+    path: sections/section-040/module-01/course-03-summary.md
 - id: module-050
   title: Implement and configure a highly-available control plane
-  description: Planned coverage of this curriculum objective.
+  description: Developed explanations and application reasoning for Implement and configure a highly-available
+    control plane.
+  draft: true
   content:
-  - type: reading
-    title: Section Overview
-    path: sections/section-050/README.md
   - type: reading
     title: Implement and configure a highly-available control plane
+    path: sections/section-050/README.md
+  - type: reading
+    title: Resilient Control-Plane Topology
     path: sections/section-050/module-01/course.md
+  - type: reading
+    title: Highly Available API Access And Datastore Quorum
+    path: sections/section-050/module-01/course-01-highly-available-api-access-and-datastore-quorum.md
+  - type: reading
+    title: Summary
+    path: sections/section-050/module-01/course-02-summary.md
 - id: module-060
   title: Use Helm and Kustomize to install cluster components
-  description: Planned coverage of this curriculum objective.
+  description: Developed explanations and application reasoning for Use Helm and Kustomize to install
+    cluster components.
+  draft: true
   content:
-  - type: reading
-    title: Section Overview
-    path: sections/section-060/README.md
   - type: reading
     title: Use Helm and Kustomize to install cluster components
+    path: sections/section-060/README.md
+  - type: reading
+    title: Packaging Cluster Components
     path: sections/section-060/module-01/course.md
+  - type: reading
+    title: Charts, Values And The Rendered Application
+    path: sections/section-060/module-01/course-01-charts-values-and-the-rendered-application.md
+  - type: reading
+    title: Composing Resources With Kustomize
+    path: sections/section-060/module-01/course-02-composing-resources-with-kustomize.md
+  - type: reading
+    title: Summary
+    path: sections/section-060/module-01/course-03-summary.md
 - id: module-070
   title: Understand extension interfaces (CNI, CSI, CRI, etc.)
-  description: Planned coverage of this curriculum objective.
+  description: Developed explanations and application reasoning for Understand extension interfaces (CNI,
+    CSI, CRI, etc.).
+  draft: true
   content:
-  - type: reading
-    title: Section Overview
-    path: sections/section-070/README.md
   - type: reading
     title: Understand extension interfaces (CNI, CSI, CRI, etc.)
+    path: sections/section-070/README.md
+  - type: reading
+    title: Networking, Storage And Runtime Interfaces
     path: sections/section-070/module-01/course.md
+  - type: reading
+    title: CNI, CSI And CRI Extension Responsibilities
+    path: sections/section-070/module-01/course-01-cni-csi-and-cri-extension-responsibilities.md
+  - type: reading
+    title: Runtimes And Kubernetes Integration
+    path: sections/section-070/module-01/course-02-runtimes-and-kubernetes-integration.md
+  - type: reading
+    title: Summary
+    path: sections/section-070/module-01/course-03-summary.md
 - id: module-080
   title: Understand CRDs, install and configure operators
-  description: Planned coverage of this curriculum objective.
+  description: Developed explanations and application reasoning for Understand CRDs, install and configure
+    operators.
+  draft: true
   content:
   - type: reading
-    title: Section Overview
+    title: Understand CRDs, install and configure operators
     path: sections/section-080/README.md
   - type: reading
-    title: Understand CRDs, install and configure operators
+    title: Custom APIs And Operator Installation
     path: sections/section-080/module-01/course.md
+  - type: reading
+    title: Reading A Custom Resource And Its Controller Contract
+    path: sections/section-080/module-01/course-01-reading-a-custom-resource-and-its-controller-contract.md
+  - type: reading
+    title: Custom Resources And Operators
+    path: sections/section-080/module-01/course-02-custom-resources-and-operators.md
+  - type: reading
+    title: Summary
+    path: sections/section-080/module-01/course-03-summary.md

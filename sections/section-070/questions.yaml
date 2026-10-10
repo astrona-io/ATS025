@@ -1,0 +1,110 @@
+schema_version: 1
+kind: question_bank
+id: ats025-section-070
+course_id: ATS025
+exam_code: CKA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: section
+  id: section-070
+  title: Understand extension interfaces (CNI, CSI, CRI, etc.)
+placement:
+  position: after
+  reading: sections/section-070/module-01/course-03-summary.md
+questions:
+- id: ats025-section-070-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Distinguish CNI, CSI and CRI responsibilities.
+  source_readings:
+  - sections/section-070/module-01/course-01-cni-csi-and-cri-extension-responsibilities.md
+  prompt: Which interface connects kubelet to supported container runtime operations?
+  options:
+  - id: a
+    text: CNI
+    explanation: The Container Network Interface serves networking integration.
+  - id: b
+    text: CRI
+    explanation: The Container Runtime Interface serves execution integration.
+  - id: c
+    text: CSI
+    explanation: The Container Storage Interface serves storage operations.
+  correct_option: b
+  explanation: The Container Runtime Interface serves execution integration.
+- id: ats025-section-070-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Distinguish CNI, CSI and CRI responsibilities.
+  source_readings:
+  - sections/section-070/module-01/course-01-cni-csi-and-cri-extension-responsibilities.md
+  prompt: Which interface supports persistent storage driver integration?
+  options:
+  - id: a
+    text: CSI
+    explanation: Storage provisioning, attachment and mounting belong to that boundary.
+  - id: b
+    text: CRI
+    explanation: Runtime execution is a different integration role.
+  - id: c
+    text: An Ingress hostname rule
+    explanation: Traffic route matching is not a storage driver interface.
+  correct_option: a
+  explanation: Storage provisioning, attachment and mounting belong to that boundary.
+- id: ats025-section-070-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Identify core-to-extension integration points.
+  source_readings:
+  - sections/section-070/module-01/course-01-cni-csi-and-cri-extension-responsibilities.md
+  prompt: An image builder works, but kubelet cannot reach its runtime endpoint. What does this show?
+  options:
+  - id: a
+    text: Every runtime dependency is necessarily healthy
+    explanation: The endpoint failure contradicts that assumption.
+  - id: b
+    text: The registry must provide node DNS
+    explanation: Registry artifact service is not that runtime socket relationship.
+  - id: c
+    text: Artifact creation and runtime execution integration are different
+    explanation: A builder is not automatically the configured running CRI service.
+  correct_option: c
+  explanation: A builder is not automatically the configured running CRI service.
+- id: ats025-section-070-q04
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Evaluate optional driver and policy capabilities.
+  source_readings:
+  - sections/section-070/module-01/course-01-cni-csi-and-cri-extension-responsibilities.md
+  prompt: A plugin provides Pod connectivity. Does that prove NetworkPolicy enforcement?
+  options:
+  - id: a
+    text: Yes; policy status always proves packet behavior
+    explanation: Declaration and actual enforcement need separate evidence.
+  - id: b
+    text: No; supported policy enforcement must be checked separately
+    explanation: Basic networking and enforcement capabilities are distinct.
+  - id: c
+    text: Yes; every networking implementation must enforce all policies
+    explanation: That exceeds the capability assumption.
+  correct_option: b
+  explanation: Basic networking and enforcement capabilities are distinct.
+- id: ats025-section-070-q05
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Diagnose the responsible extension stage.
+  source_readings:
+  - sections/section-070/module-01/course-01-cni-csi-and-cri-extension-responsibilities.md
+  prompt: A volume exists but node mounting fails. What is the most relevant extension stage?
+  options:
+  - id: a
+    text: The storage driver's node-side mount or attachment path
+    explanation: Provisioning success does not prove later node operations.
+  - id: b
+    text: An arbitrary Service selector change
+    explanation: Traffic labels do not mount storage.
+  - id: c
+    text: Replacing every image tag with latest
+    explanation: Mutable artifact naming does not fix storage mounting.
+  correct_option: a
+  explanation: Provisioning success does not prove later node operations.
