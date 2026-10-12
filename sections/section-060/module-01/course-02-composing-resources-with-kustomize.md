@@ -5,6 +5,20 @@ exam_objectives:
 ---
 # Composing Resources With Kustomize
 
+A development Deployment needs one replica while production needs several, but their container and Service definitions should stay consistent. Kustomize lets a shared base hold those common objects and lets each overlay express the intended difference.
+
+## Learning objectives
+
+- Explain chart values and rendered installation resources.
+- Distinguish package release from application health.
+- Review composition, references and resource transformations.
+
+## Before you start
+
+This chapter is standalone reading material; no running cluster or installed tools are required. A Pod is the Kubernetes unit for running one or more containers, and a namespace groups namespaced objects. Treat the worked configurations as teaching examples rather than recorded observations from a provisioned environment.
+
+## Responsible components and behavior
+
 Kustomize builds Kubernetes resource definitions from declared inputs and transformations. It can combine resource files, modify common fields and generate configuration objects without requiring a separate chart templating language. The output is ordinary Kubernetes objects whose behavior still depends on their schema and relationships.
 
 ## Read The Composition Boundary
@@ -38,6 +52,26 @@ Before reasoning about deployment, examine which objects the composition produce
 Rendering does not install controllers or guarantee API support. A generated object using an unserved version can still fail at the cluster. Likewise, a correctly generated Secret reference can point to a resource in the wrong namespace. Output review checks a useful layer, but runtime and authorization constraints remain distinct.
 
 Track the Kustomize implementation and version used when a composition relies on specific features. A client-bundled implementation and a separate executable may differ. For the conceptual task, identify the intended resources and transformations first, then verify their effective output against the relevant schema.
+
+## Work through the decision
+
+Kustomize runs on the client before objects reach the Kubernetes application programming interface (API). It reads a kustomization, loads its resources and applies the declared transformations. It does not create a controller inside the cluster. Once the output is submitted, Kubernetes sees the resulting ordinary objects.
+
+In the playground, the `probe` Deployment consumes the `probe-code` ConfigMap as a volume. A ConfigMap stores non-confidential configuration data. With a generator and a content-derived name, a changed ConfigMap can also change the Deployment's reference and therefore its Pod template. With the fixed name used by this fixture, editing the ConfigMap is not a template revision by itself. This is a lifecycle consequence of naming, not an automatic restart feature of all configuration objects.
+
+```mermaid
+flowchart TB
+    B["Base resources"] --> K["Kustomize build"]
+    O["Overlay transformations"] --> K
+    G["Generator inputs"] --> K
+    K --> Y["Rendered objects"]
+    Y --> A["Kubernetes API"]
+    A --> C["Resource controllers"]
+```
+
+Composition happens before submission; resource controllers act on the resulting objects.
+
+You can now separate reusable inputs, rendered references and cluster behavior. Successful rendering answers whether composition worked, while API acceptance and application readiness require additional evidence.
 
 ## Common pitfalls
 
