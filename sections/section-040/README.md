@@ -5,7 +5,9 @@ exam_objectives:
 ---
 # Manage the lifecycle of Kubernetes clusters
 
-This section covers manage the lifecycle of Kubernetes clusters. You will study Supported Upgrade And Node Maintenance. The lessons explain the responsible components, configuration relationships and failure cases relevant to application development.
+A node upgrade removes its ready application replicas, but the remaining nodes cannot host replacements. Version compatibility and maintenance availability are separate planning requirements.
+
+The explanations identify the responsible components, compare intended and observed state, and work through the decisions needed to preserve the requirement. Read the worked examples as reasoning about a proposed system; no environment is started by this section.
 
 Each module begins with its goals and ends with a summary. Reusable YAML knowledge checks follow the section summary and are registered separately for future presentation.
 
