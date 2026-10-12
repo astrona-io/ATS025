@@ -1,18 +1,22 @@
-# ATS025 — CKA: Cluster Architecture, Installation & Configuration
+# Cluster Architecture, Installation & Configuration (ATS025)
 
-Preparation for the **Cluster Architecture, Installation & Configuration** domain of **Certified Kubernetes Administrator (CKA)**.
-The published domain weight is **25%**. This repository belongs to
-the [ATP005 training path](https://github.com/astrona-io/ATP005).
+Certified Kubernetes Administrator (CKA): Cluster Architecture, Installation & Configuration, worth 25% of the official curriculum. This course belongs to ATP005.
 
-**Status:** Preparation scaffold; content authoring has not started.
+Developed reading lessons explain configuration, component responsibility, worked reasoning and failure limits. Every section has an introduction, and every module ends with a summary. Reusable YAML knowledge checks are indexed separately. Technical content remains draft.
 
-The initial commit reserves the curriculum structure. Lessons, playgrounds,
-labs and assessments are planned and are not ready for learner use.
+## Course Outline
 
-See [CURRICULUM.md](CURRICULUM.md) for the objective map and authoring checklist,
-[astrona.yaml](astrona.yaml) for the course manifest, and
-[CLAUDE.md](CLAUDE.md) for writing and environment rules.
+| Section / module | Module | Teaching lessons |
+| --- | --- | --- |
+| 010 / 01 | Role Rules, Bindings And Administrative Authority | RBAC Grants And Their Consequences; RBAC Scope And Least Privilege |
+| 020 / 01 | Host Prerequisites And Installation Topology | Preparing Hosts, Runtime And Network Infrastructure |
+| 030 / 01 | Initial Control Plane And Joining Nodes | Understanding kubeadm Initialization And Node Joining |
+| 040 / 01 | Supported Upgrade And Node Maintenance | Cluster Upgrades And Maintenance Boundaries; Datastore Snapshots And The Limits Of Recovery |
+| 050 / 01 | Resilient Control-Plane Topology | Highly Available API Access And Datastore Quorum |
+| 060 / 01 | Packaging Cluster Components | Charts, Values And The Rendered Application; Composing Resources With Kustomize |
+| 070 / 01 | Networking, Storage And Runtime Interfaces | CNI, CSI And CRI Extension Responsibilities; Runtimes And Kubernetes Integration |
+| 080 / 01 | Custom APIs And Operator Installation | Reading A Custom Resource And Its Controller Contract; Custom Resources And Operators |
 
-Curriculum source: [official CKA page](https://training.linuxfoundation.org/certification/certified-kubernetes-administrator-cka/), checked 2026-10-10.
-License: [Apache-2.0](LICENSE). Curriculum objectives retain attribution to
-The Linux Foundation and CNCF; see [CNCF curriculum licensing](https://github.com/cncf/curriculum).
+## Author Review
+
+The [curriculum map](CURRICULUM.md) records objective coverage. [Sources](SOURCES.md) support author review, and [assessment documentation](ASSESSMENTS.md) describes the reusable YAML contract. No runtime is required or claimed, and no new labs or playgrounds are included.

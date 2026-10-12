@@ -1,0 +1,210 @@
+version: 1
+approval: CKA requested 2026-10-11; established reading-only scope
+course:
+  id: ATS025
+  certification:
+    name: Certified Kubernetes Administrator
+    code: CKA
+    provider: CNCF / Linux Foundation
+    domain: Cluster Architecture, Installation & Configuration
+    weight: 25
+    competencies:
+    - Manage role based access control (RBAC)
+    - Prepare underlying infrastructure for installing a Kubernetes cluster
+    - Create and manage Kubernetes clusters using kubeadm
+    - Manage the lifecycle of Kubernetes clusters
+    - Implement and configure a highly-available control plane
+    - Use Helm and Kustomize to install cluster components
+    - Understand extension interfaces (CNI, CSI, CRI, etc.)
+    - Understand CRDs, install and configure operators
+defaults:
+  playground: false
+  module_lab: false
+  capstone: false
+  section_quiz: true
+  final_quiz: true
+assessment_format: YAML question banks, schema version 1; indexed in assessments/index.yaml
+sections:
+- id: section-010
+  title: Manage role based access control (RBAC)
+  curriculum_item: Manage role based access control (RBAC)
+  capstone: false
+  section_quiz: true
+  modules:
+  - id: module-01
+    title: Role Rules, Bindings And Administrative Authority
+    objectives:
+    - Explain roles, bindings and scope.
+    - Evaluate additive effective grants.
+    - Identify indirect privilege through workload creation.
+    - Choose least privilege for an administrative responsibility.
+    outline:
+    - RBAC Grants And Their Consequences
+    - RBAC Scope And Least Privilege
+    playground: false
+    module_lab: false
+    sources:
+    - reading: sections/section-010/module-01/course-01-rbac-grants-and-their-consequences.md
+      adapted_from: ATS043/sections/section-040/module-01/course-01-rbac-grants-and-their-consequences.md
+    - reading: sections/section-010/module-01/course-02-rbac-scope-and-least-privilege.md
+      adapted_from: ATS038/sections/section-020/module-01/course-02-rbac-scope-and-least-privilege.md
+- id: section-020
+  title: Prepare underlying infrastructure for installing a Kubernetes cluster
+  curriculum_item: Prepare underlying infrastructure for installing a Kubernetes cluster
+  capstone: false
+  section_quiz: true
+  modules:
+  - id: module-01
+    title: Host Prerequisites And Installation Topology
+    objectives:
+    - Identify host identity and capacity prerequisites.
+    - Explain kubelet runtime compatibility.
+    - Plan non-overlapping network address ranges.
+    - Evaluate version, trust and required connectivity.
+    outline:
+    - Preparing Hosts, Runtime And Network Infrastructure
+    playground: false
+    module_lab: false
+    sources:
+    - reading: sections/section-020/module-01/course-01-preparing-hosts-runtime-and-network-infrastructure.md
+      adapted_from: null
+- id: section-030
+  title: Create and manage Kubernetes clusters using kubeadm
+  curriculum_item: Create and manage Kubernetes clusters using kubeadm
+  capstone: false
+  section_quiz: true
+  modules:
+  - id: module-01
+    title: Initial Control Plane And Joining Nodes
+    objectives:
+    - Distinguish initialization from worker or control-plane joining.
+    - Explain static manifests and runtime bootstrap.
+    - Evaluate discovery trust and temporary credentials.
+    - Identify the stage that blocks node readiness.
+    outline:
+    - Understanding kubeadm Initialization And Node Joining
+    playground: false
+    module_lab: false
+    sources:
+    - reading: sections/section-030/module-01/course-01-understanding-kubeadm-initialization-and-node-joining.md
+      adapted_from: null
+    diagrams:
+    - type: flowchart
+      reading: sections/section-030/module-01/course-01-understanding-kubeadm-initialization-and-node-joining.md
+      purpose: Show the component dependencies described in this lesson.
+- id: section-040
+  title: Manage the lifecycle of Kubernetes clusters
+  curriculum_item: Manage the lifecycle of Kubernetes clusters
+  capstone: false
+  section_quiz: true
+  modules:
+  - id: module-01
+    title: Supported Upgrade And Node Maintenance
+    objectives:
+    - Explain supported component-version and upgrade order.
+    - Distinguish cordon, drain and disruption policy.
+    - Evaluate datastore snapshot scope and restore prerequisites.
+    - Verify component and application recovery after lifecycle changes.
+    outline:
+    - Cluster Upgrades And Maintenance Boundaries
+    - Datastore Snapshots And The Limits Of Recovery
+    playground: false
+    module_lab: false
+    sources:
+    - reading: sections/section-040/module-01/course-01-cluster-upgrades-and-maintenance-boundaries.md
+      adapted_from: null
+    - reading: sections/section-040/module-01/course-02-datastore-snapshots-and-the-limits-of-recovery.md
+      adapted_from: null
+- id: section-050
+  title: Implement and configure a highly-available control plane
+  curriculum_item: Implement and configure a highly-available control plane
+  capstone: false
+  section_quiz: true
+  modules:
+  - id: module-01
+    title: Resilient Control-Plane Topology
+    objectives:
+    - Explain stable API access and backend health.
+    - Compare stacked and external datastore topology.
+    - Calculate majority quorum and failure tolerance.
+    - Distinguish management-plane from application availability.
+    outline:
+    - Highly Available API Access And Datastore Quorum
+    playground: false
+    module_lab: false
+    sources:
+    - reading: sections/section-050/module-01/course-01-highly-available-api-access-and-datastore-quorum.md
+      adapted_from: null
+    diagrams:
+    - type: flowchart
+      reading: sections/section-050/module-01/course-01-highly-available-api-access-and-datastore-quorum.md
+      purpose: Show the component dependencies described in this lesson.
+- id: section-060
+  title: Use Helm and Kustomize to install cluster components
+  curriculum_item: Use Helm and Kustomize to install cluster components
+  capstone: false
+  section_quiz: true
+  modules:
+  - id: module-01
+    title: Packaging Cluster Components
+    objectives:
+    - Explain chart values and rendered installation resources.
+    - Distinguish package release from application health.
+    - Review composition, references and resource transformations.
+    - Evaluate component permissions and version requirements.
+    outline:
+    - Charts, Values And The Rendered Application
+    - Composing Resources With Kustomize
+    playground: false
+    module_lab: false
+    sources:
+    - reading: sections/section-060/module-01/course-01-charts-values-and-the-rendered-application.md
+      adapted_from: ATS001/sections/section-040/module-03/course-01-charts-values-and-the-rendered-application.md
+    - reading: sections/section-060/module-01/course-02-composing-resources-with-kustomize.md
+      adapted_from: ATS001/sections/section-030/module-02/course-01-composing-resources-with-kustomize.md
+- id: section-070
+  title: Understand extension interfaces (CNI, CSI, CRI, etc.)
+  curriculum_item: Understand extension interfaces (CNI, CSI, CRI, etc.)
+  capstone: false
+  section_quiz: true
+  modules:
+  - id: module-01
+    title: Networking, Storage And Runtime Interfaces
+    objectives:
+    - Distinguish CNI, CSI and CRI responsibilities.
+    - Identify core-to-extension integration points.
+    - Evaluate optional driver and policy capabilities.
+    - Diagnose the responsible extension stage.
+    outline:
+    - CNI, CSI And CRI Extension Responsibilities
+    - Runtimes And Kubernetes Integration
+    playground: false
+    module_lab: false
+    sources:
+    - reading: sections/section-070/module-01/course-01-cni-csi-and-cri-extension-responsibilities.md
+      adapted_from: null
+    - reading: sections/section-070/module-01/course-02-runtimes-and-kubernetes-integration.md
+      adapted_from: ATS037/sections/section-040/module-01/course-02-runtimes-and-kubernetes-integration.md
+- id: section-080
+  title: Understand CRDs, install and configure operators
+  curriculum_item: Understand CRDs, install and configure operators
+  capstone: false
+  section_quiz: true
+  modules:
+  - id: module-01
+    title: Custom APIs And Operator Installation
+    objectives:
+    - Explain custom schema registration and discovery.
+    - Distinguish controller installation from desired-instance acceptance.
+    - Evaluate controller permissions and dependencies.
+    - Interpret status, versions and cleanup contracts.
+    outline:
+    - Reading A Custom Resource And Its Controller Contract
+    - Custom Resources And Operators
+    playground: false
+    module_lab: false
+    sources:
+    - reading: sections/section-080/module-01/course-01-reading-a-custom-resource-and-its-controller-contract.md
+      adapted_from: ATS029/sections/section-010/module-01/course-02-reading-a-custom-resource-and-its-controller-contract.md
+    - reading: sections/section-080/module-01/course-02-custom-resources-and-operators.md
+      adapted_from: ATS037/sections/section-020/module-03/course-02-custom-resources-and-operators.md

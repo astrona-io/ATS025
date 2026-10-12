@@ -1,0 +1,110 @@
+schema_version: 1
+kind: question_bank
+id: ats025-section-030
+course_id: ATS025
+exam_code: CKA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: section
+  id: section-030
+  title: Create and manage Kubernetes clusters using kubeadm
+placement:
+  position: after
+  reading: sections/section-030/module-01/course-02-summary.md
+questions:
+- id: ats025-section-030-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Distinguish initialization from worker or control-plane joining.
+  source_readings:
+  - sections/section-030/module-01/course-01-understanding-kubeadm-initialization-and-node-joining.md
+  prompt: What differs between joining a worker and joining a control-plane node?
+  options:
+  - id: a
+    text: Nothing; all joins create every control-plane process
+    explanation: That is not the supported role distinction.
+  - id: b
+    text: Their local responsibilities and joining requirements
+    explanation: A worker does not automatically become an API server or datastore member.
+  - id: c
+    text: Only the prose displayed during the operation
+    explanation: The resulting component roles differ.
+  correct_option: b
+  explanation: A worker does not automatically become an API server or datastore member.
+- id: ats025-section-030-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain static manifests and runtime bootstrap.
+  source_readings:
+  - sections/section-030/module-01/course-01-understanding-kubeadm-initialization-and-node-joining.md
+  prompt: Who manages a kubeadm core component from a local static manifest?
+  options:
+  - id: a
+    text: The kubelet using its local manifest source
+    explanation: Static-Pod lifecycle does not initially require an ordinary workload controller request.
+  - id: b
+    text: An Ingress controller
+    explanation: Ingress manages traffic rather than that local control-plane lifecycle.
+  - id: c
+    text: The image registry
+    explanation: A registry supplies artifacts rather than local desired Pod state.
+  correct_option: a
+  explanation: Static-Pod lifecycle does not initially require an ordinary workload controller request.
+- id: ats025-section-030-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Evaluate discovery trust and temporary credentials.
+  source_readings:
+  - sections/section-030/module-01/course-01-understanding-kubeadm-initialization-and-node-joining.md
+  prompt: Why verify a joining node's discovery trust?
+  options:
+  - id: a
+    text: Any responding server is equally suitable
+    explanation: That discards the cluster trust boundary.
+  - id: b
+    text: Trust verification guarantees all application backups
+    explanation: Identity checks do not provide data recovery.
+  - id: c
+    text: The node must authenticate the intended cluster endpoint
+    explanation: A responding address alone is insufficient identity evidence.
+  correct_option: c
+  explanation: A responding address alone is insufficient identity evidence.
+- id: ats025-section-030-q04
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Identify the stage that blocks node readiness.
+  source_readings:
+  - sections/section-030/module-01/course-01-understanding-kubeadm-initialization-and-node-joining.md
+  prompt: A node joins but Pod networking remains unhealthy. What follows?
+  options:
+  - id: a
+    text: The networking fault is necessarily an application syntax error
+    explanation: Plugin and infrastructure evidence must identify the cause.
+  - id: b
+    text: Joining success does not prove complete workload readiness
+    explanation: Network preparation is a separate required subsystem.
+  - id: c
+    text: The worker must already be a healthy load balancer
+    explanation: Worker membership does not imply that role.
+  correct_option: b
+  explanation: Network preparation is a separate required subsystem.
+- id: ats025-section-030-q05
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Identify the stage that blocks node readiness.
+  source_readings:
+  - sections/section-030/module-01/course-01-understanding-kubeadm-initialization-and-node-joining.md
+  prompt: Why avoid treating reset as a universal repair?
+  options:
+  - id: a
+    text: It removes selected local state and may leave other dependencies or changes
+    explanation: Reset is not a reversal of every host, external datastore or network action.
+  - id: b
+    text: It always backs up every application data source
+    explanation: That is not its universal scope.
+  - id: c
+    text: It cannot alter any local cluster state
+    explanation: Its purpose includes selected local cleanup.
+  correct_option: a
+  explanation: Reset is not a reversal of every host, external datastore or network action.

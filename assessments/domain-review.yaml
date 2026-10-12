@@ -1,0 +1,112 @@
+schema_version: 1
+kind: question_bank
+id: ats025-domain-review
+course_id: ATS025
+exam_code: CKA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: domain
+  id: domain-review
+  title: Cluster Architecture, Installation & Configuration
+placement:
+  position: after
+  reading: sections/section-080/module-01/course-03-summary.md
+questions:
+- id: ats025-domain-review-q01
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Plan non-overlapping network address ranges.
+  source_readings:
+  - sections/section-020/module-01/course-01-preparing-hosts-runtime-and-network-infrastructure.md
+  prompt: Why decide address ranges before bootstrap?
+  options:
+  - id: a
+    text: An image's name chooses every network range
+    explanation: Artifact naming does not plan cluster addressing.
+  - id: b
+    text: Network design must avoid conflicts with connected infrastructure
+    explanation: Later resources depend on coherent routing and addressing.
+  - id: c
+    text: Ranges automatically become harmless after initialization
+    explanation: Bootstrap does not remove arbitrary network overlap.
+  correct_option: b
+  explanation: Later resources depend on coherent routing and addressing.
+- id: ats025-domain-review-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Evaluate discovery trust and temporary credentials.
+  source_readings:
+  - sections/section-030/module-01/course-01-understanding-kubeadm-initialization-and-node-joining.md
+  prompt: A join endpoint responds but its identity is unverified. What remains unresolved?
+  options:
+  - id: a
+    text: Whether it is the intended trusted cluster
+    explanation: Connectivity is not sufficient authentication of the endpoint.
+  - id: b
+    text: Whether the port has any listener
+    explanation: The response already provides listener evidence.
+  - id: c
+    text: Whether every application is ready
+    explanation: Discovery trust does not prove workload health either.
+  correct_option: a
+  explanation: Connectivity is not sufficient authentication of the endpoint.
+- id: ats025-domain-review-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Evaluate datastore snapshot scope and restore prerequisites.
+  source_readings:
+  - sections/section-040/module-01/course-02-datastore-snapshots-and-the-limits-of-recovery.md
+  prompt: A datastore snapshot restores resource objects. Does it automatically restore independent database
+    records?
+  options:
+  - id: a
+    text: Yes; every external system is part of datastore content
+    explanation: Cluster state and backend application data are distinct.
+  - id: b
+    text: Yes; a PVC definition contains all files by definition
+    explanation: The definition represents a storage relationship, not all stored bytes.
+  - id: c
+    text: No; application data recovery requires its own source and process
+    explanation: The snapshot scope does not include every external data set.
+  correct_option: c
+  explanation: The snapshot scope does not include every external data set.
+- id: ats025-domain-review-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Calculate majority quorum and failure tolerance.
+  source_readings:
+  - sections/section-050/module-01/course-01-highly-available-api-access-and-datastore-quorum.md
+  prompt: One of three voting datastore members is lost. Under the majority model, what remains possible
+    with two healthy connected members?
+  options:
+  - id: a
+    text: One unrelated Service can supply the missing vote
+    explanation: Voting membership is a datastore relationship.
+  - id: b
+    text: The majority can remain available
+    explanation: Two members provide a majority of three.
+  - id: c
+    text: Every normal write must necessarily stop until all three return
+    explanation: The majority can operate under its supported conditions.
+  correct_option: b
+  explanation: Two members provide a majority of three.
+- id: ats025-domain-review-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Diagnose the responsible extension stage.
+  source_readings:
+  - sections/section-070/module-01/course-01-cni-csi-and-cri-extension-responsibilities.md
+  prompt: Why identify the failed interface before replacing an extension?
+  options:
+  - id: a
+    text: Runtime, networking and storage have separate responsible operations
+    explanation: A correction should address the demonstrated integration failure.
+  - id: b
+    text: Every plugin implements every interface identically
+    explanation: The boundaries and capabilities differ.
+  - id: c
+    text: Replacing any one extension automatically restores all data
+    explanation: Extension installation is not universal recovery.
+  correct_option: a
+  explanation: A correction should address the demonstrated integration failure.
