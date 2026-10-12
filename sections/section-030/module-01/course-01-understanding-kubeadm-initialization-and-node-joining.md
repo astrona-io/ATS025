@@ -5,6 +5,20 @@ exam_objectives:
 ---
 # Understanding kubeadm Initialization And Node Joining
 
+A worker joins using bootstrap discovery, but later cannot report through the API. Joining and continued authenticated operation are different stages of the node lifecycle.
+
+## Learning objectives
+
+- Distinguish initialization from worker or control-plane joining.
+- Explain static manifests and runtime bootstrap.
+- Evaluate discovery trust and temporary credentials.
+
+## Before you start
+
+This chapter is standalone reading material; no running cluster or installed tools are required. A Pod is the Kubernetes unit for running one or more containers, and a namespace groups namespaced objects. Treat the worked configurations as teaching examples rather than recorded observations from a provisioned environment.
+
+## Responsible components and behavior
+
 Kubeadm is a tool that bootstraps and manages selected lifecycle operations for Kubernetes clusters. Initialization establishes an initial control plane using the chosen configuration. Joining adds a machine to that existing cluster through discovery, trust establishment and node setup. These operations have different inputs and should not be treated as interchangeable ways to repair any cluster failure.
 
 ## Read The Initialization Contract
@@ -48,6 +62,29 @@ flowchart TB
     kubelet --> api["API endpoint becomes usable"]
     api --> join["Trusted discovery and node joining"]
 ```
+
+## Work through the decision
+
+kubeadm prepares supported control-plane and node bootstrap configuration. Initialization establishes an initial control plane and its trust material under the selected topology. Joining uses endpoint discovery and bootstrap credentials to establish the node's supported relationship with that control plane.
+
+Protect bootstrap authority and verify the intended endpoint. A joining node still needs a working runtime, compatible host settings and the installed Pod network. A Ready node reports useful agent state; it does not establish every application dependency. A failed later certificate or endpoint relationship should be diagnosed at that boundary rather than repeatedly treating the machine as though it had never joined.
+
+```mermaid
+flowchart TB
+    N0["Control-plane initialization"]
+    N1["Trusted endpoint discovery"]
+    N2["Node bootstrap identity"]
+    N3["Kubelet registration"]
+    N4["Ongoing reporting and workloads"]
+    N0 --> N1
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
+Bootstrap establishes a trust and configuration relationship that still needs continuing runtime and network support.
+
+Bootstrap establishes a trust and configuration relationship that still needs continuing runtime and network support.
 
 ## Common pitfalls
 
