@@ -5,6 +5,20 @@ exam_objectives:
 ---
 # CNI, CSI And CRI Extension Responsibilities
 
+The node can start a container but cannot attach its volume or connect its Pod network. Runtime, networking and storage integrations provide different responsibilities.
+
+## Learning objectives
+
+- Distinguish CNI, CSI and CRI responsibilities.
+- Identify core-to-extension integration points.
+- Evaluate optional driver and policy capabilities.
+
+## Before you start
+
+This chapter is standalone reading material; no running cluster or installed tools are required. A Pod is the Kubernetes unit for running one or more containers, and a namespace groups namespaced objects. Treat the worked configurations as teaching examples rather than recorded observations from a provisioned environment.
+
+## Responsible components and behavior
+
 Kubernetes uses interfaces to connect core orchestration with networking, storage and container execution implementations. The Container Network Interface (CNI), Container Storage Interface (CSI) and Container Runtime Interface (CRI) describe different integration boundaries. An extension serving one boundary does not automatically satisfy the others.
 
 ## Runtime Execution Through CRI
@@ -38,6 +52,29 @@ An extension can include custom definitions, access grants, controllers, node ag
 For a Pod that cannot start, identify whether failure occurred in runtime preparation, network sandbox creation or storage preparation. A CNI error should not be addressed by arbitrarily replacing storage classes. A missing mount should not be blamed on a Service selector merely because application access also fails later.
 
 A useful extension review maps each required operation to the interface and implementation responsible for it. It then verifies supported capabilities and the configured endpoints or resource relationships. This makes installation and diagnosis explainable without assuming that one plugin name supplies every cluster function.
+
+## Work through the decision
+
+The Container Runtime Interface (CRI) connects the kubelet with a supported runtime. The Container Network Interface (CNI) integration supplies supported network configuration. The Container Storage Interface (CSI) integrates storage operations. Similar abbreviations do not make their contracts interchangeable.
+
+A plugin's installation must provide its own components, configuration and required credentials. CNI compatibility alone does not guarantee policy enforcement, and CSI support does not guarantee every access mode or replication property. Diagnose the failed operation and responsible integration before replacing a healthy runtime merely because a volume remains unavailable.
+
+```mermaid
+flowchart TB
+    N0["Assigned Pod requirements"]
+    N1["Kubelet coordination"]
+    N2["Runtime network and storage integrations"]
+    N3["Prepared container environment"]
+    N4["Application execution"]
+    N0 --> N1
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
+Execution depends on several integration contracts, and failure evidence should identify which responsibility is unresolved.
+
+Execution depends on several integration contracts, and failure evidence should identify which responsibility is unresolved.
 
 ## Common pitfalls
 

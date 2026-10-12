@@ -5,6 +5,20 @@ exam_objectives:
 ---
 # Runtimes And Kubernetes Integration
 
+An image exists in the administrator's local container engine, but the node runtime cannot find it. Image stores and runtime endpoints are distinct boundaries.
+
+## Learning objectives
+
+- Distinguish CNI, CSI and CRI responsibilities.
+- Identify core-to-extension integration points.
+- Evaluate optional driver and policy capabilities.
+
+## Before you start
+
+This chapter is standalone reading material; no running cluster or installed tools are required. A Pod is the Kubernetes unit for running one or more containers, and a namespace groups namespaced objects. Treat the worked configurations as teaching examples rather than recorded observations from a provisioned environment.
+
+## Responsible components and behavior
+
 Kubernetes needs software on each node that can pull images and manage containers. The container runtime provides that execution capability. The kubelet coordinates Pod execution and communicates with a runtime through the Container Runtime Interface (CRI), an interface contract for Kubernetes container management.
 
 Containerd and CRI-O are examples of runtimes used with Kubernetes. The runtime manages images, container lifecycle and related operations. A lower-level runtime such as runc can create the operating system isolation and start a container process. Separating these layers explains why image management and process creation are related but not identical jobs.
@@ -32,6 +46,29 @@ An OCI-compatible image describes filesystem content and runtime configuration t
 Processor architecture remains part of compatibility. A portable format containing only an unsupported architecture variant cannot execute normally on the node merely because its metadata follows a standard. Operating system requirements and runtime capabilities also matter.
 
 Avoid assuming Docker as a development tool must be the node runtime. Teams can build through one compatible toolchain and execute through containerd or CRI-O. The important reasoning is which artifact was produced, which interface the node uses and whether the execution platform supports the selected content.
+
+## Work through the decision
+
+The kubelet requests container operations through its configured Container Runtime Interface (CRI) endpoint. A supported runtime manages its own image availability and container state. A developer's engine or local cache is not automatically that node's store.
+
+If runtime communication fails, inspect endpoint configuration, service health and release compatibility. If retrieval fails, inspect the selected image and credentials instead. A Running runtime does not guarantee a requested image or mount is available. These distinctions explain why a host-side image inspection and a node-side startup report can disagree without either observation being fabricated.
+
+```mermaid
+flowchart TB
+    N0["Kubelet runtime request"]
+    N1["Configured CRI endpoint"]
+    N2["Runtime image and container state"]
+    N3["Container startup"]
+    N4["Reported Pod state"]
+    N0 --> N1
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
+Runtime connectivity, artifact availability and application startup need separate evidence.
+
+Runtime connectivity, artifact availability and application startup need separate evidence.
 
 ## Common pitfalls
 
