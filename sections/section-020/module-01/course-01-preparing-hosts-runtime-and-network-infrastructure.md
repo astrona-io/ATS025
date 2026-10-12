@@ -5,6 +5,20 @@ exam_objectives:
 ---
 # Preparing Hosts, Runtime And Network Infrastructure
 
+The installer starts, but nodes cannot reach the advertised API endpoint. Installation depends on a supported host, runtime and network contract before application objects can become useful.
+
+## Learning objectives
+
+- Identify host identity and capacity prerequisites.
+- Explain kubelet runtime compatibility.
+- Plan non-overlapping network address ranges.
+
+## Before you start
+
+This chapter is standalone reading material; no running cluster or installed tools are required. A Pod is the Kubernetes unit for running one or more containers, and a namespace groups namespaced objects. Treat the worked configurations as teaching examples rather than recorded observations from a provisioned environment.
+
+## Responsible components and behavior
+
 A Kubernetes node is a host on which the kubelet and a compatible container runtime support workload execution. Preparing a cluster requires more than installing the kubeadm executable. Host identity, runtime compatibility, resource capacity and network reachability must satisfy the chosen cluster design before bootstrap can produce a usable system.
 
 ## Identify The Intended Topology
@@ -38,6 +52,29 @@ Kubeadm, kubelet, client and control-plane versions must follow their supported 
 Image retrieval requires access to the relevant registries or a designed local source. Certificates and credentials require protected storage and suitable permissions. Bootstrap tokens are sensitive join credentials, not values to publish in shared teaching output. Reading-only examples can describe their purpose without exposing real credentials.
 
 Preparation succeeds when the selected hosts, runtime endpoints, identity, addresses and connectivity form a consistent design. Bootstrap then has the prerequisites to create the intended control plane. When it fails, distinguish an unmet infrastructure requirement from an error in the cluster's generated resources.
+
+## Work through the decision
+
+Separate the local prerequisites from cluster topology. The host needs compatible kernel and runtime behavior, supported control-group configuration and the required software versions. Nodes need endpoint reachability, suitable name resolution and coherent address ranges. The exact settings follow the chosen release and distribution.
+
+Installing a bootstrap tool does not provision every external dependency. A load balancer, network plugin or storage integration can require its own configuration and credentials. Before initialization, state which component supplies each responsibility. Afterward, verify node reporting and representative Pod connectivity rather than treating the bootstrap command's success as a complete operating-cluster check.
+
+```mermaid
+flowchart TB
+    N0["Host prerequisites"]
+    N1["Runtime compatibility"]
+    N2["Endpoint and address planning"]
+    N3["Bootstrap operation"]
+    N4["Cluster behavior verification"]
+    N0 --> N1
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
+Installation succeeds as a system only when host assumptions and independently supplied infrastructure agree.
+
+Installation succeeds as a system only when host assumptions and independently supplied infrastructure agree.
 
 ## Common pitfalls
 
