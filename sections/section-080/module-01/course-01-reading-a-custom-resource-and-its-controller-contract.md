@@ -5,6 +5,20 @@ exam_objectives:
 ---
 # Reading A Custom Resource And Its Controller Contract
 
+The custom `ProbeSetting` requests one message, but its status has not yet observed the latest generation. A status value must be interpreted through the installed controller contract. Merely seeing a field named ready does not make it control Service traffic.
+
+## Learning objectives
+
+- Explain custom schema registration and discovery.
+- Distinguish controller installation from desired-instance acceptance.
+- Evaluate controller permissions and dependencies.
+
+## Before you start
+
+This chapter is standalone reading material; no running cluster or installed tools are required. A Pod is the Kubernetes unit for running one or more containers, and a namespace groups namespaced objects. Treat the worked configurations as teaching examples rather than recorded observations from a provisioned environment.
+
+## Responsible components and behavior
+
 A CustomResourceDefinition, usually shortened to CRD, adds a resource type to the Kubernetes application programming interface (API). A custom resource is an instance of that type. A controller can watch those instances and reconcile other resources or external systems. Registering the schema and running the controller are separate responsibilities.
 
 ## Discover The Registered Type
@@ -38,6 +52,24 @@ A finalizer is a marker that keeps deletion pending until responsible cleanup ha
 Removing a finalizer without satisfying its intended cleanup can leave orphaned external resources. Keeping it when the responsible controller can never recover can block deletion indefinitely. The proper diagnosis starts with the cleanup contract, current controller condition and required external access, rather than treating every finalizer as an unnecessary obstacle.
 
 When an application task asks for a custom resource, read the installed schema and the relevant controller contract. Determine its scope, required fields, identity and observed conditions. This supports a valid desired definition and a defensible interpretation of whether the application operation is actually progressing.
+
+## Work through the decision
+
+A generation identifies a revision of desired configuration under the resource's semantics. The example controller records `observedGeneration` when it processes that desired state and sets its supported readiness status. Compare these fields before treating an old ready value as evidence about a newer request.
+
+The example registers a status subresource, which lets status updates use a distinct API operation and permission. Its controller also needs permission to create or update ConfigMaps. A user allowed to create ProbeSettings does not automatically grant those output permissions to the controller. This example does not implement finalizer-based deletion cleanup; learning the finalizer mechanism should not turn into a claim that this particular controller performs it.
+
+```mermaid
+flowchart TB
+    S["Desired specification"] --> G["Resource generation"]
+    G --> C["Controller processing"]
+    C --> O["Output configuration"]
+    C --> T["Observed generation and status"]
+```
+
+A current observation should correspond to the desired generation being assessed.
+
+You can now read a custom contract without assigning universal meaning to its fields. Reconciliation, output permissions and cleanup must be checked against the actual implementation rather than inferred from a type name.
 
 ## Common pitfalls
 
