@@ -5,7 +5,9 @@ exam_objectives:
 ---
 # Use Helm and Kustomize to install cluster components
 
-This section covers use Helm and Kustomize to install cluster components. You will study Packaging Cluster Components. The lessons explain the responsible components, configuration relationships and failure cases relevant to application development.
+Setting `replicaCount: 3` changes an application only if its chart template reads that value. Helm values are chart inputs, not Kubernetes fields. Tracing them into rendered resources prevents a plausible-looking override from being mistaken for an effective change.
+
+The explanations identify the responsible components, compare intended and observed state, and work through the decisions needed to preserve the requirement. Read the worked examples as reasoning about a proposed system; no environment is started by this section.
 
 Each module begins with its goals and ends with a summary. Reusable YAML knowledge checks follow the section summary and are registered separately for future presentation.
 
