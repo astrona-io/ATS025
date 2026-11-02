@@ -1,0 +1,110 @@
+schema_version: 1
+kind: question_bank
+id: ats025-section-050
+course_id: ATS025
+exam_code: CKA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: section
+  id: section-050
+  title: Implement and configure a highly-available control plane
+placement:
+  position: after
+  reading: sections/section-050/module-01/course-02-summary.md
+questions:
+- id: ats025-section-050-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain stable API access and backend health.
+  source_readings:
+  - sections/section-050/module-01/course-01-highly-available-api-access-and-datastore-quorum.md
+  prompt: Several API servers share one frontend that has failed. What can remain unavailable?
+  options:
+  - id: a
+    text: All running application processes must already have exited
+    explanation: Management failure does not universally stop existing containers immediately.
+  - id: b
+    text: Client access through that stable endpoint
+    explanation: Healthy backend processes do not repair the sole failed frontend.
+  - id: c
+    text: Only the old chart's source repository
+    explanation: The stated failure concerns API access.
+  correct_option: b
+  explanation: Healthy backend processes do not repair the sole failed frontend.
+- id: ats025-section-050-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Compare stacked and external datastore topology.
+  source_readings:
+  - sections/section-050/module-01/course-01-highly-available-api-access-and-datastore-quorum.md
+  prompt: What is a key tradeoff of stacked control-plane topology?
+  options:
+  - id: a
+    text: One machine loss can affect both an API server and a datastore member
+    explanation: Co-location couples failure responsibilities.
+  - id: b
+    text: It removes all need for quorum
+    explanation: Datastore consensus still needs a majority.
+  - id: c
+    text: It guarantees application data backups
+    explanation: Control-plane layout does not provide universal application backup.
+  correct_option: a
+  explanation: Co-location couples failure responsibilities.
+- id: ats025-section-050-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Calculate majority quorum and failure tolerance.
+  source_readings:
+  - sections/section-050/module-01/course-01-highly-available-api-access-and-datastore-quorum.md
+  prompt: How many voting members must remain for a three-member datastore majority?
+  options:
+  - id: a
+    text: One
+    explanation: One cannot provide the stated majority.
+  - id: b
+    text: All three under every ordinary quorum decision
+    explanation: The majority can remain with two.
+  - id: c
+    text: Two
+    explanation: A majority of three requires two members.
+  correct_option: c
+  explanation: A majority of three requires two members.
+- id: ats025-section-050-q04
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Calculate majority quorum and failure tolerance.
+  source_readings:
+  - sections/section-050/module-01/course-01-highly-available-api-access-and-datastore-quorum.md
+  prompt: Why do two voting datastore members not tolerate losing one while preserving majority?
+  options:
+  - id: a
+    text: Because the Service needs port 2
+    explanation: Network port numbers do not determine quorum.
+  - id: b
+    text: Both are required for a majority of two
+    explanation: The intuitive replica count is not the same as consensus failure tolerance.
+  - id: c
+    text: A two-member cluster always requires zero votes
+    explanation: That does not describe majority consensus.
+  correct_option: b
+  explanation: The intuitive replica count is not the same as consensus failure tolerance.
+- id: ats025-section-050-q05
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Distinguish management-plane from application availability.
+  source_readings:
+  - sections/section-050/module-01/course-01-highly-available-api-access-and-datastore-quorum.md
+  prompt: Does a resilient control plane automatically make an application resilient?
+  options:
+  - id: a
+    text: No; application replicas, dependencies and data need their own design
+    explanation: Management and business-service availability have distinct contracts.
+  - id: b
+    text: Yes; every application dependency becomes replicated automatically
+    explanation: Control-plane topology does not provide that behavior.
+  - id: c
+    text: Yes; all Pods become permanent
+    explanation: Workload lifecycles still include failure and replacement.
+  correct_option: a
+  explanation: Management and business-service availability have distinct contracts.

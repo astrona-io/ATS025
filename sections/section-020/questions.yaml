@@ -1,0 +1,110 @@
+schema_version: 1
+kind: question_bank
+id: ats025-section-020
+course_id: ATS025
+exam_code: CKA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: section
+  id: section-020
+  title: Prepare underlying infrastructure for installing a Kubernetes cluster
+placement:
+  position: after
+  reading: sections/section-020/module-01/course-02-summary.md
+questions:
+- id: ats025-section-020-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Identify host identity and capacity prerequisites.
+  source_readings:
+  - sections/section-020/module-01/course-01-preparing-hosts-runtime-and-network-infrastructure.md
+  prompt: Why prepare distinct host identities and reachable addresses?
+  options:
+  - id: a
+    text: To guarantee all databases use the same replication protocol
+    explanation: Host naming does not establish application consensus.
+  - id: b
+    text: Node registration and component connections need a coherent identity contract
+    explanation: Ambiguous identity or advertised addresses can break participation.
+  - id: c
+    text: Only to make lesson headings shorter
+    explanation: Identity is an operational requirement rather than formatting.
+  correct_option: b
+  explanation: Ambiguous identity or advertised addresses can break participation.
+- id: ats025-section-020-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain kubelet runtime compatibility.
+  source_readings:
+  - sections/section-020/module-01/course-01-preparing-hosts-runtime-and-network-infrastructure.md
+  prompt: The kubelet and runtime use incompatible control-group settings. What can fail?
+  options:
+  - id: a
+    text: Node or workload execution behavior
+    explanation: The components need compatible supported resource-management configuration.
+  - id: b
+    text: Only the public Ingress host match
+    explanation: The fault concerns local execution integration.
+  - id: c
+    text: Only a chart's appVersion description
+    explanation: Metadata does not repair runtime settings.
+  correct_option: a
+  explanation: The components need compatible supported resource-management configuration.
+- id: ats025-section-020-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Plan non-overlapping network address ranges.
+  source_readings:
+  - sections/section-020/module-01/course-01-preparing-hosts-runtime-and-network-infrastructure.md
+  prompt: Pod and Service ranges overlap connected infrastructure. What risk does this create?
+  options:
+  - id: a
+    text: Guaranteed extra storage capacity
+    explanation: Address overlap does not provision disks.
+  - id: b
+    text: Automatic safer certificate validation
+    explanation: Routing ranges do not strengthen identity verification.
+  - id: c
+    text: Ambiguous or conflicting routing relationships
+    explanation: Address planning must fit the actual network design.
+  correct_option: c
+  explanation: Address planning must fit the actual network design.
+- id: ats025-section-020-q04
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Evaluate version, trust and required connectivity.
+  source_readings:
+  - sections/section-020/module-01/course-01-preparing-hosts-runtime-and-network-infrastructure.md
+  prompt: Does installing kubeadm universally install the selected CNI data path?
+  options:
+  - id: a
+    text: Yes; a build-time image command provides cluster networking
+    explanation: Image creation is not a CNI installation workflow.
+  - id: b
+    text: No; network implementation setup is a separate requirement
+    explanation: Bootstrap tooling does not universally supply the chosen plugin.
+  - id: c
+    text: Yes; every plugin is automatically chosen and configured
+    explanation: The administrator must select a supported arrangement.
+  correct_option: b
+  explanation: Bootstrap tooling does not universally supply the chosen plugin.
+- id: ats025-section-020-q05
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Evaluate version, trust and required connectivity.
+  source_readings:
+  - sections/section-020/module-01/course-01-preparing-hosts-runtime-and-network-infrastructure.md
+  prompt: Why check component versions before installation?
+  options:
+  - id: a
+    text: Supported compatibility rules constrain the cluster combination
+    explanation: An arbitrary latest package can create an unsuitable version mix.
+  - id: b
+    text: All versions are always interchangeable
+    explanation: The compatibility contract has limits.
+  - id: c
+    text: Only the package filename matters
+    explanation: A filename alone does not establish runtime support.
+  correct_option: a
+  explanation: An arbitrary latest package can create an unsuitable version mix.

@@ -1,0 +1,110 @@
+schema_version: 1
+kind: question_bank
+id: ats025-section-060
+course_id: ATS025
+exam_code: CKA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: section
+  id: section-060
+  title: Use Helm and Kustomize to install cluster components
+placement:
+  position: after
+  reading: sections/section-060/module-01/course-03-summary.md
+questions:
+- id: ats025-section-060-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain chart values and rendered installation resources.
+  source_readings:
+  - sections/section-060/module-01/course-01-charts-values-and-the-rendered-application.md
+  prompt: Which statement distinguishes a chart from a release?
+  options:
+  - id: a
+    text: A chart name guarantees the Deployment's exact name
+    explanation: Template naming can include the release identity and other inputs.
+  - id: b
+    text: A chart is a package and a release is an installed instance
+    explanation: The same package can support separate installations with different values.
+  - id: c
+    text: A release is always the registry digest of one image
+    explanation: A release tracks package installation rather than one image digest.
+  correct_option: b
+  explanation: The same package can support separate installations with different values.
+- id: ats025-section-060-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain chart values and rendered installation resources.
+  source_readings:
+  - sections/section-060/module-01/course-01-charts-values-and-the-rendered-application.md
+  prompt: A user supplies replicas=4, but the chart reads replicaCount. Why might replicas remain unchanged?
+  options:
+  - id: a
+    text: The supplied key is not the template's supported input
+    explanation: Values affect the fields that templates actually reference.
+  - id: b
+    text: Helm always ignores all user values
+    explanation: Supported values can influence rendered objects.
+  - id: c
+    text: Kubernetes always forces every chart to one replica
+    explanation: There is no such universal replica rule.
+  correct_option: a
+  explanation: Values affect the fields that templates actually reference.
+- id: ats025-section-060-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Distinguish package release from application health.
+  source_readings:
+  - sections/section-060/module-01/course-01-charts-values-and-the-rendered-application.md
+  prompt: Successful client-side rendering proves which fact most directly?
+  options:
+  - id: a
+    text: Every cluster serves the generated API versions
+    explanation: API availability depends on the target cluster.
+  - id: b
+    text: Every report request will succeed
+    explanation: Rendering does not execute every application operation.
+  - id: c
+    text: The package produced resource definitions under that rendering context
+    explanation: Server validation, permissions and application health remain separate.
+  correct_option: c
+  explanation: Server validation, permissions and application health remain separate.
+- id: ats025-section-060-q04
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Review composition, references and resource transformations.
+  source_readings:
+  - sections/section-060/module-01/course-02-composing-resources-with-kustomize.md
+  prompt: What is the role of a Kustomize base?
+  options:
+  - id: a
+    text: A universal database snapshot
+    explanation: The resource composition does not provide database recovery.
+  - id: b
+    text: Reusable resource inputs shared by compositions
+    explanation: A base expresses common definitions that overlays can customize.
+  - id: c
+    text: A new cluster controller that continually applies files
+    explanation: Kustomize composition is not itself that running controller.
+  correct_option: b
+  explanation: A base expresses common definitions that overlays can customize.
+- id: ats025-section-060-q05
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Review composition, references and resource transformations.
+  source_readings:
+  - sections/section-060/module-01/course-02-composing-resources-with-kustomize.md
+  prompt: Does generating a Secret protect confidential literals committed to a readable repository?
+  options:
+  - id: a
+    text: No; the source inputs remain exposed
+    explanation: The generated resource kind does not encrypt or conceal public inputs.
+  - id: b
+    text: Yes; the generator retroactively encrypts repository history
+    explanation: Generation does not rewrite history into encrypted storage.
+  - id: c
+    text: Yes; every YAML file becomes private after rendering
+    explanation: Rendering does not change repository access permissions.
+  correct_option: a
+  explanation: The generated resource kind does not encrypt or conceal public inputs.
