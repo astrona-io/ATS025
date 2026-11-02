@@ -1,9 +1,9 @@
-# Reading-only course. YAML assessments are registered separately in assessments/index.yaml.
 training:
   id: ATS025
   title: 'CKA: Cluster Architecture, Installation & Configuration'
-  description: Detailed reading lessons and reusable YAML knowledge checks covering the CKA domain. No
-    new labs or playgrounds. Technical content remains draft for review.
+  description: Detailed reading lessons and reusable YAML knowledge checks covering
+    the CKA domain. No new labs or playgrounds. Technical content remains draft for
+    review.
   certification:
     name: Certified Kubernetes Administrator
     code: CKA
@@ -38,8 +38,9 @@ modules:
     path: sections/intro/course-03-how-this-course-is-made.md
 - id: module-010
   title: Manage role based access control (RBAC)
-  description: Developed explanations and application reasoning for Manage role based access control (RBAC).
-  draft: true
+  description: Developed explanations and application reasoning for Manage role based
+    access control (RBAC).
+  status: alpha
   content:
   - type: reading
     title: Manage role based access control (RBAC)
@@ -54,13 +55,35 @@ modules:
     title: RBAC Scope And Least Privilege
     path: sections/section-010/module-01/course-02-rbac-scope-and-least-privilege.md
   - type: reading
+    title: Grant Namespace Pod Read Access — Task
+    path: sections/section-010/module-01/labs/lab-01/question.md
+  - type: lab
+    title: Grant Namespace Pod Read Access
+    path: sections/section-010/module-01/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 20m
+    topic: rbac
+    task_kind: build
+    learning_goals:
+    - Grant a ServiceAccount only Pod read access in the required namespace and verify
+      denied operations.
+    tags:
+    - cka
+    - rbac
+  - type: reading
+    title: Grant Namespace Pod Read Access — Solution
+    path: sections/section-010/module-01/labs/lab-01/solution.md
+  - type: reading
+    title: 'Guided Practice: Grant Namespace Pod Read Access'
+    path: sections/section-010/module-01/course-03-guided-practice.md
+  - type: reading
     title: Summary
-    path: sections/section-010/module-01/course-03-summary.md
+    path: sections/section-010/module-01/course-04-summary.md
 - id: module-020
   title: Prepare underlying infrastructure for installing a Kubernetes cluster
-  description: Developed explanations and application reasoning for Prepare underlying infrastructure
-    for installing a Kubernetes cluster.
-  draft: true
+  description: Developed explanations and application reasoning for Prepare underlying
+    infrastructure for installing a Kubernetes cluster.
+  status: alpha
   content:
   - type: reading
     title: Prepare underlying infrastructure for installing a Kubernetes cluster
@@ -72,13 +95,35 @@ modules:
     title: Preparing Hosts, Runtime And Network Infrastructure
     path: sections/section-020/module-01/course-01-preparing-hosts-runtime-and-network-infrastructure.md
   - type: reading
+    title: Inspect Node Runtime And Host Prerequisites — Task
+    path: sections/section-020/module-01/labs/lab-01/question.md
+  - type: lab
+    title: Inspect Node Runtime And Host Prerequisites
+    path: sections/section-020/module-01/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: node-prerequisites
+    task_kind: build
+    learning_goals:
+    - Collect actual node prerequisites and distinguish the runtime, kubelet and network
+      configuration.
+    tags:
+    - cka
+    - node-prerequisites
+  - type: reading
+    title: Inspect Node Runtime And Host Prerequisites — Solution
+    path: sections/section-020/module-01/labs/lab-01/solution.md
+  - type: reading
+    title: 'Guided Practice: Inspect Node Runtime And Host Prerequisites'
+    path: sections/section-020/module-01/course-02-guided-practice.md
+  - type: reading
     title: Summary
-    path: sections/section-020/module-01/course-02-summary.md
+    path: sections/section-020/module-01/course-03-summary.md
 - id: module-030
   title: Create and manage Kubernetes clusters using kubeadm
-  description: Developed explanations and application reasoning for Create and manage Kubernetes clusters
-    using kubeadm.
-  draft: true
+  description: Developed explanations and application reasoning for Create and manage
+    Kubernetes clusters using kubeadm.
+  status: alpha
   content:
   - type: reading
     title: Create and manage Kubernetes clusters using kubeadm
@@ -90,13 +135,35 @@ modules:
     title: Understanding kubeadm Initialization And Node Joining
     path: sections/section-030/module-01/course-01-understanding-kubeadm-initialization-and-node-joining.md
   - type: reading
+    title: Prepare Short-Lived Node Discovery Credentials — Task
+    path: sections/section-030/module-01/labs/lab-01/question.md
+  - type: lab
+    title: Prepare Short-Lived Node Discovery Credentials
+    path: sections/section-030/module-01/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: kubeadm-discovery
+    task_kind: build
+    learning_goals:
+    - Create short-lived bootstrap discovery credentials and record the trusted CA
+      public-key hash.
+    tags:
+    - cka
+    - kubeadm-discovery
+  - type: reading
+    title: Prepare Short-Lived Node Discovery Credentials — Solution
+    path: sections/section-030/module-01/labs/lab-01/solution.md
+  - type: reading
+    title: 'Guided Practice: Prepare Short-Lived Node Discovery Credentials'
+    path: sections/section-030/module-01/course-02-guided-practice.md
+  - type: reading
     title: Summary
-    path: sections/section-030/module-01/course-02-summary.md
+    path: sections/section-030/module-01/course-03-summary.md
 - id: module-040
   title: Manage the lifecycle of Kubernetes clusters
-  description: Developed explanations and application reasoning for Manage the lifecycle of Kubernetes
-    clusters.
-  draft: true
+  description: Developed explanations and application reasoning for Manage the lifecycle
+    of Kubernetes clusters.
+  status: alpha
   content:
   - type: reading
     title: Manage the lifecycle of Kubernetes clusters
@@ -111,13 +178,54 @@ modules:
     title: Datastore Snapshots And The Limits Of Recovery
     path: sections/section-040/module-01/course-02-datastore-snapshots-and-the-limits-of-recovery.md
   - type: reading
+    title: Drain And Return A Worker To Service — Task
+    path: sections/section-040/module-01/labs/lab-01/question.md
+  - type: lab
+    title: Drain And Return A Worker To Service
+    path: sections/section-040/module-01/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: node-maintenance
+    task_kind: build
+    learning_goals:
+    - Respect disruption limits while draining and returning an isolated worker to
+      service.
+    tags:
+    - cka
+    - node-maintenance
+  - type: reading
+    title: Drain And Return A Worker To Service — Solution
+    path: sections/section-040/module-01/labs/lab-01/solution.md
+  - type: reading
+    title: Save And Inspect An Etcd Snapshot — Task
+    path: sections/section-040/module-01/labs/lab-02/question.md
+  - type: lab
+    title: Save And Inspect An Etcd Snapshot
+    path: sections/section-040/module-01/labs/lab-02
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: etcd-snapshot
+    task_kind: build
+    learning_goals:
+    - Save a real datastore snapshot and inspect its revision and key count without
+      restoring the live cluster.
+    tags:
+    - cka
+    - etcd-snapshot
+  - type: reading
+    title: Save And Inspect An Etcd Snapshot — Solution
+    path: sections/section-040/module-01/labs/lab-02/solution.md
+  - type: reading
+    title: 'Guided Practice: Drain And Return A Worker To Service'
+    path: sections/section-040/module-01/course-03-guided-practice.md
+  - type: reading
     title: Summary
-    path: sections/section-040/module-01/course-03-summary.md
+    path: sections/section-040/module-01/course-04-summary.md
 - id: module-050
   title: Implement and configure a highly-available control plane
-  description: Developed explanations and application reasoning for Implement and configure a highly-available
-    control plane.
-  draft: true
+  description: Developed explanations and application reasoning for Implement and
+    configure a highly-available control plane.
+  status: alpha
   content:
   - type: reading
     title: Implement and configure a highly-available control plane
@@ -129,13 +237,34 @@ modules:
     title: Highly Available API Access And Datastore Quorum
     path: sections/section-050/module-01/course-01-highly-available-api-access-and-datastore-quorum.md
   - type: reading
+    title: Inspect A Three-Member Control Plane — Task
+    path: sections/section-050/module-01/labs/lab-01/question.md
+  - type: lab
+    title: Inspect A Three-Member Control Plane
+    path: sections/section-050/module-01/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: ha-quorum
+    task_kind: build
+    learning_goals:
+    - Relate actual datastore membership to majority requirements and API availability.
+    tags:
+    - cka
+    - ha-quorum
+  - type: reading
+    title: Inspect A Three-Member Control Plane — Solution
+    path: sections/section-050/module-01/labs/lab-01/solution.md
+  - type: reading
+    title: 'Guided Practice: Inspect A Three-Member Control Plane'
+    path: sections/section-050/module-01/course-02-guided-practice.md
+  - type: reading
     title: Summary
-    path: sections/section-050/module-01/course-02-summary.md
+    path: sections/section-050/module-01/course-03-summary.md
 - id: module-060
   title: Use Helm and Kustomize to install cluster components
-  description: Developed explanations and application reasoning for Use Helm and Kustomize to install
-    cluster components.
-  draft: true
+  description: Developed explanations and application reasoning for Use Helm and Kustomize
+    to install cluster components.
+  status: alpha
   content:
   - type: reading
     title: Use Helm and Kustomize to install cluster components
@@ -147,16 +276,56 @@ modules:
     title: Charts, Values And The Rendered Application
     path: sections/section-060/module-01/course-01-charts-values-and-the-rendered-application.md
   - type: reading
+    title: Install A Chart With Explicit Values — Task
+    path: sections/section-060/module-01/labs/lab-01/question.md
+  - type: lab
+    title: Install A Chart With Explicit Values
+    path: sections/section-060/module-01/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: helm-install
+    task_kind: build
+    learning_goals:
+    - Install an existing bundled chart and verify release ownership and effective
+      values.
+    tags:
+    - cka
+    - helm-install
+  - type: reading
+    title: Install A Chart With Explicit Values — Solution
+    path: sections/section-060/module-01/labs/lab-01/solution.md
+  - type: reading
     title: Composing Resources With Kustomize
     path: sections/section-060/module-01/course-02-composing-resources-with-kustomize.md
   - type: reading
+    title: Apply A Kustomize Base — Task
+    path: sections/section-060/module-01/labs/lab-02/question.md
+  - type: lab
+    title: Apply A Kustomize Base
+    path: sections/section-060/module-01/labs/lab-02
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: kustomize-base
+    task_kind: build
+    learning_goals:
+    - Compose and apply a self-contained Kustomize base with a declared Pod label.
+    tags:
+    - cka
+    - kustomize-base
+  - type: reading
+    title: Apply A Kustomize Base — Solution
+    path: sections/section-060/module-01/labs/lab-02/solution.md
+  - type: reading
+    title: 'Guided Practice: Install A Chart With Explicit Values'
+    path: sections/section-060/module-01/course-03-guided-practice.md
+  - type: reading
     title: Summary
-    path: sections/section-060/module-01/course-03-summary.md
+    path: sections/section-060/module-01/course-04-summary.md
 - id: module-070
   title: Understand extension interfaces (CNI, CSI, CRI, etc.)
-  description: Developed explanations and application reasoning for Understand extension interfaces (CNI,
-    CSI, CRI, etc.).
-  draft: true
+  description: Developed explanations and application reasoning for Understand extension
+    interfaces (CNI, CSI, CRI, etc.).
+  status: alpha
   content:
   - type: reading
     title: Understand extension interfaces (CNI, CSI, CRI, etc.)
@@ -171,13 +340,35 @@ modules:
     title: Runtimes And Kubernetes Integration
     path: sections/section-070/module-01/course-02-runtimes-and-kubernetes-integration.md
   - type: reading
+    title: Trace The Runtime And Network Interfaces — Task
+    path: sections/section-070/module-01/labs/lab-01/question.md
+  - type: lab
+    title: Trace The Runtime And Network Interfaces
+    path: sections/section-070/module-01/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: cri-cni
+    task_kind: build
+    learning_goals:
+    - Collect actual node prerequisites and distinguish the runtime, kubelet and network
+      configuration.
+    tags:
+    - cka
+    - cri-cni
+  - type: reading
+    title: Trace The Runtime And Network Interfaces — Solution
+    path: sections/section-070/module-01/labs/lab-01/solution.md
+  - type: reading
+    title: 'Guided Practice: Trace The Runtime And Network Interfaces'
+    path: sections/section-070/module-01/course-03-guided-practice.md
+  - type: reading
     title: Summary
-    path: sections/section-070/module-01/course-03-summary.md
+    path: sections/section-070/module-01/course-04-summary.md
 - id: module-080
   title: Understand CRDs, install and configure operators
-  description: Developed explanations and application reasoning for Understand CRDs, install and configure
-    operators.
-  draft: true
+  description: Developed explanations and application reasoning for Understand CRDs,
+    install and configure operators.
+  status: alpha
   content:
   - type: reading
     title: Understand CRDs, install and configure operators
@@ -192,5 +383,26 @@ modules:
     title: Custom Resources And Operators
     path: sections/section-080/module-01/course-02-custom-resources-and-operators.md
   - type: reading
+    title: Reconcile A Custom Resource — Task
+    path: sections/section-080/module-01/labs/lab-01/question.md
+  - type: lab
+    title: Reconcile A Custom Resource
+    path: sections/section-080/module-01/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: custom-resource
+    task_kind: build
+    learning_goals:
+    - Create a served custom resource and verify its controller-managed output.
+    tags:
+    - cka
+    - custom-resource
+  - type: reading
+    title: Reconcile A Custom Resource — Solution
+    path: sections/section-080/module-01/labs/lab-01/solution.md
+  - type: reading
+    title: 'Guided Practice: Reconcile A Custom Resource'
+    path: sections/section-080/module-01/course-03-guided-practice.md
+  - type: reading
     title: Summary
-    path: sections/section-080/module-01/course-03-summary.md
+    path: sections/section-080/module-01/course-04-summary.md
