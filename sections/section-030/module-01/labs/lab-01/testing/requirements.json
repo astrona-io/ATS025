@@ -1,0 +1,22 @@
+{
+  "context": "kind-astro-ats-025-lab-030-01-01",
+  "resources": [
+    {
+      "kind": "configmap",
+      "name": "join-review",
+      "namespace": "starfleet",
+      "expected": {
+        "apiVersion": "v1",
+        "kind": "ConfigMap",
+        "metadata": {
+          "name": "join-review",
+          "namespace": "starfleet"
+        },
+        "data": {
+          "node": "astro-ats-025-lab-030-01-01-control-plane"
+        }
+      }
+    }
+  ],
+  "behavior": []
+}

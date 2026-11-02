@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: snapshot-review
+  namespace: starfleet
+data:
+  result: validated

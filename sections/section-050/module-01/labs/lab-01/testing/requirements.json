@@ -1,0 +1,32 @@
+{
+  "context": "kind-astro-ats-025-lab-050-01-01",
+  "resources": [
+    {
+      "kind": "configmap",
+      "name": "quorum-review",
+      "namespace": "starfleet",
+      "expected": {
+        "apiVersion": "v1",
+        "kind": "ConfigMap",
+        "metadata": {
+          "name": "quorum-review",
+          "namespace": "starfleet"
+        },
+        "data": {
+          "members": "3",
+          "majority": "2"
+        }
+      }
+    }
+  ],
+  "behavior": [
+    {
+      "args": [
+        "kubectl",
+        "get",
+        "--raw=/readyz"
+      ],
+      "equals": "ok"
+    }
+  ]
+}

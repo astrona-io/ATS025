@@ -1,0 +1,22 @@
+{
+  "context": "kind-astro-ats-025-lab-040-01-02",
+  "resources": [
+    {
+      "kind": "configmap",
+      "name": "snapshot-review",
+      "namespace": "starfleet",
+      "expected": {
+        "apiVersion": "v1",
+        "kind": "ConfigMap",
+        "metadata": {
+          "name": "snapshot-review",
+          "namespace": "starfleet"
+        },
+        "data": {
+          "result": "validated"
+        }
+      }
+    }
+  ],
+  "behavior": []
+}
