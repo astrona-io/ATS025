@@ -40,7 +40,7 @@ modules:
   title: Manage role based access control (RBAC)
   description: Developed explanations and application reasoning for Manage role based
     access control (RBAC).
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: Manage role based access control (RBAC)
@@ -83,7 +83,7 @@ modules:
   title: Prepare underlying infrastructure for installing a Kubernetes cluster
   description: Developed explanations and application reasoning for Prepare underlying
     infrastructure for installing a Kubernetes cluster.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: Prepare underlying infrastructure for installing a Kubernetes cluster
@@ -123,7 +123,7 @@ modules:
   title: Create and manage Kubernetes clusters using kubeadm
   description: Developed explanations and application reasoning for Create and manage
     Kubernetes clusters using kubeadm.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: Create and manage Kubernetes clusters using kubeadm
@@ -163,7 +163,7 @@ modules:
   title: Manage the lifecycle of Kubernetes clusters
   description: Developed explanations and application reasoning for Manage the lifecycle
     of Kubernetes clusters.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: Manage the lifecycle of Kubernetes clusters
@@ -225,7 +225,7 @@ modules:
   title: Implement and configure a highly-available control plane
   description: Developed explanations and application reasoning for Implement and
     configure a highly-available control plane.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: Implement and configure a highly-available control plane
@@ -264,7 +264,7 @@ modules:
   title: Use Helm and Kustomize to install cluster components
   description: Developed explanations and application reasoning for Use Helm and Kustomize
     to install cluster components.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: Use Helm and Kustomize to install cluster components
@@ -325,7 +325,7 @@ modules:
   title: Understand extension interfaces (CNI, CSI, CRI, etc.)
   description: Developed explanations and application reasoning for Understand extension
     interfaces (CNI, CSI, CRI, etc.).
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: Understand extension interfaces (CNI, CSI, CRI, etc.)
@@ -368,7 +368,7 @@ modules:
   title: Understand CRDs, install and configure operators
   description: Developed explanations and application reasoning for Understand CRDs,
     install and configure operators.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: Understand CRDs, install and configure operators
