@@ -1,0 +1,64 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Define A StorageClass, A CSIDriver And A Claim (LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-025-lab-070-03-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    preloadImages:
+      - docker.io/library/busybox:1.37.0
+
+# Starting state: the default StorageClass of kind, and an old claim in starfleet that names no class.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the starfleet namespace and the legacy claim
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: storageclass-fields
+      description: "StorageClass outpost-retain uses the cluster provisioner with Retain, WaitForFirstConsumer and expansion"
+      type: file
+      source: validation/validate-storageclass.sh
+      hint: "Copy the provisioner of the default class and set reclaimPolicy, volumeBindingMode and allowVolumeExpansion."
+    - name: default-unchanged
+      description: "standard stays the only default StorageClass"
+      type: file
+      source: validation/validate-default-unchanged.sh
+      hint: "Do not add the is-default-class annotation to the new class."
+    - name: csidriver-fields
+      description: "CSIDriver logbook.csi.astrona.io has the requested fields"
+      type: file
+      source: validation/validate-csidriver.sh
+      hint: "Set attachRequired false, podInfoOnMount true, both lifecycle modes and fsGroupPolicy File."
+    - name: claim
+      description: "Claim logbook asks for 1Gi ReadWriteOnce from outpost-retain and waits for a consumer"
+      type: file
+      source: validation/validate-claim.sh
+      hint: "Create the claim in starfleet with storageClassName outpost-retain; it stays Pending without a pod."
+    - name: storage-report
+      description: "ConfigMap storage-report records the default class facts and the class of legacy-claim"
+      type: file
+      source: validation/validate-storage-report.sh
+      hint: "Read the values from the cluster with kubectl and jsonpath."
+
+teardown:
+  keepCluster: false

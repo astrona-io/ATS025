@@ -1,0 +1,319 @@
+# Knowledge check for section-040. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats025-040-quiz
+course_id: ATS025
+exam_code: CKA
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: section
+  id: section-040
+  title: Manage the lifecycle of Kubernetes clusters
+questions:
+- id: ats025-040-quiz-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain why kubeadm upgrades one minor version at a time
+  source_readings:
+  - sections/section-040/module-02/course-01-the-kubeadm-upgrade-workflow.md
+  prompt: A cluster runs Kubernetes v1.33.2. An administrator wants v1.35.0. Which
+    plan does kubeadm support?
+  options:
+  - id: a
+    text: Run `kubeadm upgrade apply v1.35.0` once.
+    explanation: kubeadm refuses to skip a minor version.
+  - id: b
+    text: Upgrade to a v1.34 release first, and then to v1.35.0.
+    explanation: Correct. Each minor release migrates stored data and configuration
+      only from the minor release before it, so kubeadm moves one minor version at
+      a time.
+  - id: c
+    text: Upgrade only the kubelets to v1.35.0 and leave the control plane.
+    explanation: A kubelet newer than the API server is not supported.
+  - id: d
+    text: Upgrade to v1.35.0 on the workers first and then on the control plane.
+    explanation: The control plane is always upgraded first.
+  correct_option: b
+  explanation: Each minor release migrates stored data and configuration only from
+    the minor release before it, so kubeadm moves one minor version at a time.
+- id: ats025-040-quiz-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Choose the right kubeadm command for each node
+  source_readings:
+  - sections/section-040/module-02/course-01-the-kubeadm-upgrade-workflow.md
+  prompt: The first control plane node was upgraded with `kubeadm upgrade apply`.
+    Which command upgrades the second control plane node?
+  options:
+  - id: a
+    text: "`kubeadm upgrade node`"
+    explanation: Correct. It upgrades the local static pod manifests with the configuration
+      that `apply` already stored.
+  - id: b
+    text: "`kubeadm upgrade apply` again, on the second node."
+    explanation: "`apply` runs on the first control plane node only."
+  - id: c
+    text: "`kubeadm upgrade plan`."
+    explanation: The plan command only reads the cluster and changes nothing.
+  - id: d
+    text: "`kubeadm init phase upgrade`."
+    explanation: This is not the supported upgrade path for another control plane
+      node.
+  correct_option: a
+  explanation: It upgrades the local static pod manifests with the configuration that
+    `apply` already stored.
+- id: ats025-040-quiz-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Describe what kubeadm upgrade apply does not upgrade
+  source_readings:
+  - sections/section-040/module-02/course-01-the-kubeadm-upgrade-workflow.md
+  prompt: "`kubeadm upgrade apply` finished on the control plane node. `kubectl get
+    nodes` still shows the old kubelet version on that node. What is the reason?"
+  options:
+  - id: a
+    text: The command failed without an error message.
+    explanation: A failed apply prints an error and does not update the stored version.
+  - id: b
+    text: The API server caches the node status for 24 hours.
+    explanation: The kubelet reports its status every few seconds or minutes, not
+      once a day.
+  - id: c
+    text: The kubelet version is set in the kubeadm-config ConfigMap.
+    explanation: The node status carries the version that the running kubelet reports.
+  - id: d
+    text: kubeadm does not upgrade the kubelet package. You upgrade the package and
+      restart the kubelet.
+    explanation: Correct. The node reports the new kubelet version only after the
+      kubelet restarts with the new binary.
+  correct_option: d
+  explanation: The node reports the new kubelet version only after the kubelet restarts
+    with the new binary.
+- id: ats025-040-quiz-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Apply the version skew policy to a kubelet
+  source_readings:
+  - sections/section-040/module-02/course-02-version-skew-policy-and-reading-versions.md
+  prompt: The kube-apiserver runs v1.35.0. Which kubelet version is NOT supported?
+  options:
+  - id: a
+    text: A kubelet at v1.32.0.
+    explanation: v1.32 is three minor versions older, which is allowed.
+  - id: b
+    text: A kubelet at v1.34.2.
+    explanation: One minor version older is allowed.
+  - id: c
+    text: A kubelet at v1.31.9.
+    explanation: Correct. Kubelets may be at most three minor versions older than
+      the API server, so v1.32 is the oldest supported minor.
+  - id: d
+    text: A kubelet at v1.35.0.
+    explanation: The same version is allowed.
+  correct_option: c
+  explanation: Kubelets may be at most three minor versions older than the API server,
+    so v1.32 is the oldest supported minor.
+- id: ats025-040-quiz-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Apply the version skew policy to the control plane components
+  source_readings:
+  - sections/section-040/module-02/course-02-version-skew-policy-and-reading-versions.md
+  prompt: The kube-apiserver runs v1.35.0. Which kube-controller-manager version is
+    supported?
+  options:
+  - id: a
+    text: v1.36.0.
+    explanation: No component except kubectl may be newer than the API server.
+  - id: b
+    text: v1.34.5 or v1.35.0.
+    explanation: Correct. The controller manager may be the same minor version as
+      the API server or one minor version older, never newer.
+  - id: c
+    text: v1.33.0.
+    explanation: The controller manager may be only one minor version older.
+  - id: d
+    text: v1.32.0.
+    explanation: Three minor versions is the limit for the kubelet and kube-proxy,
+      not for the controller manager.
+  correct_option: b
+  explanation: The controller manager may be the same minor version as the API server
+    or one minor version older, never newer.
+- id: ats025-040-quiz-q06
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Plan the order of an upgrade with an old worker
+  source_readings:
+  - sections/section-040/module-02/course-02-version-skew-policy-and-reading-versions.md
+  prompt: The API server and the control plane are at v1.34.3. One worker has a kubelet
+    at v1.31.8. The administrator wants to upgrade to v1.35.0. What should happen
+    first?
+  options:
+  - id: a
+    text: Upgrade the old worker to at least v1.32, then upgrade the control plane.
+    explanation: Correct. After the control plane moves to v1.35 the kubelet limit
+      is v1.32. A kubelet at v1.31 would be unsupported.
+  - id: b
+    text: Upgrade the control plane, because the old worker is allowed today.
+    explanation: It is allowed today, but it would fall outside the policy after the
+      upgrade.
+  - id: c
+    text: Delete the worker, because kubeadm cannot upgrade it.
+    explanation: Nodes are upgraded in place and need no deletion.
+  - id: d
+    text: Upgrade kubectl on the worker to v1.35.0.
+    explanation: kubectl is not the component that is out of range.
+  correct_option: a
+  explanation: After the control plane moves to v1.35 the kubelet limit is v1.32.
+    A kubelet at v1.31 would be unsupported.
+- id: ats025-040-quiz-q07
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Name the tool that takes an etcd snapshot of a live server
+  source_readings:
+  - sections/section-040/module-03/course-01-taking-and-checking-an-etcd-snapshot.md
+  prompt: Which command saves a snapshot from a running etcd member?
+  options:
+  - id: a
+    text: "`etcdutl snapshot restore`"
+    explanation: It restores a file into a data directory and does not take a snapshot.
+  - id: b
+    text: "`etcdutl snapshot save`"
+    explanation: "`etcdutl` works on files and does not connect to a running server."
+  - id: c
+    text: "`kubeadm snapshot create`"
+    explanation: kubeadm has no such command.
+  - id: d
+    text: "`etcdctl snapshot save`"
+    explanation: Correct. `etcdctl` talks to a live etcd and writes the snapshot file.
+  correct_option: d
+  explanation: "`etcdctl` talks to a live etcd and writes the snapshot file."
+- id: ats025-040-quiz-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: List the connection options of etcdctl on a kubeadm cluster
+  source_readings:
+  - sections/section-040/module-03/course-01-taking-and-checking-an-etcd-snapshot.md
+  prompt: A `etcdctl snapshot save` command run in the etcd pod fails with an authentication
+    error. Which options are missing?
+  options:
+  - id: a
+    text: The `--data-dir` option.
+    explanation: The data directory belongs to the server, not to a client.
+  - id: b
+    text: The `--initial-cluster` option.
+    explanation: This option is used when a member is restored or started.
+  - id: c
+    text: The certificate authority file and a client certificate with its key.
+    explanation: Correct. etcd runs with `--client-cert-auth=true`, so it rejects
+      clients without a certificate signed by the etcd certificate authority.
+  - id: d
+    text: A bearer token from the API server.
+    explanation: etcd does not use Kubernetes tokens.
+  correct_option: c
+  explanation: etcd runs with `--client-cert-auth=true`, so it rejects clients without
+    a certificate signed by the etcd certificate authority.
+- id: ats025-040-quiz-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain what etcdutl snapshot status proves
+  source_readings:
+  - sections/section-040/module-03/course-01-taking-and-checking-an-etcd-snapshot.md
+  prompt: What does `etcdutl snapshot status` tell you about a snapshot file?
+  options:
+  - id: a
+    text: That the cluster can be restored on any node.
+    explanation: A rehearsed restore is the proof of that.
+  - id: b
+    text: Its hash, its revision, its number of keys and its size, so you can see
+      that the file has content.
+    explanation: Correct. The command reads the file and needs no running etcd.
+  - id: c
+    text: That the snapshot contains the Persistent Volume data.
+    explanation: A snapshot holds only the stored objects.
+  - id: d
+    text: That the Secrets in the snapshot are encrypted.
+    explanation: Encryption depends on the API server configuration, not on this command.
+  correct_option: b
+  explanation: The command reads the file and needs no running etcd.
+- id: ats025-040-quiz-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain what etcdutl snapshot restore changes
+  source_readings:
+  - sections/section-040/module-03/course-02-restoring-a-snapshot-and-recovering-the-control-plane.md
+  prompt: An administrator runs `etcdutl snapshot restore backup.db --data-dir /var/lib/etcd-new`
+    on the control plane node. The API still shows the old data. Why?
+  options:
+  - id: a
+    text: The command only creates a new data directory. The etcd static pod must
+      be pointed at it.
+    explanation: Correct. The manifest volume `etcd-data` must use the new host path
+      before etcd reads the restored data.
+  - id: b
+    text: The restore needs a second run to become active.
+    explanation: A second run fails because the directory exists.
+  - id: c
+    text: The API server caches the old data for one hour.
+    explanation: The API server reads from etcd and does not hold a cache that long.
+  - id: d
+    text: The snapshot was taken with the wrong tool.
+    explanation: The data directory is simply not in use yet.
+  correct_option: a
+  explanation: The manifest volume `etcd-data` must use the new host path before etcd
+    reads the restored data.
+- id: ats025-040-quiz-q11
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Choose between restoring a snapshot and replacing a member
+  source_readings:
+  - sections/section-040/module-03/course-02-restoring-a-snapshot-and-recovering-the-control-plane.md
+  - sections/section-040/module-01/course-02-datastore-snapshots-and-the-limits-of-recovery.md
+  prompt: A three-member etcd cluster lost one member. The other two members are healthy.
+    What is the right recovery?
+  options:
+  - id: a
+    text: Restore the latest snapshot on all three nodes.
+    explanation: This loses all changes since the snapshot and is not needed while
+      a majority exists.
+  - id: b
+    text: Restart the API server only.
+    explanation: The API server does not repair etcd membership.
+  - id: c
+    text: Copy the data directory of one healthy member to the failed node.
+    explanation: Copying a data directory duplicates the member identity and is not
+      a supported procedure.
+  - id: d
+    text: Remove the failed member and add a new one that copies the data from the
+      healthy members.
+    explanation: Correct. The two healthy members keep the majority. A snapshot restore
+      is for losing the majority.
+  correct_option: d
+  explanation: The two healthy members keep the majority. A snapshot restore is for
+    losing the majority.
+- id: ats025-040-quiz-q12
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Describe a safe order for a node maintenance step
+  source_readings:
+  - sections/section-040/module-01/course-01-cluster-upgrades-and-maintenance-boundaries.md
+  prompt: A worker needs a kubelet upgrade. Which order protects the running workloads?
+  options:
+  - id: a
+    text: Uncordon the node, upgrade the kubelet, then drain.
+    explanation: Uncordon lets new pods in and the drain would come after the restart.
+  - id: b
+    text: Restart the kubelet and drain the node afterwards.
+    explanation: The pods are disrupted before they are moved.
+  - id: c
+    text: Drain the node, upgrade and restart the kubelet, then uncordon the node.
+    explanation: Correct. The drain moves the pods away before the kubelet restarts,
+      and the uncordon returns the capacity.
+  - id: d
+    text: Delete the node object, upgrade and rejoin the node.
+    explanation: This is not needed and loses the node state.
+  correct_option: c
+  explanation: The drain moves the pods away before the kubelet restarts, and the
+    uncordon returns the capacity.

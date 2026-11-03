@@ -1,0 +1,69 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Secure And Persist The Probe Workload (CAPSTONE). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-025-lab-070-capstone-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    preloadImages:
+      - docker.io/library/busybox:1.37.0
+
+# Starting state: the probe workload, two client pods in two namespaces, and no policy, class or claim of the new design.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the namespaces, the probe workload and the client pods
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: report
+      description: "ConfigMap platform-report records the pod range, Service address, default class and runtime facts"
+      type: file
+      source: validation/validate-report.sh
+      hint: "Read each value from the cluster; the runtime comes from node status nodeInfo."
+    - name: default-deny
+      description: "default-deny-ingress denies all ingress in starfleet"
+      type: file
+      source: validation/validate-default-deny.sh
+      hint: "Empty podSelector, policyTypes Ingress, no rules."
+    - name: allow-shuttle
+      description: "probe-from-shuttle allows only the shuttle pods on TCP 8080"
+      type: file
+      source: validation/validate-allow-shuttle.sh
+      hint: "Select app=probe; one from entry with podSelector app=shuttle."
+    - name: allow-outpost
+      description: "probe-from-outpost allows only the drifter pods in outpost on TCP 8080"
+      type: file
+      source: validation/validate-allow-outpost.sh
+      hint: "Put namespaceSelector and podSelector in the same from entry."
+    - name: storage-objects
+      description: "StorageClass starfleet-data and CSIDriver data.csi.astrona.io have the requested fields"
+      type: file
+      source: validation/validate-storage-objects.sh
+      hint: "Provisioner from the default class; Retain; WaitForFirstConsumer; attachRequired false."
+    - name: claim-and-pod
+      description: "Claim probe-data exists and pod recorder mounts it at /data"
+      type: file
+      source: validation/validate-claim-and-pod.sh
+      hint: "Claim 2Gi ReadWriteOnce; the pod mounts the claim by claimName."
+
+teardown:
+  keepCluster: false

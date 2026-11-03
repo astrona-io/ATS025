@@ -1,0 +1,59 @@
+# Starting state: the starfleet namespace, the scout ServiceAccount, a Secret,
+# two PersistentVolumes and a leftover ClusterRoleBinding that gives scout the
+# built-in view role in every namespace. The over-broad binding is on purpose.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: starfleet
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: scout
+  namespace: starfleet
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: warp-key
+  namespace: starfleet
+type: Opaque
+stringData:
+  key: not-a-real-key
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-starfleet-a
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes: ["ReadWriteOnce"]
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /tmp/pv-starfleet-a
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-starfleet-b
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes: ["ReadWriteOnce"]
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /tmp/pv-starfleet-b
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: scout-view
+subjects:
+  - kind: ServiceAccount
+    name: scout
+    namespace: starfleet
+roleRef:
+  kind: ClusterRole
+  name: view
+  apiGroup: rbac.authorization.k8s.io

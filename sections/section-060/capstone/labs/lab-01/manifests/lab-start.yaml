@@ -1,0 +1,69 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: starfleet
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: outpost
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bridge
+  namespace: starfleet
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bridge
+  template:
+    metadata:
+      labels:
+        app: bridge
+    spec:
+      containers:
+        - name: bridge
+          image: docker.io/library/busybox:1.37.0
+          command: ["sleep", "3600"]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: relay
+  namespace: starfleet
+  labels:
+    app: relay
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: relay
+  template:
+    metadata:
+      labels:
+        app: relay
+    spec:
+      containers:
+        - name: relay
+          image: docker.io/library/busybox:1.37.0
+          command: ["sh", "-c", "echo relay level=$LOG_LEVEL; sleep 3600"]
+          env:
+            - name: LOG_LEVEL
+              value: "info"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: relay
+  namespace: starfleet
+  labels:
+    app: relay
+spec:
+  selector:
+    app: relay
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080

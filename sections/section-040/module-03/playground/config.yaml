@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# etcd Restore And Recovery (PLAYGROUND). Clean sandbox: no task, no grading, no `astrona submit`.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-025-playground-040-03
+  docs:
+    guide: docs/overview.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    preloadImages:
+      - docker.io/library/busybox:1.37.0
+
+bootstrap:
+  manifests:
+    - name: etcd-recovery
+      type: file
+      source: manifests/start.yaml
+  waitFor:
+    - resource: deploy/probe
+      namespace: starfleet
+
+teardown:
+  keepCluster: false

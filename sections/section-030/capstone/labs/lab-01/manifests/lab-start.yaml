@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: starfleet
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: init-review
+  namespace: starfleet
+data:
+  kubernetesVersion: v1.20.0
+  podSubnet: 192.168.0.0/16
+  certificatesDir: /var/lib/kubernetes/certs
+  apiServerEndpoint: https://old-api.example.test:6443
+  joinGroup: system:bootstrappers
+  autoApproveRole: system:node-bootstrapper
+  workerNodeName: old-worker
+  clusterDNS: 10.0.0.10

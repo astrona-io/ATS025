@@ -1,9 +1,10 @@
 training:
   id: ATS025
   title: 'CKA: Cluster Architecture, Installation & Configuration'
-  description: Detailed reading lessons and reusable YAML knowledge checks covering
-    the CKA domain. No new labs or playgrounds. Technical content remains draft for
-    review.
+  description: Detailed reading lessons, playgrounds, graded labs, section capstones
+    and knowledge checks covering the CKA domain Cluster Architecture, Installation
+    & Configuration. Technical content remains draft for review; labs are built with
+    static checks only and are untested.
   certification:
     name: Certified Kubernetes Administrator
     code: CKA
@@ -40,50 +41,138 @@ modules:
   title: Manage role based access control (RBAC)
   description: Developed explanations and application reasoning for Manage role based
     access control (RBAC).
-  maturity: alpha
+  status: alpha
   content:
   - type: reading
     title: Manage role based access control (RBAC)
     path: sections/section-010/README.md
   - type: reading
-    title: Role Rules, Bindings And Administrative Authority
+    title: Roles, RoleBindings And Least Privilege
     path: sections/section-010/module-01/course.md
   - type: reading
-    title: RBAC Grants And Their Consequences
-    path: sections/section-010/module-01/course-01-rbac-grants-and-their-consequences.md
+    title: Roles, Rules And Verbs
+    path: sections/section-010/module-01/course-01-roles-rules-and-verbs.md
   - type: reading
-    title: RBAC Scope And Least Privilege
-    path: sections/section-010/module-01/course-02-rbac-scope-and-least-privilege.md
+    title: RoleBindings And Subjects
+    path: sections/section-010/module-01/course-02-rolebindings-and-subjects.md
   - type: reading
-    title: Grant Namespace Pod Read Access — Task
+    title: Additive Grants And Indirect Privilege
+    path: sections/section-010/module-01/course-03-additive-grants-and-indirect-privilege.md
+  - type: reading
+    title: Grant A ServiceAccount Pod Read Access With A Role — Task
     path: sections/section-010/module-01/labs/lab-01/question.md
   - type: lab
-    title: Grant Namespace Pod Read Access
+    title: Grant A ServiceAccount Pod Read Access With A Role
     path: sections/section-010/module-01/labs/lab-01
     difficulty: intermediate
     estimated_duration: 20m
     topic: rbac
     task_kind: build
     learning_goals:
-    - Grant a ServiceAccount only Pod read access in the required namespace and verify
-      denied operations.
+    - 'Complete the graded task: Grant A ServiceAccount Pod Read Access With A Role.'
     tags:
     - cka
     - rbac
   - type: reading
-    title: Grant Namespace Pod Read Access — Solution
+    title: Grant A ServiceAccount Pod Read Access With A Role — Solution
     path: sections/section-010/module-01/labs/lab-01/solution.md
-  - type: reading
-    title: 'Guided Practice: Grant Namespace Pod Read Access'
-    path: sections/section-010/module-01/course-03-guided-practice.md
   - type: reading
     title: Summary
     path: sections/section-010/module-01/course-04-summary.md
+  - type: reading
+    title: Users, Client Certificates And ServiceAccount Tokens
+    path: sections/section-010/module-02/course.md
+  - type: reading
+    title: Client Certificates And The CSR Flow
+    path: sections/section-010/module-02/course-01-client-certificates-and-the-csr-flow.md
+  - type: reading
+    title: Issue A Client Certificate And Grant Pod Read Access — Task
+    path: sections/section-010/module-02/labs/lab-01/question.md
+  - type: lab
+    title: Issue A Client Certificate And Grant Pod Read Access
+    path: sections/section-010/module-02/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 20m
+    topic: rbac
+    task_kind: build
+    learning_goals:
+    - 'Complete the graded task: Issue A Client Certificate And Grant Pod Read Access.'
+    tags:
+    - cka
+    - rbac
+  - type: reading
+    title: Issue A Client Certificate And Grant Pod Read Access — Solution
+    path: sections/section-010/module-02/labs/lab-01/solution.md
+  - type: reading
+    title: Kubeconfig Credentials And Granting Access
+    path: sections/section-010/module-02/course-02-kubeconfig-credentials-and-granting-access.md
+  - type: reading
+    title: ServiceAccount Tokens And Automounting
+    path: sections/section-010/module-02/course-03-serviceaccount-tokens-and-automounting.md
+  - type: reading
+    title: Summary
+    path: sections/section-010/module-02/course-04-summary.md
+  - type: reading
+    title: 'Cluster-Scoped Access: ClusterRoles, Non-Resource URLs And Escalation
+      Prevention'
+    path: sections/section-010/module-03/course.md
+  - type: reading
+    title: ClusterRoles And ClusterRoleBindings
+    path: sections/section-010/module-03/course-01-clusterroles-and-clusterrolebindings.md
+  - type: reading
+    title: Non-Resource URLs And Built-In Roles
+    path: sections/section-010/module-03/course-02-non-resource-urls-and-built-in-roles.md
+  - type: reading
+    title: Grant Cluster-Scoped Read Access With A ClusterRole — Task
+    path: sections/section-010/module-03/labs/lab-01/question.md
+  - type: lab
+    title: Grant Cluster-Scoped Read Access With A ClusterRole
+    path: sections/section-010/module-03/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 20m
+    topic: rbac
+    task_kind: build
+    learning_goals:
+    - 'Complete the graded task: Grant Cluster-Scoped Read Access With A ClusterRole.'
+    tags:
+    - cka
+    - rbac
+  - type: reading
+    title: Grant Cluster-Scoped Read Access With A ClusterRole — Solution
+    path: sections/section-010/module-03/labs/lab-01/solution.md
+  - type: reading
+    title: Escalation Prevention And Sensitive Verbs
+    path: sections/section-010/module-03/course-03-escalation-prevention-and-sensitive-verbs.md
+  - type: reading
+    title: Summary
+    path: sections/section-010/module-03/course-04-summary.md
+  - type: reading
+    title: Rebuild Access For Three Identities With RBAC — Task — Task
+    path: sections/section-010/capstone/labs/lab-01/question.md
+  - type: lab
+    title: Rebuild Access For Three Identities With RBAC — Task
+    path: sections/section-010/capstone/labs/lab-01
+    difficulty: advanced
+    estimated_duration: 40m
+    topic: rbac
+    task_kind: build
+    learning_goals:
+    - 'Complete the graded task: Rebuild Access For Three Identities With RBAC — Task.'
+    tags:
+    - cka
+    - rbac
+  - type: reading
+    title: Rebuild Access For Three Identities With RBAC — Task — Solution
+    path: sections/section-010/capstone/labs/lab-01/solution.md
+  - type: quiz
+    title: 'Knowledge Check: Manage role based access control (RBAC)'
+    path: sections/section-010/quiz.yaml
+    pass_score: 70
 - id: module-020
   title: Prepare underlying infrastructure for installing a Kubernetes cluster
   description: Developed explanations and application reasoning for Prepare underlying
     infrastructure for installing a Kubernetes cluster.
-  maturity: alpha
+  status: alpha
   content:
   - type: reading
     title: Prepare underlying infrastructure for installing a Kubernetes cluster
@@ -119,11 +208,94 @@ modules:
   - type: reading
     title: Summary
     path: sections/section-020/module-01/course-03-summary.md
+  - type: reading
+    title: Kernel Modules, sysctl, Swap And The cgroup Driver
+    path: sections/section-020/module-02/course.md
+  - type: reading
+    title: Kernel Modules, sysctl And Swap
+    path: sections/section-020/module-02/course-01-kernel-modules-sysctl-and-swap.md
+  - type: reading
+    title: The cgroup Driver And kubelet Configuration
+    path: sections/section-020/module-02/course-02-the-cgroup-driver-and-kubelet-configuration.md
+  - type: reading
+    title: Record Host Readiness From The API — Task
+    path: sections/section-020/module-02/labs/lab-01/question.md
+  - type: lab
+    title: Record Host Readiness From The API
+    path: sections/section-020/module-02/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 20m
+    topic: node-prerequisites
+    task_kind: build
+    learning_goals:
+    - 'Complete the graded task: Record Host Readiness From The API.'
+    tags:
+    - cka
+    - node-prerequisites
+  - type: reading
+    title: Record Host Readiness From The API — Solution
+    path: sections/section-020/module-02/labs/lab-01/solution.md
+  - type: reading
+    title: Summary
+    path: sections/section-020/module-02/course-03-summary.md
+  - type: reading
+    title: Packages, Ports And kubeadm Preflight Checks
+    path: sections/section-020/module-03/course.md
+  - type: reading
+    title: Packages And Host Identity
+    path: sections/section-020/module-03/course-01-packages-and-host-identity.md
+  - type: reading
+    title: Ports And Preflight Checks
+    path: sections/section-020/module-03/course-02-ports-and-preflight-checks.md
+  - type: reading
+    title: Record Control Plane Ports From Static Pods — Task
+    path: sections/section-020/module-03/labs/lab-01/question.md
+  - type: lab
+    title: Record Control Plane Ports From Static Pods
+    path: sections/section-020/module-03/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 20m
+    topic: node-prerequisites
+    task_kind: build
+    learning_goals:
+    - 'Complete the graded task: Record Control Plane Ports From Static Pods.'
+    tags:
+    - cka
+    - node-prerequisites
+  - type: reading
+    title: Record Control Plane Ports From Static Pods — Solution
+    path: sections/section-020/module-03/labs/lab-01/solution.md
+  - type: reading
+    title: Summary
+    path: sections/section-020/module-03/course-03-summary.md
+  - type: reading
+    title: Host Readiness Review Before Installation — Task
+    path: sections/section-020/capstone/labs/lab-01/question.md
+  - type: lab
+    title: Host Readiness Review Before Installation
+    path: sections/section-020/capstone/labs/lab-01
+    difficulty: advanced
+    estimated_duration: 30m
+    topic: node-prerequisites
+    task_kind: build
+    learning_goals:
+    - Record the host, runtime and kubelet facts that a kubeadm install depends on.
+    tags:
+    - cka
+    - node-prerequisites
+  - type: reading
+    title: Host Readiness Review Before Installation — Solution
+    path: sections/section-020/capstone/labs/lab-01/solution.md
+  - type: quiz
+    title: 'Knowledge Check: Prepare underlying infrastructure for installing a Kubernetes
+      cluster'
+    path: sections/section-020/quiz.yaml
+    pass_score: 70
 - id: module-030
   title: Create and manage Kubernetes clusters using kubeadm
   description: Developed explanations and application reasoning for Create and manage
     Kubernetes clusters using kubeadm.
-  maturity: alpha
+  status: alpha
   content:
   - type: reading
     title: Create and manage Kubernetes clusters using kubeadm
@@ -159,11 +331,97 @@ modules:
   - type: reading
     title: Summary
     path: sections/section-030/module-01/course-03-summary.md
+  - type: reading
+    title: kubeadm Configuration Files And Init Phases
+    path: sections/section-030/module-02/course.md
+  - type: reading
+    title: Configuration Kinds And Fields
+    path: sections/section-030/module-02/course-01-configuration-kinds-and-fields.md
+  - type: reading
+    title: Init Phases And The Stored Configuration
+    path: sections/section-030/module-02/course-02-init-phases-and-the-stored-configuration.md
+  - type: reading
+    title: kubeadm Configuration Files And Init Phases — Task
+    path: sections/section-030/module-02/labs/lab-01/question.md
+  - type: lab
+    title: kubeadm Configuration Files And Init Phases
+    path: sections/section-030/module-02/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 20m
+    topic: kubeadm
+    task_kind: build
+    learning_goals:
+    - 'Complete the graded task: kubeadm Configuration Files And Init Phases.'
+    tags:
+    - cka
+    - kubeadm
+  - type: reading
+    title: kubeadm Configuration Files And Init Phases — Solution
+    path: sections/section-030/module-02/labs/lab-01/solution.md
+  - type: reading
+    title: Summary
+    path: sections/section-030/module-02/course-03-summary.md
+  - type: reading
+    title: Certificates, kubeconfig Files And Joining Nodes
+    path: sections/section-030/module-03/course.md
+  - type: reading
+    title: PKI Files And Certificate Lifetimes
+    path: sections/section-030/module-03/course-01-pki-files-and-certificate-lifetimes.md
+  - type: reading
+    title: Bootstrap Tokens And The CA Public-Key Hash
+    path: sections/section-030/module-03/course-02-bootstrap-tokens-and-the-ca-hash.md
+  - type: reading
+    title: Joining A Node, Network Add-Ons And kubeadm Reset
+    path: sections/section-030/module-03/course-03-joining-a-node-and-resetting-it.md
+  - type: reading
+    title: Map Certificates To Control Plane Components — Task
+    path: sections/section-030/module-03/labs/lab-01/question.md
+  - type: lab
+    title: Map Certificates To Control Plane Components
+    path: sections/section-030/module-03/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 20m
+    topic: kubeadm
+    task_kind: build
+    learning_goals:
+    - Map each control plane certificate and key to the component flag that uses it.
+    tags:
+    - cka
+    - kubeadm
+  - type: reading
+    title: Map Certificates To Control Plane Components — Solution
+    path: sections/section-030/module-03/labs/lab-01/solution.md
+  - type: reading
+    title: Summary
+    path: sections/section-030/module-03/course-04-summary.md
+  - type: reading
+    title: Join Review For A kubeadm Cluster — Task
+    path: sections/section-030/capstone/labs/lab-01/question.md
+  - type: lab
+    title: Join Review For A kubeadm Cluster
+    path: sections/section-030/capstone/labs/lab-01
+    difficulty: advanced
+    estimated_duration: 30m
+    topic: kubeadm
+    task_kind: build
+    learning_goals:
+    - Review a kubeadm cluster by recording its configuration, join endpoint and bootstrap
+      permissions from the API.
+    tags:
+    - cka
+    - kubeadm
+  - type: reading
+    title: Join Review For A kubeadm Cluster — Solution
+    path: sections/section-030/capstone/labs/lab-01/solution.md
+  - type: quiz
+    title: 'Knowledge Check: Create and manage Kubernetes clusters using kubeadm'
+    path: sections/section-030/quiz.yaml
+    pass_score: 70
 - id: module-040
   title: Manage the lifecycle of Kubernetes clusters
   description: Developed explanations and application reasoning for Manage the lifecycle
     of Kubernetes clusters.
-  maturity: alpha
+  status: alpha
   content:
   - type: reading
     title: Manage the lifecycle of Kubernetes clusters
@@ -221,11 +479,93 @@ modules:
   - type: reading
     title: Summary
     path: sections/section-040/module-01/course-04-summary.md
+  - type: reading
+    title: kubeadm Upgrade Workflow And Version Skew
+    path: sections/section-040/module-02/course.md
+  - type: reading
+    title: The kubeadm Upgrade Workflow
+    path: sections/section-040/module-02/course-01-the-kubeadm-upgrade-workflow.md
+  - type: reading
+    title: Version Skew Policy And Reading Versions
+    path: sections/section-040/module-02/course-02-version-skew-policy-and-reading-versions.md
+  - type: reading
+    title: Audit Component Versions Before An Upgrade — Task
+    path: sections/section-040/module-02/labs/lab-01/question.md
+  - type: lab
+    title: Audit Component Versions Before An Upgrade
+    path: sections/section-040/module-02/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 20m
+    topic: cluster-lifecycle
+    task_kind: build
+    learning_goals:
+    - 'Complete the graded task: Audit Component Versions Before An Upgrade.'
+    tags:
+    - cka
+    - cluster-lifecycle
+  - type: reading
+    title: Audit Component Versions Before An Upgrade — Solution
+    path: sections/section-040/module-02/labs/lab-01/solution.md
+  - type: reading
+    title: Summary
+    path: sections/section-040/module-02/course-03-summary.md
+  - type: reading
+    title: etcd Restore And Recovery
+    path: sections/section-040/module-03/course.md
+  - type: reading
+    title: Taking And Checking An etcd Snapshot
+    path: sections/section-040/module-03/course-01-taking-and-checking-an-etcd-snapshot.md
+  - type: reading
+    title: Restoring A Snapshot And Recovering The Control Plane
+    path: sections/section-040/module-03/course-02-restoring-a-snapshot-and-recovering-the-control-plane.md
+  - type: reading
+    title: Snapshot etcd And Record The Restore Facts — Task
+    path: sections/section-040/module-03/labs/lab-01/question.md
+  - type: lab
+    title: Snapshot etcd And Record The Restore Facts
+    path: sections/section-040/module-03/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: cluster-lifecycle
+    task_kind: build
+    learning_goals:
+    - 'Complete the graded task: Snapshot etcd And Record The Restore Facts.'
+    tags:
+    - cka
+    - cluster-lifecycle
+  - type: reading
+    title: Snapshot etcd And Record The Restore Facts — Solution
+    path: sections/section-040/module-03/labs/lab-01/solution.md
+  - type: reading
+    title: Summary
+    path: sections/section-040/module-03/course-03-summary.md
+  - type: reading
+    title: Upgrade Readiness And Recovery Review — Task
+    path: sections/section-040/capstone/labs/lab-01/question.md
+  - type: lab
+    title: Upgrade Readiness And Recovery Review
+    path: sections/section-040/capstone/labs/lab-01
+    difficulty: advanced
+    estimated_duration: 35m
+    topic: cluster-lifecycle
+    task_kind: build
+    learning_goals:
+    - 'Complete the graded task: Upgrade Readiness And Recovery Review.'
+    tags:
+    - cka
+    - cluster-lifecycle
+  - type: reading
+    title: Upgrade Readiness And Recovery Review — Solution
+    path: sections/section-040/capstone/labs/lab-01/solution.md
+  - type: quiz
+    title: 'Knowledge Check: Manage the lifecycle of Kubernetes clusters'
+    path: sections/section-040/quiz.yaml
+    pass_score: 70
 - id: module-050
   title: Implement and configure a highly-available control plane
   description: Developed explanations and application reasoning for Implement and
     configure a highly-available control plane.
-  maturity: alpha
+  status: alpha
   content:
   - type: reading
     title: Implement and configure a highly-available control plane
@@ -260,11 +600,97 @@ modules:
   - type: reading
     title: Summary
     path: sections/section-050/module-01/course-03-summary.md
+  - type: reading
+    title: Control Plane Topology With kubeadm
+    path: sections/section-050/module-02/course.md
+  - type: reading
+    title: Stacked And External etcd Topologies In kubeadm Clusters
+    path: sections/section-050/module-02/course-01-stacked-and-external-etcd-topologies.md
+  - type: reading
+    title: Reading Quorum And Members From A Running Cluster
+    path: sections/section-050/module-02/course-02-reading-quorum-and-members.md
+  - type: reading
+    title: Record The Control Plane Topology And Check A Quorum Proposal — Task
+    path: sections/section-050/module-02/labs/lab-01/question.md
+  - type: lab
+    title: Record The Control Plane Topology And Check A Quorum Proposal
+    path: sections/section-050/module-02/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: high-availability
+    task_kind: build
+    learning_goals:
+    - Read the kubeadm topology, node counts, etcd members and client URL from the
+      cluster, calculate quorum and fault tolerance, and judge a 4-member etcd proposal.
+    tags:
+    - cka
+    - high-availability
+  - type: reading
+    title: Record The Control Plane Topology And Check A Quorum Proposal — Solution
+    path: sections/section-050/module-02/labs/lab-01/solution.md
+  - type: reading
+    title: Summary
+    path: sections/section-050/module-02/course-03-summary.md
+  - type: reading
+    title: Leader Election, Health Endpoints And Failure Behavior
+    path: sections/section-050/module-03/course.md
+  - type: reading
+    title: API Server Endpoints And Health Checks
+    path: sections/section-050/module-03/course-01-api-server-endpoints-and-health-checks.md
+  - type: reading
+    title: Leader Election With Leases
+    path: sections/section-050/module-03/course-02-leader-election-with-leases.md
+  - type: reading
+    title: Record Leader Election Facts And Grant Least-Privilege Lease Access — Task
+    path: sections/section-050/module-03/labs/lab-01/question.md
+  - type: lab
+    title: Record Leader Election Facts And Grant Least-Privilege Lease Access
+    path: sections/section-050/module-03/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: high-availability
+    task_kind: build
+    learning_goals:
+    - Read the Lease holders, lease duration, leader-elect flag and API server probe
+      paths, then replace a broad RoleBinding with a Role that allows only get, create
+      and update on leases.
+    tags:
+    - cka
+    - high-availability
+  - type: reading
+    title: Record Leader Election Facts And Grant Least-Privilege Lease Access — Solution
+    path: sections/section-050/module-03/labs/lab-01/solution.md
+  - type: reading
+    title: Summary
+    path: sections/section-050/module-03/course-03-summary.md
+  - type: reading
+    title: Review A Control Plane For High Availability — Task
+    path: sections/section-050/capstone/labs/lab-01/question.md
+  - type: lab
+    title: Review A Control Plane For High Availability
+    path: sections/section-050/capstone/labs/lab-01
+    difficulty: advanced
+    estimated_duration: 40m
+    topic: high-availability
+    task_kind: build
+    learning_goals:
+    - 'Review a control plane for high availability: topology, quorum and Lease leaders,
+      a 6-member etcd proposal, and lease-only access for a controller.'
+    tags:
+    - cka
+    - high-availability
+  - type: reading
+    title: Review A Control Plane For High Availability — Solution
+    path: sections/section-050/capstone/labs/lab-01/solution.md
+  - type: quiz
+    title: 'Knowledge Check: Implement and configure a highly-available control plane'
+    path: sections/section-050/quiz.yaml
+    pass_score: 70
 - id: module-060
   title: Use Helm and Kustomize to install cluster components
   description: Developed explanations and application reasoning for Use Helm and Kustomize
     to install cluster components.
-  maturity: alpha
+  status: alpha
   content:
   - type: reading
     title: Use Helm and Kustomize to install cluster components
@@ -275,6 +701,9 @@ modules:
   - type: reading
     title: Charts, Values And The Rendered Application
     path: sections/section-060/module-01/course-01-charts-values-and-the-rendered-application.md
+  - type: reading
+    title: Composing Resources With Kustomize
+    path: sections/section-060/module-01/course-02-composing-resources-with-kustomize.md
   - type: reading
     title: Install A Chart With Explicit Values — Task
     path: sections/section-060/module-01/labs/lab-01/question.md
@@ -294,9 +723,6 @@ modules:
   - type: reading
     title: Install A Chart With Explicit Values — Solution
     path: sections/section-060/module-01/labs/lab-01/solution.md
-  - type: reading
-    title: Composing Resources With Kustomize
-    path: sections/section-060/module-01/course-02-composing-resources-with-kustomize.md
   - type: reading
     title: Apply A Kustomize Base — Task
     path: sections/section-060/module-01/labs/lab-02/question.md
@@ -321,11 +747,97 @@ modules:
   - type: reading
     title: Summary
     path: sections/section-060/module-01/course-04-summary.md
+  - type: reading
+    title: Helm Charts, Values And Releases
+    path: sections/section-060/module-02/course.md
+  - type: reading
+    title: Chart Anatomy And Rendering
+    path: sections/section-060/module-02/course-01-chart-anatomy-and-rendering.md
+  - type: reading
+    title: Values And The Release Lifecycle
+    path: sections/section-060/module-02/course-02-values-and-the-release-lifecycle.md
+  - type: reading
+    title: Install, Upgrade And Roll Back A Helm Release — Task
+    path: sections/section-060/module-02/labs/lab-01/question.md
+  - type: lab
+    title: Install, Upgrade And Roll Back A Helm Release
+    path: sections/section-060/module-02/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 30m
+    topic: helm-kustomize
+    task_kind: build
+    learning_goals:
+    - Install a chart as a Helm release, upgrade it with new values and roll back,
+      verified from release Secrets and live objects.
+    tags:
+    - cka
+    - helm-kustomize
+  - type: reading
+    title: Install, Upgrade And Roll Back A Helm Release — Solution
+    path: sections/section-060/module-02/labs/lab-01/solution.md
+  - type: reading
+    title: Summary
+    path: sections/section-060/module-02/course-03-summary.md
+  - type: reading
+    title: Kustomize Overlays And Patches
+    path: sections/section-060/module-03/course.md
+  - type: reading
+    title: Bases, Overlays And Transformers
+    path: sections/section-060/module-03/course-01-bases-overlays-and-transformers.md
+  - type: reading
+    title: Patches, Generators And Applying
+    path: sections/section-060/module-03/course-02-patches-generators-and-applying.md
+  - type: reading
+    title: Build A Kustomize Overlay — Task
+    path: sections/section-060/module-03/labs/lab-01/question.md
+  - type: lab
+    title: Build A Kustomize Overlay
+    path: sections/section-060/module-03/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 30m
+    topic: helm-kustomize
+    task_kind: build
+    learning_goals:
+    - Write a Kustomize overlay with namespace, prefix, labels, image, strategic and
+      JSON patches and a merged generator, and apply it with kubectl apply -k.
+    tags:
+    - cka
+    - helm-kustomize
+  - type: reading
+    title: Build A Kustomize Overlay — Solution
+    path: sections/section-060/module-03/labs/lab-01/solution.md
+  - type: reading
+    title: Summary
+    path: sections/section-060/module-03/course-03-summary.md
+  - type: reading
+    title: Adopt, Release And Customize A Cluster Component — Task
+    path: sections/section-060/capstone/labs/lab-01/question.md
+  - type: lab
+    title: Adopt, Release And Customize A Cluster Component
+    path: sections/section-060/capstone/labs/lab-01
+    difficulty: advanced
+    estimated_duration: 45m
+    topic: helm-kustomize
+    task_kind: build
+    learning_goals:
+    - Adopt hand-applied objects into a Helm release without recreating them, then
+      render the chart and customize the copy in another namespace with a Kustomize
+      overlay.
+    tags:
+    - cka
+    - helm-kustomize
+  - type: reading
+    title: Adopt, Release And Customize A Cluster Component — Solution
+    path: sections/section-060/capstone/labs/lab-01/solution.md
+  - type: quiz
+    title: 'Knowledge Check: Use Helm and Kustomize to install cluster components'
+    path: sections/section-060/quiz.yaml
+    pass_score: 70
 - id: module-070
   title: Understand extension interfaces (CNI, CSI, CRI, etc.)
   description: Developed explanations and application reasoning for Understand extension
     interfaces (CNI, CSI, CRI, etc.).
-  maturity: alpha
+  status: alpha
   content:
   - type: reading
     title: Understand extension interfaces (CNI, CSI, CRI, etc.)
@@ -364,11 +876,103 @@ modules:
   - type: reading
     title: Summary
     path: sections/section-070/module-01/course-04-summary.md
+  - type: reading
+    title: Pod Networking Through CNI
+    path: sections/section-070/module-02/course.md
+  - type: reading
+    title: How A Pod Gets Its Network
+    path: sections/section-070/module-02/course-01-how-a-pod-gets-its-network.md
+  - type: reading
+    title: Pod Addresses, Services And DNS
+    path: sections/section-070/module-02/course-02-pod-addresses-services-and-dns.md
+  - type: reading
+    title: NetworkPolicy And Who Enforces It
+    path: sections/section-070/module-02/course-03-networkpolicy-and-who-enforces-it.md
+  - type: reading
+    title: Record The Pod Network And Restrict Access With NetworkPolicy — Task
+    path: sections/section-070/module-02/labs/lab-01/question.md
+  - type: lab
+    title: Record The Pod Network And Restrict Access With NetworkPolicy
+    path: sections/section-070/module-02/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 30m
+    topic: extension-interfaces
+    task_kind: build
+    learning_goals:
+    - Record the node pod range, pod IP, Service cluster IP, endpoints and DNS name,
+      then write a default-deny ingress policy plus one allow policy on TCP 8080.
+    tags:
+    - cka
+    - extension-interfaces
+  - type: reading
+    title: Record The Pod Network And Restrict Access With NetworkPolicy — Solution
+    path: sections/section-070/module-02/labs/lab-01/solution.md
+  - type: reading
+    title: Summary
+    path: sections/section-070/module-02/course-04-summary.md
+  - type: reading
+    title: Storage Through CSI
+    path: sections/section-070/module-03/course.md
+  - type: reading
+    title: StorageClass, Claims And Provisioning
+    path: sections/section-070/module-03/course-01-storageclass-claims-and-provisioning.md
+  - type: reading
+    title: CSI Drivers And Their Objects
+    path: sections/section-070/module-03/course-02-csi-drivers-and-their-objects.md
+  - type: reading
+    title: Reclaim, Expansion And Failure Cases
+    path: sections/section-070/module-03/course-03-reclaim-expansion-and-failure-cases.md
+  - type: reading
+    title: Define A StorageClass, A CSIDriver And A Claim — Task
+    path: sections/section-070/module-03/labs/lab-01/question.md
+  - type: lab
+    title: Define A StorageClass, A CSIDriver And A Claim
+    path: sections/section-070/module-03/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 30m
+    topic: extension-interfaces
+    task_kind: build
+    learning_goals:
+    - Create a Retain, WaitForFirstConsumer StorageClass, a CSIDriver object and a
+      Pending claim, and record the default-class facts.
+    tags:
+    - cka
+    - extension-interfaces
+  - type: reading
+    title: Define A StorageClass, A CSIDriver And A Claim — Solution
+    path: sections/section-070/module-03/labs/lab-01/solution.md
+  - type: reading
+    title: Summary
+    path: sections/section-070/module-03/course-04-summary.md
+  - type: reading
+    title: Secure And Persist The Probe Workload — Task
+    path: sections/section-070/capstone/labs/lab-01/question.md
+  - type: lab
+    title: Secure And Persist The Probe Workload
+    path: sections/section-070/capstone/labs/lab-01
+    difficulty: advanced
+    estimated_duration: 45m
+    topic: extension-interfaces
+    task_kind: build
+    learning_goals:
+    - Record platform facts, write three ingress NetworkPolicies including a combined
+      namespaceSelector and podSelector entry, and create a StorageClass, CSIDriver,
+      claim and mounting pod.
+    tags:
+    - cka
+    - extension-interfaces
+  - type: reading
+    title: Secure And Persist The Probe Workload — Solution
+    path: sections/section-070/capstone/labs/lab-01/solution.md
+  - type: quiz
+    title: 'Knowledge Check: Extension Interfaces: CNI, CSI And CRI'
+    path: sections/section-070/quiz.yaml
+    pass_score: 70
 - id: module-080
   title: Understand CRDs, install and configure operators
   description: Developed explanations and application reasoning for Understand CRDs,
     install and configure operators.
-  maturity: alpha
+  status: alpha
   content:
   - type: reading
     title: Understand CRDs, install and configure operators
@@ -406,3 +1010,93 @@ modules:
   - type: reading
     title: Summary
     path: sections/section-080/module-01/course-04-summary.md
+  - type: reading
+    title: CustomResourceDefinition Schema, Validation And Versions
+    path: sections/section-080/module-02/course.md
+  - type: reading
+    title: CRD Structure And The OpenAPI Schema
+    path: sections/section-080/module-02/course-01-crd-structure-and-the-openapi-schema.md
+  - type: reading
+    title: Defaults, Pruning And CEL Validation Rules
+    path: sections/section-080/module-02/course-02-defaults-pruning-and-cel-validation-rules.md
+  - type: reading
+    title: Versions, Subresources And Printer Columns
+    path: sections/section-080/module-02/course-03-versions-subresources-and-printer-columns.md
+  - type: reading
+    title: Tighten A CustomResourceDefinition Schema — Task
+    path: sections/section-080/module-02/labs/lab-01/question.md
+  - type: lab
+    title: Tighten A CustomResourceDefinition Schema
+    path: sections/section-080/module-02/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: custom-resources
+    task_kind: build
+    learning_goals:
+    - Tighten a CRD schema with an enumeration, a range, a default, an immutable field,
+      printer columns and the status subresource.
+    tags:
+    - cka
+    - custom-resources
+  - type: reading
+    title: Tighten A CustomResourceDefinition Schema — Solution
+    path: sections/section-080/module-02/labs/lab-01/solution.md
+  - type: reading
+    title: Summary
+    path: sections/section-080/module-02/course-04-summary.md
+  - type: reading
+    title: Installing And Configuring An Operator
+    path: sections/section-080/module-03/course.md
+  - type: reading
+    title: The Objects That Make Up An Operator
+    path: sections/section-080/module-03/course-01-the-objects-that-make-up-an-operator.md
+  - type: reading
+    title: Installing In Order And Verifying
+    path: sections/section-080/module-03/course-02-installing-in-order-and-verifying.md
+  - type: reading
+    title: Configuring, Status, Finalizers And Removal
+    path: sections/section-080/module-03/course-03-configuring-status-finalizers-and-removal.md
+  - type: reading
+    title: Wire An Operator With Least Privilege — Task
+    path: sections/section-080/module-03/labs/lab-01/question.md
+  - type: lab
+    title: Wire An Operator With Least Privilege
+    path: sections/section-080/module-03/labs/lab-01
+    difficulty: intermediate
+    estimated_duration: 25m
+    topic: custom-resources
+    task_kind: build
+    learning_goals:
+    - Wire an operator Deployment to a ServiceAccount with least-privilege RBAC and
+      prove it with kubectl auth can-i.
+    tags:
+    - cka
+    - custom-resources
+  - type: reading
+    title: Wire An Operator With Least Privilege — Solution
+    path: sections/section-080/module-03/labs/lab-01/solution.md
+  - type: reading
+    title: Summary
+    path: sections/section-080/module-03/course-04-summary.md
+  - type: reading
+    title: Publish A Custom Type And Install Its Operator — Task
+    path: sections/section-080/capstone/labs/lab-01/question.md
+  - type: lab
+    title: Publish A Custom Type And Install Its Operator
+    path: sections/section-080/capstone/labs/lab-01
+    difficulty: advanced
+    estimated_duration: 45m
+    topic: custom-resources
+    task_kind: build
+    learning_goals:
+    - Publish a custom type with validation and install its operator with least privilege.
+    tags:
+    - cka
+    - custom-resources
+  - type: reading
+    title: Publish A Custom Type And Install Its Operator — Solution
+    path: sections/section-080/capstone/labs/lab-01/solution.md
+  - type: quiz
+    title: 'Knowledge Check: Understand CRDs, install and configure operators'
+    path: sections/section-080/quiz.yaml
+    pass_score: 70

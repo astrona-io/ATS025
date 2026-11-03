@@ -1,0 +1,69 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Install, Upgrade And Roll Back A Helm Release (LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-025-lab-060-02-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    preloadImages:
+      - docker.io/library/busybox:1.37.0
+
+# Starting state: an empty starfleet namespace with one unrelated Deployment named bridge.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the starfleet namespace and the unrelated bridge Deployment
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: release-deployed
+      description: "Release scout exists in starfleet, was installed from chart scout-chart 0.1.0 and its latest revision is deployed"
+      type: file
+      source: validation/validate-release.sh
+      hint: "Run helm install with the chart directory and the release name scout in the namespace starfleet."
+    - name: revision-history
+      description: "The release has at least three revisions and the latest one is a rollback to revision 1"
+      type: file
+      source: validation/validate-history.sh
+      hint: "Install, then upgrade, then run helm rollback scout 1 in the namespace starfleet."
+    - name: recorded-values
+      description: "Revision 1 recorded replicaCount 2, and revision 2 recorded replicaCount 3 and logLevel debug"
+      type: file
+      source: validation/validate-values.sh
+      hint: "Use --set or -f on install and on upgrade; helm get values scout --revision 2 shows what was recorded."
+    - name: live-workload
+      description: "The scout Deployment runs the values of revision 1 again: 2 available replicas and LOG_LEVEL info"
+      type: file
+      source: validation/validate-workload.sh
+      hint: "A rollback re-applies the manifest of the chosen revision."
+    - name: helm-ownership
+      description: "The Deployment and the Service carry the Helm ownership annotations for release scout"
+      type: file
+      source: validation/validate-ownership.sh
+      hint: "Do not apply the rendered YAML with kubectl; let helm install create the objects."
+    - name: bridge-untouched
+      description: "The unrelated bridge Deployment is unchanged and not owned by Helm"
+      type: file
+      source: validation/validate-bridge.sh
+      hint: "Do not use the namespace-wide commands on objects you did not install."
+
+teardown:
+  keepCluster: false

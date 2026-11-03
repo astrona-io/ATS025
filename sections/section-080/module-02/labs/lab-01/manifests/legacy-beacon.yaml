@@ -1,0 +1,7 @@
+apiVersion: training.astrona.io/v1
+kind: Beacon
+metadata:
+  name: legacy-beacon
+  namespace: starfleet
+spec:
+  channel: alpha

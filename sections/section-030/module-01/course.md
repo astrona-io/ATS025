@@ -16,9 +16,11 @@ This module develops initial Control Plane And Joining Nodes. It connects the in
 
 ## Before You Start
 
-Examples describe system behavior. No runtime is required. Read each field or diagnostic name as part of the stated contract.
+Use the module playground for guided practice. Graded exercises use independent environments and follow the readings they practise.
 
 ## Reading Order
 
 1. Understanding kubeadm Initialization And Node Joining
 2. Summary
+
+<!-- astrona:playground -->

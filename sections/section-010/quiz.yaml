@@ -1,0 +1,288 @@
+# Knowledge check for section 010. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats025-010-quiz
+course_id: ATS025
+exam_code: CKA
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-010
+  title: "Manage role based access control (RBAC)"
+questions:
+  - id: ats025-010-quiz-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Write a Role rule with the correct API group, resource and verbs"
+    source_readings:
+      - sections/section-010/module-01/course-01-roles-rules-and-verbs.md
+    prompt: "A Role in `starfleet` must let a workload read Deployments there. Which rule is correct?"
+    options:
+      - id: a
+        text: "A rule with `apiGroups: [\"apps\"]`, `resources: [\"deployment\"]` and `verbs: [\"read\"]`."
+        explanation: "The resource name must be the plural `deployments`, and `read` is not a verb."
+      - id: b
+        text: "A rule with `apiGroups: [\"apps\"]`, `resources: [\"deployments\"]` and `verbs: [\"get\", \"list\", \"watch\"]`."
+        explanation: "Correct. Deployments are in the `apps` API group, the resource name is the lowercase plural `deployments`, and `get`, `list` and `watch` are real verbs."
+      - id: c
+        text: "A rule with `apiGroups: [\"\"]`, `resources: [\"deployments\"]` and `verbs: [\"get\", \"list\", \"watch\"]`."
+        explanation: "The empty string is the core group, and Deployments are not in it, so this rule matches nothing."
+      - id: d
+        text: "A rule with `resources: [\"deployments\"]` and `verbs: [\"get\", \"list\", \"watch\"]` and no `apiGroups` field."
+        explanation: "A rule without `apiGroups` matches no group, so it matches no request."
+    correct_option: b
+    explanation: "Each rule needs a matching API group, resource name and verb. Deployments belong to `apps`, the name is plural, and the verbs are `get`, `list` and `watch`."
+
+  - id: ats025-010-quiz-q02
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain that a rule for a resource does not cover its subresources"
+    source_readings:
+      - sections/section-010/module-01/course-01-roles-rules-and-verbs.md
+    prompt: "A Role in `starfleet` allows `get`, `list` and `watch` on `pods`. A user bound to it runs `kubectl logs` for a pod in `starfleet` and receives `Forbidden`. Why?"
+    options:
+      - id: a
+        text: "The `watch` verb must be removed before `get` works for logs."
+        explanation: "Removing `watch` changes nothing; the request is for another resource."
+      - id: b
+        text: "A Role can never grant access to logs, only a ClusterRole can."
+        explanation: "A Role can grant `pods/log` inside its namespace."
+      - id: c
+        text: "`pods/log` is a separate resource, and the rule does not name it."
+        explanation: "Correct. A subresource is its own resource name. Reading logs needs a rule for `pods/log` with the verb `get`."
+      - id: d
+        text: "Logs are served by the kubelet, which does not use RBAC."
+        explanation: "The API server authorizes the log request with RBAC, as the resource `pods/log`."
+    correct_option: c
+    explanation: "A rule for `pods` does not include `pods/log` or `pods/exec`. Each subresource is named separately in `resources`."
+
+  - id: ats025-010-quiz-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Describe how the RoleBinding scope and subject interact"
+    source_readings:
+      - sections/section-010/module-01/course-02-rolebindings-and-subjects.md
+    prompt: "A RoleBinding in `starfleet` binds the Role `pod-reader` to a subject of kind `ServiceAccount` named `shuttle` with the namespace `outpost`. The ServiceAccount that must read pods is `shuttle` in `starfleet`. What is the result?"
+    options:
+      - id: a
+        text: "The ServiceAccount `shuttle` in `starfleet` receives the grant, because the binding is in `starfleet`."
+        explanation: "The namespace of a ServiceAccount subject is part of its identity; the namespace of the binding does not replace it."
+      - id: b
+        text: "The API server rejects the binding because the namespaces differ."
+        explanation: "The API server only requires the namespace field. It does not check that it equals the namespace of the binding."
+      - id: c
+        text: "Both ServiceAccounts receive the grant, because names are matched without the namespace."
+        explanation: "The namespace is part of the match, so only the named account is affected."
+      - id: d
+        text: "The grant goes to the ServiceAccount `shuttle` in `outpost`, which is a different identity, and the intended workload receives nothing."
+        explanation: "Correct. A subject is matched by kind, name and namespace. The binding is valid, but it names the account in `outpost`."
+    correct_option: d
+    explanation: "A ServiceAccount identity is its name together with its namespace. A wrong namespace in the subject names another account and the intended one gets nothing."
+
+  - id: ats025-010-quiz-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain the reach of a RoleBinding that points at a ClusterRole"
+    source_readings:
+      - sections/section-010/module-01/course-02-rolebindings-and-subjects.md
+    prompt: "A RoleBinding in `starfleet` points at the built-in ClusterRole `view` and names the ServiceAccount `scout`. Where can `scout` list Deployments?"
+    options:
+      - id: a
+        text: "In `starfleet` only, because the binding decides the reach."
+        explanation: "Correct. A RoleBinding applies the rules of the ClusterRole only in the namespace of the binding."
+      - id: b
+        text: "In every namespace, because `view` is a ClusterRole."
+        explanation: "The kind of the role describes where the definition lives, not where it applies."
+      - id: c
+        text: "Nowhere, because a RoleBinding cannot point at a ClusterRole."
+        explanation: "A RoleBinding may point at a Role or a ClusterRole."
+      - id: d
+        text: "In `starfleet` and in every namespace that has a ServiceAccount named `scout`."
+        explanation: "The grant is tied to the namespace of the binding, not to names in other namespaces."
+    correct_option: a
+    explanation: "The binding decides the reach. A RoleBinding gives the rules of a ClusterRole inside its own namespace only."
+
+  - id: ats025-010-quiz-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Evaluate effective permissions when several bindings apply"
+    source_readings:
+      - sections/section-010/module-01/course-03-additive-grants-and-indirect-privilege.md
+    prompt: "The ServiceAccount `shuttle` is bound to a Role that allows only `get` on pods. A review removes `delete` from every Role that names pods, but `shuttle` can still delete pods. What explains this?"
+    options:
+      - id: a
+        text: "A Role cannot remove verbs once the ServiceAccount exists."
+        explanation: "A Role can be edited at any time."
+      - id: b
+        text: "Another binding, for example a ClusterRoleBinding or a group binding, still grants `delete`, because grants add up."
+        explanation: "Correct. RBAC has no deny rule. The effective permissions are the union of every applicable grant, so the remaining binding must be found and removed."
+      - id: c
+        text: "RBAC caches the old Role for one hour."
+        explanation: "Rules are read from the API on every decision, so there is no hour of delay."
+      - id: d
+        text: "The `get` verb implies `delete` in the core group."
+        explanation: "Verbs do not imply each other."
+    correct_option: b
+    explanation: "Permissions are the union of all grants for the user, its groups and its ServiceAccount groups. Removing a permission means removing every grant that gives it."
+
+  - id: ats025-010-quiz-q06
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Identify indirect access through reading Secrets"
+    source_readings:
+      - sections/section-010/module-01/course-03-additive-grants-and-indirect-privilege.md
+    prompt: "A monitoring ServiceAccount receives a Role with only the verb `list` on `secrets`, so that it can count them. What can it do with this grant?"
+    options:
+      - id: a
+        text: "Nothing, because `list` without `get` is ignored."
+        explanation: "`list` is evaluated by itself and is allowed."
+      - id: b
+        text: "Read Secrets in every namespace, because `list` is cluster-wide."
+        explanation: "A Role applies only in its own namespace."
+      - id: c
+        text: "Read the full data of every Secret in the namespace, because a list response includes the contents."
+        explanation: "Correct. A list returns the complete Secret objects. A grant to list Secrets is a grant to read every credential in the namespace."
+      - id: d
+        text: "Only read the names of the Secrets, not their data."
+        explanation: "A list response returns whole objects, including the data field."
+    correct_option: c
+    explanation: "Listing Secrets returns their data. A grant that only needs to count objects should not use this verb on Secrets."
+
+  - id: ats025-010-quiz-q07
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Create a client certificate request with the right subject and signer"
+    source_readings:
+      - sections/section-010/module-02/course-01-client-certificates-and-the-csr-flow.md
+    prompt: "A client certificate for `jane` must make her a member of the group `reviewers`. How must the request be built?"
+    options:
+      - id: a
+        text: "With the subject `/CN=reviewers/O=jane`."
+        explanation: "This subject makes the user `reviewers` in the group `jane`."
+      - id: b
+        text: "With the subject `/CN=jane` and a `groups` field in the `CertificateSigningRequest`."
+        explanation: "The `CertificateSigningRequest` has no `groups` field that sets the group of the certificate."
+      - id: c
+        text: "Any subject works, because the group is set when the request is approved."
+        explanation: "The subject is fixed when the request is made. Approval does not change it."
+      - id: d
+        text: "With the subject `/CN=jane/O=reviewers`."
+        explanation: "Correct. The API server reads the Common Name as the username and each Organization value as a group."
+    correct_option: d
+    explanation: "The Common Name becomes the username and the Organization values become groups. A wrong subject needs a new request."
+
+  - id: ats025-010-quiz-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain what each stage does in the certificate flow"
+    source_readings:
+      - sections/section-010/module-02/course-01-client-certificates-and-the-csr-flow.md
+    prompt: "A `CertificateSigningRequest` with the signer `kubernetes.io/kube-apiserver-client` stays at `Pending`. What must happen before `status.certificate` is filled?"
+    options:
+      - id: a
+        text: "A person with permission must approve it, for example with `kubectl certificate approve`. Then the signer writes the certificate."
+        explanation: "Correct. Approval is its own permission. After approval the signer in the controller manager signs with the cluster CA and writes the certificate."
+      - id: b
+        text: "Nothing. The control plane approves this signer on its own after a short delay."
+        explanation: "The control plane never approves requests for this signer on its own."
+      - id: c
+        text: "The user must create a RoleBinding for the username first."
+        explanation: "Authorization is checked on later requests, not when the certificate is signed."
+      - id: d
+        text: "The kubelet on each node must sign the request."
+        explanation: "The kubelet is not the signer for client certificates of this kind."
+    correct_option: a
+    explanation: "Approval is a separate step done by a person with the right permission. Only then does the signer issue the certificate."
+
+  - id: ats025-010-quiz-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Choose the right ServiceAccount token settings for a pod"
+    source_readings:
+      - sections/section-010/module-02/course-03-serviceaccount-tokens-and-automounting.md
+    prompt: "The pod `probe` never calls the Kubernetes API. How do you stop the kubelet from placing a ServiceAccount token in the pod?"
+    options:
+      - id: a
+        text: "Remove all RoleBindings for the ServiceAccount."
+        explanation: "Bindings control permissions, not whether the token is mounted."
+      - id: b
+        text: "Set `automountServiceAccountToken: false` on the pod or on its ServiceAccount."
+        explanation: "Correct. The field switches off the token mount. The setting on the pod takes precedence over the one on the ServiceAccount."
+      - id: c
+        text: "Delete the ServiceAccount after the pod starts."
+        explanation: "A running pod keeps its mounted token until the pod is replaced, and deleting the account does not stop the mount for a new pod."
+      - id: d
+        text: "Add `get` on `serviceaccounts` to a Role."
+        explanation: "A Role grants permissions and does not control mounting."
+    correct_option: b
+    explanation: "Pods that do not need the API should not receive a token. The pod field wins over the ServiceAccount field."
+
+  - id: ats025-010-quiz-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Choose a ClusterRole and ClusterRoleBinding for cluster-scoped resources"
+    source_readings:
+      - sections/section-010/module-03/course-01-clusterroles-and-clusterrolebindings.md
+    prompt: "A ServiceAccount must list nodes. Which grant works?"
+    options:
+      - id: a
+        text: "A ClusterRole with `nodes` in `resources`, bound with a RoleBinding in `starfleet`."
+        explanation: "A RoleBinding applies rules only inside its namespace, so it cannot grant nodes."
+      - id: b
+        text: "A Role with `nodes` in `resources`, bound with a ClusterRoleBinding."
+        explanation: "A Role cannot describe cluster-scoped resources, whatever binding is used."
+      - id: c
+        text: "A ClusterRole with `nodes` in `resources`, bound with a ClusterRoleBinding."
+        explanation: "Correct. Nodes belong to no namespace, and only a ClusterRoleBinding applies a grant at cluster scope."
+      - id: d
+        text: "A Role with `nodes` in `resources`, bound with a RoleBinding in `starfleet`."
+        explanation: "A Role is namespaced and cannot grant a resource that has no namespace."
+    correct_option: c
+    explanation: "A grant for a cluster-scoped resource needs a ClusterRole and a ClusterRoleBinding."
+
+  - id: ats025-010-quiz-q11
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Allow a non-resource URL with the right rule shape"
+    source_readings:
+      - sections/section-010/module-03/course-02-non-resource-urls-and-built-in-roles.md
+    prompt: "A ServiceAccount must read the API server path `/metrics` and nothing else. Which rule does that?"
+    options:
+      - id: a
+        text: "`resources: [\"metrics\"]` with `verbs: [\"get\"]` in a Role."
+        explanation: "`/metrics` is not a resource type, so a `resources` entry does not match it."
+      - id: b
+        text: "`nonResourceURLs: [\"/metrics\"]` with `verbs: [\"get\"]` in a Role bound by a RoleBinding."
+        explanation: "Non-resource URLs cannot be granted from a Role or through a RoleBinding."
+      - id: c
+        text: "`nonResourceURLs: [\"/*\"]` with `verbs: [\"get\"]` in a ClusterRole."
+        explanation: "The wildcard allows every path, not only `/metrics`."
+      - id: d
+        text: "`nonResourceURLs: [\"/metrics\"]` with `verbs: [\"get\"]` in a ClusterRole bound by a ClusterRoleBinding."
+        explanation: "Correct. A non-resource URL rule is valid only in a ClusterRole and applies only through a ClusterRoleBinding."
+    correct_option: d
+    explanation: "Non-resource URLs have their own rule field and need a ClusterRole with a ClusterRoleBinding."
+
+  - id: ats025-010-quiz-q12
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Explain the escalation prevention rule"
+    source_readings:
+      - sections/section-010/module-03/course-03-escalation-prevention-and-sensitive-verbs.md
+    prompt: "A ServiceAccount may create Roles and RoleBindings in `starfleet`, but it holds no permission on Secrets. It tries to create a Role that allows `get` on `secrets`. What happens, and what lifts the limit?"
+    options:
+      - id: a
+        text: "The API server refuses it. The caller would need to hold the permission itself, or hold the `escalate` verb on roles."
+        explanation: "Correct. The API server compares the new rules with the permissions of the caller. The `escalate` verb on roles skips that check, so it should almost never be granted."
+      - id: b
+        text: "The request succeeds, because it holds the verb `create` on Roles."
+        explanation: "The right to create Roles does not allow a caller to grant permissions that it lacks."
+      - id: c
+        text: "The request succeeds but the Role has no effect until an administrator approves it."
+        explanation: "There is no approval step for Roles."
+      - id: d
+        text: "The request is refused, and nothing can lift the limit."
+        explanation: "The `escalate` verb on roles lifts the limit for Roles."
+    correct_option: a
+    explanation: "Writes to roles are checked against the caller's own permissions unless the caller holds `escalate`. For bindings, the `bind` verb limited to named roles lifts the check."

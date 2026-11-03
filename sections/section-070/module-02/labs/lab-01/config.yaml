@@ -1,0 +1,64 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Record The Pod Network And Restrict Access With NetworkPolicy (LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-025-lab-070-02-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    preloadImages:
+      - docker.io/library/busybox:1.37.0
+
+# Starting state: a probe Deployment and Service in starfleet, a shuttle pod in starfleet and a drifter pod in outpost, with no NetworkPolicy.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the namespaces, the probe Deployment and Service and the client pods
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: report-pod-network
+      description: "ConfigMap network-report records the node pod range and the shuttle pod address"
+      type: file
+      source: validation/validate-report-pod-network.sh
+      hint: "Read spec.podCIDR from the node and status.podIP from the shuttle pod."
+    - name: report-service
+      description: "ConfigMap network-report records the probe Service address, ready endpoint count and DNS name"
+      type: file
+      source: validation/validate-report-service.sh
+      hint: "Read the cluster IP of Service probe and count the ready endpoints in its EndpointSlice."
+    - name: default-deny
+      description: "default-deny-ingress selects every pod in starfleet and denies all ingress"
+      type: file
+      source: validation/validate-default-deny.sh
+      hint: "Use an empty podSelector, policyTypes Ingress and no ingress rules."
+    - name: allow-shuttle
+      description: "probe-ingress allows only the shuttle pods to reach probe on TCP 8080"
+      type: file
+      source: validation/validate-allow-shuttle.sh
+      hint: "Select app=probe and add one ingress rule from app=shuttle on port 8080 TCP."
+    - name: probe-untouched
+      description: "The probe Deployment still has two ready replicas and no egress policy exists"
+      type: file
+      source: validation/validate-probe-untouched.sh
+      hint: "Do not edit the Deployment and do not add policyTypes Egress."
+
+teardown:
+  keepCluster: false

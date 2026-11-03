@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# kubeadm Configuration Files And Init Phases (LAB). Graded against the live cluster API.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-025-lab-030-02-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    preloadImages:
+      - docker.io/library/busybox:1.37.0
+    nodes:
+      workers: 1
+
+# Starting state: namespaces, a probe Deployment and a draft kubeadm-plan
+# ConfigMap with mistakes.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the namespaces, the probe Deployment and the draft plan
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: cluster-review-matches-kubeadm-config
+      description: cluster-review records the version, name and address ranges of the running cluster
+      type: file
+      source: validation/validate-cluster-review.sh
+      hint: Read ClusterConfiguration from the kubeadm-config ConfigMap in kube-system and copy the four values exactly, without spaces.
+    - name: plan-uses-v1beta4
+      description: kubeadm-plan holds an InitConfiguration and a ClusterConfiguration at v1beta4
+      type: file
+      source: validation/validate-plan-api-version.sh
+      hint: Both documents need apiVersion kubeadm.k8s.io/v1beta4 and must be separated by a line with three dashes.
+    - name: plan-cluster-fields
+      description: The ClusterConfiguration has the required name, version and endpoint
+      type: file
+      source: validation/validate-plan-cluster-fields.sh
+      hint: kubernetesVersion must equal the version of the running cluster. controlPlaneEndpoint is outpost-api.example.test:6443.
+    - name: plan-networking
+      description: podSubnet and serviceSubnet are nested under networking
+      type: file
+      source: validation/validate-plan-networking.sh
+      hint: Put podSubnet 10.200.0.0/16 and serviceSubnet 10.201.0.0/16 under a networking block, not at the top level.
+    - name: plan-init-node
+      description: The InitConfiguration names the first node and kubeadm-config is untouched
+      type: file
+      source: validation/validate-plan-init-node.sh
+      hint: Set nodeRegistration.name to outpost-cp-1 in the InitConfiguration. Change only the kubeadm-plan ConfigMap.
+
+teardown:
+  keepCluster: false

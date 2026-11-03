@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Host Readiness Review Before Installation (CAPSTONE). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-025-lab-020-capstone-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+
+# Starting state: a stale readiness review from an earlier installation plan.
+bootstrap:
+  init:
+    - name: seed-stale-review
+      description: Create the stale review and remember the kubelet configuration
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: review-complete
+      description: The readiness review has all eight keys and no stale value
+      type: file
+      source: validation/validate-review-complete.sh
+      hint: Keep the ConfigMap readiness-review in starfleet and give every key a value read from the cluster.
+    - name: runtime-identity
+      description: criSocket and containerRuntimeVersion match the node
+      type: file
+      source: validation/validate-runtime-identity.sh
+      hint: The socket is in the kubeadm.alpha.kubernetes.io/cri-socket annotation of the node. The runtime version is in status.nodeInfo.
+    - name: cgroup-and-swap
+      description: cgroupDriver and failSwapOn match the stored kubelet configuration
+      type: file
+      source: validation/validate-cgroup-swap.sh
+      hint: Read the kubelet key of the ConfigMap kubelet-config in kube-system. If failSwapOn is absent, the kubelet default is true.
+    - name: ports
+      description: The API server and etcd client ports match the control plane pods
+      type: file
+      source: validation/validate-ports.sh
+      hint: The API server port is in the probe of the kube-apiserver pod. The etcd client port is in the --listen-client-urls flag of the etcd pod.
+    - name: address-ranges
+      description: The service and pod address ranges match the control plane flags
+      type: file
+      source: validation/validate-address-ranges.sh
+      hint: Read --service-cluster-ip-range on the kube-apiserver pod and --cluster-cidr on the kube-controller-manager pod. Use none if the flag is absent.
+    - name: kubelet-config-untouched
+      description: The kubelet-config ConfigMap was not edited to fit the review
+      type: file
+      source: validation/validate-kubelet-config-untouched.sh
+      hint: Fix the review, not the cluster.
+
+teardown:
+  keepCluster: false

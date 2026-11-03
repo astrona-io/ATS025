@@ -1,0 +1,70 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Rebuild Access For Three Identities With RBAC (CAPSTONE LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-025-lab-010-capstone-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    preloadImages:
+      - curlimages/curl:8.22.0
+
+# Starting state: two namespaces with a Deployment each, the ServiceAccounts
+# shuttle and scout, a Secret and a leftover cluster-admin binding for shuttle.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the namespaces, workloads, ServiceAccounts and the leftover binding
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Issue the certificate for jane, apply the Roles and bindings and remove the leftover binding
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: shuttle-pod-reader-only
+      description: shuttle reads pods in starfleet through Role pod-reader and nothing more; the cluster-admin binding is gone
+      type: file
+      source: validation/validate-shuttle-pod-reader-only.sh
+      hint: Create the Role pod-reader and the RoleBinding shuttle-pod-reader in starfleet, then delete the ClusterRoleBinding shuttle-admin. RBAC grants add up, so the leftover binding must go.
+    - name: scout-reads-nodes-only
+      description: scout reads nodes through a custom ClusterRole and ClusterRoleBinding and nothing more
+      type: file
+      source: validation/validate-scout-reads-nodes-only.sh
+      hint: Nodes are cluster-scoped, so a Role cannot grant them. Create a ClusterRole with get, list and watch on nodes and bind it with a ClusterRoleBinding.
+    - name: csr-approved-and-issued
+      description: CertificateSigningRequest jane is approved, uses the client signer and holds a certificate
+      type: file
+      source: validation/validate-csr-approved-and-issued.sh
+      hint: Create a CertificateSigningRequest named jane with signerName kubernetes.io/kube-apiserver-client and the usage client auth, then run kubectl certificate approve jane.
+    - name: certificate-subject-and-ca
+      description: The certificate has CN=jane and O=reviewers and is signed by the cluster CA
+      type: file
+      source: validation/validate-certificate-subject-and-ca.sh
+      hint: Create the request with openssl req -subj "/CN=jane/O=reviewers". The subject is fixed when the request is made, so a wrong subject needs a new request.
+    - name: reviewers-view-binding
+      description: The group reviewers holds the built-in view ClusterRole through a RoleBinding in starfleet only
+      type: file
+      source: validation/validate-reviewers-view-binding.sh
+      hint: A RoleBinding that points at a ClusterRole applies the rules only in its own namespace. Bind the group reviewers, not only the user jane.
+    - name: jane-effective-access
+      description: jane reads pods and Deployments in starfleet and nothing more
+      type: file
+      source: validation/validate-jane-effective-access.sh
+      hint: Check with kubectl auth can-i --as=jane --as-group=reviewers. The view role does not include Secrets, and the binding does not reach outpost.
+
+teardown:
+  keepCluster: false

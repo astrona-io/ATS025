@@ -76,6 +76,20 @@ Installation succeeds as a system only when host assumptions and independently s
 
 Installation succeeds as a system only when host assumptions and independently supplied infrastructure agree.
 
+## Read The Topology From The Cluster
+
+<!-- astrona:playground:renew -->
+
+The cluster records the host facts that this part describes. Read them with commands and compare them with your plan.
+
+```sh
+kubectl get nodes -o wide
+kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{" "}{.status.nodeInfo.containerRuntimeVersion}{" "}{.status.nodeInfo.kubeletVersion}{"\n"}{end}'
+kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{" "}{.spec.podCIDR}{"\n"}{end}'
+```
+
+The first command lists the internal address of each node, the operating system image and the runtime. The second command prints the runtime and kubelet version per node, which is where you confirm that every host runs a supported pair. The third command prints the Pod address range that each node was assigned. Compare each range with the cluster Pod range and the Service range in your plan, because overlapping ranges break routing.
+
 ## Common pitfalls
 
 > [!WARNING]

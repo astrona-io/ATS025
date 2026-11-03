@@ -76,6 +76,21 @@ Upgrade correctness includes supported versions and preserved application operat
 
 Upgrade correctness includes supported versions and preserved application operation, rather than only a changed version label.
 
+## Record The Starting State With Commands
+
+<!-- astrona:playground:renew -->
+
+Before any upgrade or maintenance step, capture what runs now. These commands only read state.
+
+```sh
+kubectl version
+kubectl get nodes -o wide
+kubectl -n kube-system get pods -o wide
+kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{" "}{.spec.unschedulable}{"\n"}{end}'
+```
+
+The version output shows the client and the API server version, which tells you the skew you start from. The node list shows each kubelet version. The kube-system list shows the control plane Pods and where they run. The last command prints the unschedulable flag for each node. An empty value means the node accepts new Pods, and `true` means a cordon is in place. Save this output before you change anything, so you can prove afterward that capacity returned.
+
 ## Common pitfalls
 
 > [!WARNING]

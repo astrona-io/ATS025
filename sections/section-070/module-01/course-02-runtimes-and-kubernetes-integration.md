@@ -70,6 +70,20 @@ Runtime connectivity, artifact availability and application startup need separat
 
 Runtime connectivity, artifact availability and application startup need separate evidence.
 
+## Read Runtime Facts From The Node Object
+
+<!-- astrona:playground:renew -->
+
+The kubelet reports its runtime to the API server. Read the report and the related objects.
+
+```sh
+kubectl get nodes -o jsonpath='{.items[0].status.nodeInfo}{"\n"}'
+kubectl get runtimeclass
+kubectl get pods -A -o jsonpath='{range .items[*]}{.metadata.namespace}{"/"}{.metadata.name}{" "}{.spec.runtimeClassName}{"\n"}{end}'
+```
+
+The first command prints the node information, including the runtime version, the kubelet version and the operating system image. The second lists the runtime classes that Pods can request. The third prints which Pods request a class. An empty value means the Pod uses the default runtime of its node.
+
 ## Common pitfalls
 
 > [!WARNING]

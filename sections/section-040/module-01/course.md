@@ -16,10 +16,12 @@ This module develops supported Upgrade And Node Maintenance. It connects the int
 
 ## Before You Start
 
-Examples describe system behavior. No runtime is required. Read each field or diagnostic name as part of the stated contract.
+Use the module playground for guided practice. Graded exercises use independent environments and follow the readings they practise.
 
 ## Reading Order
 
 1. Cluster Upgrades And Maintenance Boundaries
 2. Datastore Snapshots And The Limits Of Recovery
 3. Summary
+
+<!-- astrona:playground -->

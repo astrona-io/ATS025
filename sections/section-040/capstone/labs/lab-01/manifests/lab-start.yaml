@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: starfleet
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lifecycle-review
+  namespace: starfleet
+data:
+  apiServerVersion: v1.20.0
+  kubeletVersion: v1.20.0
+  storedVersion: v1.20.0
+  etcdVersion: 3.4.0-0
+  oldestKubelet: "1.17"
+  nextMinor: "1.21"
+  snapshotRevision: "1"
+  snapshotTotalKeys: "1"
+  snapshotPath: /tmp/old.db
+  workerName: old-worker
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: probe
+  namespace: starfleet
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: probe
+  template:
+    metadata:
+      labels:
+        app: probe
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/library/busybox:1.37.0
+          command: ["sleep", "infinity"]

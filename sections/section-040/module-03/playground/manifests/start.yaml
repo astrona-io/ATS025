@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: starfleet
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: etcd-recovery
+  namespace: starfleet
+data:
+  dataDir: unset
+  memberName: unset
+  trustedCaFile: unset
+  peerUrl: unset
+  dataHostPath: unset
+  certHostPath: unset
+  snapshotRevision: unset
+  snapshotTotalKeys: unset
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: probe
+  namespace: starfleet
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: probe
+  template:
+    metadata:
+      labels:
+        app: probe
+    spec:
+      containers:
+        - name: probe
+          image: docker.io/library/busybox:1.37.0
+          command: ["sleep", "infinity"]

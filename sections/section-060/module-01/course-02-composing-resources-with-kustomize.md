@@ -73,6 +73,21 @@ Composition happens before submission; resource controllers act on the resulting
 
 You can now separate reusable inputs, rendered references and cluster behavior. Successful rendering answers whether composition worked, while API acceptance and application readiness require additional evidence.
 
+## Render A Composition And Check It
+
+<!-- astrona:playground:renew -->
+
+Kustomize output is plain Kubernetes objects, so you can inspect and validate it before it reaches the cluster.
+
+```sh
+kubectl kustomize ./overlay | grep -n 'kind:\|name:\|namespace:'
+kubectl kustomize ./overlay > built.yaml
+kubectl apply --dry-run=server -f built.yaml
+kubectl diff -k ./overlay
+```
+
+The first command prints the build result and lists kinds, names and namespaces, which is where name prefixes and namespace changes show up. The second saves the result. The third validates it on the server without storing it. The last command compares the build with the live objects and prints the differences, so you see exactly what an apply would change.
+
 ## Common pitfalls
 
 > [!WARNING]

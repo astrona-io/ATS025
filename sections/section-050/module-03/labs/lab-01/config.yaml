@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Record Leader Election Facts And Grant Least-Privilege Lease Access (LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-025-lab-050-03-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+
+# Starting state: a health record full of placeholder values, and a ServiceAccount that has the broad edit role.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the placeholder record, the ServiceAccount and the broad RoleBinding
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: record-complete
+      description: "The record control-plane-health has all seven keys and no placeholder value"
+      type: file
+      source: validation/validate-record-complete.sh
+      hint: "Keep the ConfigMap control-plane-health in starfleet and give every key a value read from the cluster."
+    - name: leaders
+      description: "schedulerLeader and controllerManagerLeader equal the current Lease holders"
+      type: file
+      source: validation/validate-leaders.sh
+      hint: "Read spec.holderIdentity of the Leases kube-scheduler and kube-controller-manager in kube-system."
+    - name: lease-and-flag
+      description: "leaseDurationSeconds and leaderElectFlag match the scheduler"
+      type: file
+      source: validation/validate-lease-flag.sh
+      hint: "Read leaseDurationSeconds from the kube-scheduler Lease and --leader-elect from the scheduler pod command."
+    - name: probe-paths
+      description: "apiServerLivenessPath and apiServerReadinessPath match the API server pod"
+      type: file
+      source: validation/validate-probe-paths.sh
+      hint: "Read httpGet.path of the livenessProbe and readinessProbe in the kube-apiserver pod."
+    - name: leader-election-access
+      description: "scout-controller can get, create and update leases in starfleet and nothing broader"
+      type: file
+      source: validation/validate-leader-rbac.sh
+      hint: "Remove the RoleBinding scout-edit. Add a Role with only get, create and update on leases, and bind it."
+    - name: cluster-intact
+      description: "The cluster is ready and the control plane Leases still exist"
+      type: file
+      source: validation/validate-cluster-intact.sh
+      hint: "Do not delete Leases or edit objects in kube-system."
+
+teardown:
+  keepCluster: false

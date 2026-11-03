@@ -16,9 +16,11 @@ This module develops host Prerequisites And Installation Topology. It connects t
 
 ## Before You Start
 
-Examples describe system behavior. No runtime is required. Read each field or diagnostic name as part of the stated contract.
+Use the module playground for guided practice. Graded exercises use independent environments and follow the readings they practise.
 
 ## Reading Order
 
 1. Preparing Hosts, Runtime And Network Infrastructure
 2. Summary
+
+<!-- astrona:playground -->

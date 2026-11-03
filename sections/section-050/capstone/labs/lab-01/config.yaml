@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Review A Control Plane For High Availability (CAPSTONE). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-025-lab-050-capstone-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+
+# Starting state: an empty-looking review record, a six-member etcd proposal, and a controller ServiceAccount with the broad edit role.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the placeholder report, the proposal and the broad RoleBinding
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: report-complete
+      description: "The record ha-report has all eleven keys and no placeholder value"
+      type: file
+      source: validation/validate-report-complete.sh
+      hint: "Keep the ConfigMap ha-report in starfleet and give every key a value."
+    - name: topology-facts
+      description: "Endpoint, topology, member count, quorum and fault tolerance match the live cluster"
+      type: file
+      source: validation/validate-topology.sh
+      hint: "Read kubeadm-config and the etcd pods, then apply the quorum formula."
+    - name: leaders
+      description: "The scheduler and controller manager leaders equal the current Lease holders"
+      type: file
+      source: validation/validate-leaders.sh
+      hint: "Read spec.holderIdentity of the two Leases in kube-system."
+    - name: proposal
+      description: "The six-member proposal is judged correctly"
+      type: file
+      source: validation/validate-proposal.sh
+      hint: "Use the members value in ha-proposal. The odd alternative has the same fault tolerance."
+    - name: leader-election-access
+      description: "mission-controller can manage leases in mission-system and nothing broader"
+      type: file
+      source: validation/validate-leader-rbac.sh
+      hint: "Remove the RoleBinding mission-edit. Add a Role with get, create and update on leases and bind it."
+    - name: verdict-and-intact
+      description: "The verdict follows from the fault tolerance and the cluster is untouched"
+      type: file
+      source: validation/validate-verdict.sh
+      hint: "A fault tolerance of 0 is single-point-of-failure. Do not edit kube-system or ha-proposal."
+
+teardown:
+  keepCluster: false

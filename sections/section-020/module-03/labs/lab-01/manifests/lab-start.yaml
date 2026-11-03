@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: starfleet
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: control-plane-ports
+  namespace: starfleet
+data:
+  apiserver: "8443"
+  etcdClient: "4001"
+  etcdPeer: "7001"
+  scheduler: "10251"
+  controllerManager: "10252"
+  kubelet: "10255"

@@ -1,0 +1,58 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Grant Cluster-Scoped Read Access With A ClusterRole (LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-025-lab-010-03-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+
+# Starting state: the ServiceAccount scout, a Secret, two PersistentVolumes
+# and a leftover ClusterRoleBinding that gives scout the built-in view role.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the namespace, the ServiceAccount, the PersistentVolumes and the leftover binding
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Create the ClusterRole and the ClusterRoleBinding and remove the leftover binding
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: binding-shape
+      description: scout is granted through a custom ClusterRole only, with no built-in broad role, no wildcard and no RoleBinding
+      type: file
+      source: validation/validate-binding-shape.sh
+      hint: Create your own ClusterRole and bind it with a ClusterRoleBinding. Delete the leftover binding scout-view, which gives scout the built-in view role.
+    - name: nodes-and-volumes-readable
+      description: scout can get, list and watch nodes and PersistentVolumes
+      type: file
+      source: validation/validate-nodes-and-volumes-readable.sh
+      hint: Nodes and PersistentVolumes are cluster-scoped, so the rule needs apiGroups [""] and the resources nodes and persistentvolumes with the verbs get, list and watch.
+    - name: metrics-path-readable
+      description: scout can get the non-resource path /metrics and no other path
+      type: file
+      source: validation/validate-metrics-path-readable.sh
+      hint: A non-resource URL needs its own rule with nonResourceURLs ["/metrics"] and the verb get. It cannot share a rule with resources.
+    - name: nothing-else-allowed
+      description: scout cannot change nodes or volumes and cannot read pods, Secrets or namespaces
+      type: file
+      source: validation/validate-nothing-else-allowed.sh
+      hint: Grant read verbs only. After the leftover binding is gone, scout must not read pods, Secrets or namespaces in any namespace.
+
+teardown:
+  keepCluster: false

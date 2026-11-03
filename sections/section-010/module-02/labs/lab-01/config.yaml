@@ -1,0 +1,61 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Issue A Client Certificate And Grant Pod Read Access (LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-025-lab-010-02-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - curlimages/curl:8.22.0
+
+# Starting state: the namespaces starfleet and outpost with the scout and
+# drifter workloads. No user, request, Role or RoleBinding exists.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the namespaces and the example workloads
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Create the key and request, approve it and apply the Role and RoleBinding
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: csr-approved-and-issued
+      description: CertificateSigningRequest jane is approved, uses the client signer and holds a certificate
+      type: file
+      source: validation/validate-csr-approved-and-issued.sh
+      hint: Create a CertificateSigningRequest named jane with signerName kubernetes.io/kube-apiserver-client and the usage client auth, then run kubectl certificate approve jane.
+    - name: certificate-subject-and-ca
+      description: The certificate has CN=jane and O=reviewers and is signed by the cluster CA
+      type: file
+      source: validation/validate-certificate-subject-and-ca.sh
+      hint: Create the request with openssl req -subj "/CN=jane/O=reviewers". The subject is fixed when the request is made, so a wrong subject needs a new request.
+    - name: reviewers-binding-in-starfleet
+      description: The group reviewers is bound by a RoleBinding in starfleet and nowhere else
+      type: file
+      source: validation/validate-reviewers-binding-in-starfleet.sh
+      hint: Bind the group reviewers, not only the user, with a RoleBinding in starfleet. Do not use a ClusterRoleBinding.
+    - name: jane-reads-pods-only
+      description: jane reads pods in starfleet and cannot do anything else
+      type: file
+      source: validation/validate-jane-reads-pods-only.sh
+      hint: The Role needs get, list and watch on pods in the core API group and nothing more. Check with kubectl auth can-i --as=jane --as-group=reviewers.
+
+teardown:
+  keepCluster: false

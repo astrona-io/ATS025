@@ -1,0 +1,300 @@
+# Knowledge check for section 070. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats025-070-quiz
+course_id: ATS025
+exam_code: CKA
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-070
+  title: "Extension Interfaces: CNI, CSI And CRI"
+questions:
+  - id: ats025-070-quiz-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Distinguish CNI, CSI and CRI responsibilities"
+    source_readings:
+      - sections/section-070/module-01/course-01-cni-csi-and-cri-extension-responsibilities.md
+    prompt: |-
+      A node can start containers, but a pod cannot get its volume and its address. Which statement about the three interfaces is correct?
+    options:
+      - id: a
+        text: "CRI connects the kubelet to the container runtime, CNI configures pod networking, and CSI provisions and mounts storage."
+        explanation: "Correct. Each interface covers one boundary and one extension does not satisfy the others."
+      - id: b
+        text: "CRI configures pod networking, CNI runs containers, and CSI manages images."
+        explanation: "This swaps the three responsibilities."
+      - id: c
+        text: "One runtime that works also guarantees pod networking and storage."
+        explanation: "The runtime handles execution only. Networking and storage need their own extensions."
+      - id: d
+        text: "CSI replaces CRI when a cluster uses persistent volumes."
+        explanation: "CSI never replaces the runtime interface."
+    correct_option: a
+    explanation: "The three interfaces are separate boundaries. A working runtime does not imply working networking or storage."
+
+  - id: ats025-070-quiz-q02
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Tell a runtime endpoint failure from other layer failures"
+    source_readings:
+      - sections/section-070/module-01/course-02-runtimes-and-kubernetes-integration.md
+    prompt: |-
+      Pods on one node never start, and the kubelet cannot reach its runtime socket. Which action addresses the responsible layer?
+    options:
+      - id: a
+        text: "Add a NetworkPolicy to the namespace."
+        explanation: "A policy limits traffic. It does not start pods."
+      - id: b
+        text: "Recreate the Service of the pods."
+        explanation: "A Service does not run containers."
+      - id: c
+        text: "Change the StorageClass of the namespace."
+        explanation: "Storage is not involved before a sandbox exists."
+      - id: d
+        text: "Check the CRI runtime service and the endpoint that the kubelet uses on that node."
+        explanation: "Correct. The kubelet reaches the runtime through the CRI endpoint."
+    correct_option: d
+    explanation: "Find the stage that failed first. Without a reachable runtime nothing downstream can work."
+
+  - id: ats025-070-quiz-q03
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Name the component that calls the CNI plugin when a pod starts"
+    source_readings:
+      - sections/section-070/module-02/course-01-how-a-pod-gets-its-network.md
+    prompt: |-
+      A pod is scheduled to a node. Which component runs the CNI plugin with the `ADD` operation to give the pod sandbox its network?
+    options:
+      - id: a
+        text: "The API server, when it stores the pod."
+        explanation: "The API server only stores objects. It does not configure any node."
+      - id: b
+        text: "The kubelet, directly after it receives the pod from the API server."
+        explanation: "The kubelet only asks for a pod sandbox through the Container Runtime Interface. It does not run CNI plugins."
+      - id: c
+        text: "The container runtime, after the kubelet asks it for a pod sandbox."
+        explanation: "Correct. The runtime creates the network namespace and then runs the plugin binary."
+      - id: d
+        text: "The kube-proxy pod on the node."
+        explanation: "kube-proxy writes Service rules. It does not configure pod interfaces."
+    correct_option: c
+    explanation: "The kubelet calls the runtime through CRI. The runtime creates the sandbox and calls the CNI plugin."
+
+  - id: ats025-070-quiz-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Diagnose a pod stuck in ContainerCreating because of the pod network"
+    source_readings:
+      - sections/section-070/module-02/course-01-how-a-pod-gets-its-network.md
+    prompt: |-
+      A new pod stays in `ContainerCreating`. Its events show `FailedCreatePodSandBox` with a CNI error. Pods that started earlier on the same node still work. What is the most likely situation?
+    options:
+      - id: a
+        text: "The CNI configuration on the node is missing or broken, or the address range is used up."
+        explanation: "Correct. New sandboxes need a successful `ADD`. Existing pods keep the interfaces they already have."
+      - id: b
+        text: "The Service of the pod has no endpoints."
+        explanation: "Endpoints concern traffic to the pod after it runs. They do not stop the sandbox."
+      - id: c
+        text: "The NetworkPolicy of the namespace denies all ingress."
+        explanation: "A policy limits traffic. It does not stop a pod from being created."
+      - id: d
+        text: "The container image does not exist in the registry."
+        explanation: "An image error shows as `ErrImagePull` or `ImagePullBackOff` after the sandbox is created."
+    correct_option: a
+    explanation: "A failed `ADD` blocks the sandbox, so no application container starts. Read the pod events, then fix the plugin, its configuration or the range."
+
+  - id: ats025-070-quiz-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Locate the failing layer from reachability symptoms"
+    source_readings:
+      - sections/section-070/module-02/course-02-pod-addresses-services-and-dns.md
+    prompt: |-
+      From the `shuttle` pod, a request to the IP address of a `probe` pod works. A request to the cluster IP of the `probe` Service times out. A request to the name `probe` fails to resolve. Which two areas do you check first?
+    options:
+      - id: a
+        text: "kube-proxy (or its replacement) for the cluster IP, and CoreDNS for the name."
+        explanation: "Correct. The cluster IP rewrite is done by kube-proxy or a replacement, and name resolution is done by CoreDNS."
+      - id: b
+        text: "The StorageClass and the claim of the pod."
+        explanation: "Storage has no part in network reachability."
+      - id: c
+        text: "The CNI plugin and the node pod range."
+        explanation: "Pod-to-pod traffic works, so the pod network is not the problem."
+      - id: d
+        text: "The container runtime and its socket."
+        explanation: "The pods run, so the runtime works."
+    correct_option: a
+    explanation: "Pod IP works, cluster IP and DNS do not. Those two functions belong to the Service layer."
+
+  - id: ats025-070-quiz-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain why a NetworkPolicy may have no effect"
+    source_readings:
+      - sections/section-070/module-02/course-03-networkpolicy-and-who-enforces-it.md
+    prompt: |-
+      An administrator applies a default-deny ingress NetworkPolicy and `kubectl apply` succeeds. Traffic between pods is not blocked. What is the most likely reason?
+    options:
+      - id: a
+        text: "The CNI plugin in the cluster does not enforce NetworkPolicy."
+        explanation: "Correct. The API server stores the object. A component of the plugin enforces it. Without that component the policy has no effect."
+      - id: b
+        text: "The API server rejected the policy silently."
+        explanation: "A rejected object returns an error and is not stored."
+      - id: c
+        text: "The `Ingress` policy type only works for pods in the `default` namespace."
+        explanation: "Policies work in any namespace, in the namespace of the policy."
+      - id: d
+        text: "Default deny needs a Service of type LoadBalancer."
+        explanation: "NetworkPolicy does not depend on Service types."
+    correct_option: a
+    explanation: "NetworkPolicy is a stored request. Only an enforcing plugin turns it into packet filter rules. Test with real requests."
+
+  - id: ats025-070-quiz-q07
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Read the meaning of one combined from entry"
+    source_readings:
+      - sections/section-070/module-02/course-03-networkpolicy-and-who-enforces-it.md
+    prompt: |-
+      A policy in `starfleet` has this ingress source: one `from` entry that holds a `namespaceSelector` for `kubernetes.io/metadata.name: outpost` and a `podSelector` for `app: drifter`. Which pods match?
+    options:
+      - id: a
+        text: "Every pod labelled `app=drifter` in any namespace."
+        explanation: "The `namespaceSelector` limits the match to the namespace `outpost`."
+      - id: b
+        text: "Every pod in the namespace `outpost`."
+        explanation: "The `podSelector` in the same entry also has to match."
+      - id: c
+        text: "Pods labelled `app=drifter` in the namespace `outpost` only."
+        explanation: "Correct. Two selectors in one entry are joined with AND."
+      - id: d
+        text: "Every pod in `outpost` and every pod labelled `app=drifter` in `starfleet`."
+        explanation: "That is the result of two separate entries, which are joined with OR."
+    correct_option: c
+    explanation: "One entry means AND. Two entries mean OR. One dash in the YAML changes the meaning."
+
+  - id: ats025-070-quiz-q08
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Describe what happens to a claim that names no class"
+    source_readings:
+      - sections/section-070/module-03/course-01-storageclass-claims-and-provisioning.md
+    prompt: |-
+      A user creates a PersistentVolumeClaim without a `storageClassName`. The cluster has a default StorageClass. What happens?
+    options:
+      - id: a
+        text: "The API server sets the default class on the claim, and the provisioner of that class creates the volume."
+        explanation: "Correct. Admission fills the class, and the provisioner and the PV controller do the rest."
+      - id: b
+        text: "The kubelet chooses a local disk on the node."
+        explanation: "The kubelet mounts volumes. It does not choose a class."
+      - id: c
+        text: "The claim is rejected because it names no class."
+        explanation: "A claim may omit the class. An empty string would mean no class."
+      - id: d
+        text: "The claim waits until an administrator creates a matching volume."
+        explanation: "That is static provisioning. A default class makes dynamic provisioning possible."
+    correct_option: a
+    explanation: "Omitted means default class. An empty string means no class."
+
+  - id: ats025-070-quiz-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain WaitForFirstConsumer"
+    source_readings:
+      - sections/section-070/module-03/course-01-storageclass-claims-and-provisioning.md
+    prompt: |-
+      A claim uses a class with `volumeBindingMode: WaitForFirstConsumer`. No pod uses the claim and the claim is `Pending`. What is the correct conclusion?
+    options:
+      - id: a
+        text: "The class is missing the `provisioner` field."
+        explanation: "A class without a provisioner is invalid and is rejected."
+      - id: b
+        text: "The claim needs the access mode `ReadWriteMany`."
+        explanation: "The access mode does not cause this wait."
+      - id: c
+        text: "Provisioning failed and the driver must be restarted."
+        explanation: "This state is the normal wait for a consumer."
+      - id: d
+        text: "The claim is waiting for a pod. The scheduler picks a node, and then the volume is created for that node."
+        explanation: "Correct. The mode delays creation until the placement of the pod is known."
+    correct_option: d
+    explanation: "A Pending claim with no pod is the expected state for this mode."
+
+  - id: ats025-070-quiz-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Describe the parts of a CSI driver and the CSIDriver object"
+    source_readings:
+      - sections/section-070/module-03/course-02-csi-drivers-and-their-objects.md
+    prompt: |-
+      An administrator creates a CSIDriver object named `logbook.csi.astrona.io`, and a StorageClass with that provisioner name. No pods run a driver. A claim for the class is created. What happens?
+    options:
+      - id: a
+        text: "The API server deletes the class."
+        explanation: "The API server does not delete classes it cannot serve."
+      - id: b
+        text: "The claim binds, because the CSIDriver object provides the driver."
+        explanation: "A CSIDriver object only declares behavior. It runs nothing."
+      - id: c
+        text: "The claim stays Pending, because no external-provisioner and driver pods serve that name."
+        explanation: "Correct. A driver is the controller and node pods. The object describes it."
+      - id: d
+        text: "The kubelet creates the volume on its own disk."
+        explanation: "The kubelet does not provision volumes."
+    correct_option: c
+    explanation: "No pods means no provisioner. The CSIDriver object is not a driver."
+
+  - id: ats025-070-quiz-q11
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Match CSI calls to the component that makes them"
+    source_readings:
+      - sections/section-070/module-03/course-02-csi-drivers-and-their-objects.md
+    prompt: |-
+      Which component calls `NodeStageVolume` and `NodePublishVolume` on a CSI driver?
+    options:
+      - id: a
+        text: "The external-attacher sidecar."
+        explanation: "It calls `ControllerPublishVolume`, which is a controller-side attach step."
+      - id: b
+        text: "The kubelet, through the node service of the driver on its node."
+        explanation: "Correct. The kubelet volume manager calls the node service to stage and publish the volume."
+      - id: c
+        text: "The kube-scheduler."
+        explanation: "The scheduler chooses a node. It does not call the driver."
+      - id: d
+        text: "The external-provisioner sidecar."
+        explanation: "It calls `CreateVolume` and creates the PV object."
+    correct_option: b
+    explanation: "Attach is controller-side. Stage and publish are node-side and run from the kubelet."
+
+  - id: ats025-070-quiz-q12
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Choose the reclaim policy that keeps data and read the released state"
+    source_readings:
+      - sections/section-070/module-03/course-03-reclaim-expansion-and-failure-cases.md
+    prompt: |-
+      A team deletes a claim whose volume has the reclaim policy `Retain`. What is the state of the volume afterwards?
+    options:
+      - id: a
+        text: "The PV object stays with the phase `Released`, the data stays, and no new claim can use it until an administrator acts."
+        explanation: "Correct. The volume still refers to the old claim."
+      - id: b
+        text: "The volume becomes `Available` at once for any claim."
+        explanation: "It must first be cleaned and its `claimRef` cleared by an administrator."
+      - id: c
+        text: "The volume moves to another namespace."
+        explanation: "Volumes are cluster-scoped and do not move."
+      - id: d
+        text: "The volume and its data are deleted."
+        explanation: "That is the result of `Delete`."
+    correct_option: a
+    explanation: "Retain protects the data and also blocks reuse until an administrator acts."

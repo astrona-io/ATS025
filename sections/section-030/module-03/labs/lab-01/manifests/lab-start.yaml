@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: starfleet
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pki-map
+  namespace: starfleet
+data:
+  apiserverServingCert: /etc/kubernetes/pki/old-apiserver.crt
+  apiserverKubeletClientCert: /etc/kubernetes/pki/old-kubelet-client.crt
+  apiserverEtcdClientCert: /etc/kubernetes/pki/old-etcd-client.crt
+  saPublicKey: /etc/kubernetes/pki/old-sa.pub
+  saSigningKey: /etc/kubernetes/pki/old-sa.key
+  clusterSigningCert: /etc/kubernetes/pki/old-ca.crt
+  etcdPeerCert: /etc/kubernetes/pki/old-peer.crt
+  schedulerKubeconfig: /etc/kubernetes/old-scheduler.conf

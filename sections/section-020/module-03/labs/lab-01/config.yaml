@@ -1,0 +1,62 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Record Control Plane Ports From Static Pods (LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-025-lab-020-03-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+
+# Starting state: a firewall record copied from an outdated guide.
+bootstrap:
+  init:
+    - name: seed-outdated-record
+      description: Create the outdated control-plane-ports record
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: record-complete
+      description: The control-plane-ports record has six keys and no outdated value
+      type: file
+      source: validation/validate-record-complete.sh
+      hint: Keep the ConfigMap control-plane-ports in starfleet with all six keys. Values from the outdated guide are rejected.
+    - name: apiserver-port
+      description: apiserver equals the port the kube-apiserver static pod declares
+      type: file
+      source: validation/validate-apiserver-port.sh
+      hint: Read the livenessProbe port or the --secure-port flag of the kube-apiserver pod in kube-system.
+    - name: etcd-ports
+      description: etcdClient and etcdPeer equal the ports in the etcd flags
+      type: file
+      source: validation/validate-etcd-ports.sh
+      hint: Read --listen-client-urls and --listen-peer-urls of the etcd pod. The port is the number after the last colon.
+    - name: scheduler-controller-manager-ports
+      description: scheduler and controllerManager equal their probe ports
+      type: file
+      source: validation/validate-scheduler-controller-manager-ports.sh
+      hint: Read the livenessProbe port of the kube-scheduler and kube-controller-manager pods. Old guides list 10251 and 10252, which are outdated.
+    - name: kubelet-port
+      description: kubelet equals the kubelet port in the node status
+      type: file
+      source: validation/validate-kubelet-port.sh
+      hint: The port is in status.daemonEndpoints.kubeletEndpoint.Port of the node. The read-only port 10255 is not the answer.
+
+teardown:
+  keepCluster: false

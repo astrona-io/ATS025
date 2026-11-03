@@ -28,4 +28,45 @@ The [official objectives](https://training.linuxfoundation.org/certification/cer
 
 The module goals and adaptation sources are recorded in AUTHORING.yaml. Every official objective is covered. Each section starts with an introduction, and each module ends with a summary. YAML banks follow the relevant summary and remain separate from the Markdown manifest.
 
-This is a reading-only draft. No new labs, playgrounds, command output or runtime verification are included. ATP005 publication remains draft.
+This course includes developed readings, private playgrounds, graded labs, section capstones and quizzes, and a final domain quiz. Static checks pass; live execution remains pending. Technical content remains draft.
+
+## Hands-On Coverage
+
+This course has 24 module playgrounds, 34 graded labs (including 8 section capstones), 8 section quizzes and a final domain quiz. All labs are untested: they were built with static checks only and have never been run.
+
+| Module | Lab |
+| --- | --- |
+| 010/01 | Grant A ServiceAccount Pod Read Access With A Role |
+| 010/02 | Issue A Client Certificate And Grant Pod Read Access |
+| 010/03 | Grant Cluster-Scoped Read Access With A ClusterRole |
+| 010/capstone | Rebuild Access For Three Identities With RBAC — Task |
+| 020/01 | Inspect Node Runtime And Host Prerequisites |
+| 020/02 | Record Host Readiness From The API |
+| 020/03 | Record Control Plane Ports From Static Pods |
+| 020/capstone | Host Readiness Review Before Installation |
+| 030/01 | Prepare Short-Lived Node Discovery Credentials |
+| 030/02 | kubeadm Configuration Files And Init Phases |
+| 030/03 | Map Certificates To Control Plane Components |
+| 030/capstone | Join Review For A kubeadm Cluster |
+| 040/01 | Drain And Return A Worker To Service |
+| 040/01 | Save And Inspect An Etcd Snapshot |
+| 040/02 | Audit Component Versions Before An Upgrade |
+| 040/03 | Snapshot etcd And Record The Restore Facts |
+| 040/capstone | Upgrade Readiness And Recovery Review |
+| 050/01 | Inspect A Three-Member Control Plane |
+| 050/02 | Record The Control Plane Topology And Check A Quorum Proposal |
+| 050/03 | Record Leader Election Facts And Grant Least-Privilege Lease Access |
+| 050/capstone | Review A Control Plane For High Availability |
+| 060/01 | Install A Chart With Explicit Values |
+| 060/01 | Apply A Kustomize Base |
+| 060/02 | Install, Upgrade And Roll Back A Helm Release |
+| 060/03 | Build A Kustomize Overlay |
+| 060/capstone | Adopt, Release And Customize A Cluster Component |
+| 070/01 | Trace The Runtime And Network Interfaces |
+| 070/02 | Record The Pod Network And Restrict Access With NetworkPolicy |
+| 070/03 | Define A StorageClass, A CSIDriver And A Claim |
+| 070/capstone | Secure And Persist The Probe Workload |
+| 080/01 | Reconcile A Custom Resource |
+| 080/02 | Tighten A CustomResourceDefinition Schema |
+| 080/03 | Wire An Operator With Least Privilege |
+| 080/capstone | Publish A Custom Type And Install Its Operator |

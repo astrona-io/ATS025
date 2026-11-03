@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
+# Applies the reference solution. Run only by `astrona test`.
 set -euo pipefail
-if [[ "$(kubectl config current-context)" != "kind-astro-ats-025-lab-010-01-01" ]]; then
-  printf 'Refusing to operate on another Kubernetes context\n' >&2
-  exit 1
-fi
-solution_directory="$(cd "$(dirname "$0")" && pwd)"
-kubectl apply -f "$solution_directory/role-pod-reader.yaml"
+
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+kubectl apply -f "$DIR/solution.yaml"
+kubectl -n outpost delete rolebinding shuttle-helper
+echo "[solution] Applied."

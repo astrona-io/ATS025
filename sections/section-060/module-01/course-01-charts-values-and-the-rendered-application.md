@@ -73,6 +73,21 @@ Values affect workloads through templates and API submission, rather than acting
 
 You can now follow a value to the field it changes and distinguish package identity from running content. An effective override still needs a compatible environment and a meaningful health check after installation.
 
+## Render Before You Install
+
+<!-- astrona:playground:renew -->
+
+Rendering shows what a chart will create without changing the cluster. Use any chart directory you have, and read the result before installing.
+
+```sh
+helm version
+helm template demo ./chart --set replicaCount=2 | grep -n 'kind:\|replicas:'
+helm template demo ./chart --values values.yaml --namespace starfleet > rendered.yaml
+kubectl apply --dry-run=server -f rendered.yaml
+```
+
+The first command confirms the client works. The second renders the templates with one value overridden and lists the object kinds and replica counts, so you can see a value flow into the output. The third renders with a values file into a file. The fourth asks the API server to validate the rendered objects without storing them. A render that passes the dry run is a safe candidate to install.
+
 ## Common pitfalls
 
 > [!WARNING]

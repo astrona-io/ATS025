@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: starfleet
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: upgrade-review
+  namespace: starfleet
+data:
+  apiServerVersion: unset
+  controllerManagerVersion: unset
+  schedulerVersion: unset
+  kubeProxyVersion: unset
+  kubeletVersion: unset
+  storedVersion: unset
+  oldestKubelet: unset
+  nextMinor: unset
+  skewVerdict: unset

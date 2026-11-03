@@ -1,0 +1,71 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Upgrade Readiness And Recovery Review (CAPSTONE). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-025-lab-040-capstone-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    preloadImages:
+      - docker.io/library/busybox:1.37.0
+    nodes:
+      workers: 1
+
+# Starting state: a stale lifecycle-review record and a worker left cordoned after earlier maintenance.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the stale review and cordon the worker
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: record-complete
+      description: "The review has all ten keys and no stale value"
+      type: file
+      source: validation/validate-record-complete.sh
+      hint: "Keep the ConfigMap lifecycle-review in starfleet and give every key a value read from the cluster."
+    - name: versions
+      description: "apiServerVersion, kubeletVersion, storedVersion and etcdVersion match the cluster"
+      type: file
+      source: validation/validate-versions.sh
+      hint: "Read image tags of the static pods, the node status and the kubeadm-config ConfigMap. etcdVersion is the tag of the etcd pod image."
+    - name: skew-window
+      description: "oldestKubelet and nextMinor follow from the API server version"
+      type: file
+      source: validation/validate-skew-window.sh
+      hint: "Kubelets may be three minor versions older. kubeadm moves one minor version at a time. Write minors as 1.NN."
+    - name: snapshot-file
+      description: "A valid snapshot exists at /tmp/lifecycle-snapshot.db in the etcd pod"
+      type: file
+      source: validation/validate-snapshot-file.sh
+      hint: "Run etcdctl snapshot save in the etcd pod with certificates, then check the file with etcdutl snapshot status."
+    - name: snapshot-record
+      description: "snapshotRevision and snapshotTotalKeys match the snapshot file"
+      type: file
+      source: validation/validate-snapshot-record.sh
+      hint: "Use etcdutl snapshot status with --write-out=json and copy the revision and totalKey values."
+    - name: worker-returned
+      description: "The worker is schedulable and the probe Deployment is fully available"
+      type: file
+      source: validation/validate-worker-returned.sh
+      hint: "The worker was cordoned. Uncordon it and wait for the probe replicas."
+
+teardown:
+  keepCluster: false

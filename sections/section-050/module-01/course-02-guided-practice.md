@@ -61,6 +61,30 @@ kubectl get --raw=/readyz
 Relate actual datastore membership to majority requirements and API availability. The commands above deliberately target one environment. Keep its remaining components available so an unrelated failure cannot stand in for the required denial or correction. No example command output is presented as evidence of a completed run. A matching field alone does not establish that a process used it or that a controller reconciled it.
 
 
+## Compare The Control Plane With Your Notes
+
+Repeat the reads and compare them with what you wrote down. Each command only reads state.
+
+```sh
+kubectl get nodes -l node-role.kubernetes.io/control-plane -o wide
+kubectl -n kube-system get pods -o wide
+kubectl -n kube-system get configmap kubeadm-config -o yaml
+```
+
+The node list shows which hosts carry the control plane role. The kube-system list shows the static Pods that run on them. The kubeadm configuration map holds the cluster configuration that was used at setup, so it is the place to confirm the endpoint and the datastore layout. If your notes and the cluster disagree, trust the cluster and correct the notes.
+
+## Check The Health Endpoints
+
+The API server reports its own health, and the report names each internal check.
+
+```sh
+kubectl get --raw='/livez?verbose'
+kubectl get --raw='/readyz?verbose'
+kubectl get --raw='/readyz?verbose' | grep -i etcd
+```
+
+The liveness endpoint says whether the process is alive. The readiness endpoint says whether it can serve requests, and the verbose form lists every check by name. The last command narrows the list to the datastore check. A failing datastore check means the API server cannot reach its storage, which is the first place to look when requests fail.
+
 ## Common pitfalls
 
 > [!WARNING]

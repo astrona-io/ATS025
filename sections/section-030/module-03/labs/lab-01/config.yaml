@@ -1,0 +1,64 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Map Certificates To Control Plane Components (LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-025-lab-030-03-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    nodes:
+      workers: 1
+
+# Starting state: a stale pki-map record that names old certificate files.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the stale certificate map
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: record-complete
+      description: "The map has all eight keys and no stale value"
+      type: file
+      source: validation/validate-record-complete.sh
+      hint: "Keep the ConfigMap pki-map in starfleet and give every key a path read from the control plane pods."
+    - name: apiserver-certs
+      description: "The API server certificate keys match the kube-apiserver flags"
+      type: file
+      source: validation/validate-apiserver-certs.sh
+      hint: "Read the flags --tls-cert-file, --kubelet-client-certificate and --etcd-certfile on the kube-apiserver pod."
+    - name: service-account-keys
+      description: "The service account keys match the API server and controller manager flags"
+      type: file
+      source: validation/validate-service-account-keys.sh
+      hint: "The API server verifies tokens with --service-account-key-file. The controller manager signs them with --service-account-private-key-file."
+    - name: signing-and-etcd
+      description: "The cluster signing certificate and the etcd peer certificate match their flags"
+      type: file
+      source: validation/validate-signing-and-etcd.sh
+      hint: "Read --cluster-signing-cert-file on the controller manager pod and --peer-cert-file on the etcd pod."
+    - name: scheduler-identity
+      description: "schedulerKubeconfig matches the kube-scheduler flag"
+      type: file
+      source: validation/validate-scheduler-identity.sh
+      hint: "Read the --kubeconfig flag of the kube-scheduler pod."
+
+teardown:
+  keepCluster: false

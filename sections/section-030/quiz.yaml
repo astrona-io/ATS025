@@ -1,0 +1,325 @@
+# Knowledge check for section-030. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats025-030-quiz
+course_id: ATS025
+exam_code: CKA
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: section
+  id: section-030
+  title: Create and manage Kubernetes clusters using kubeadm
+questions:
+- id: ats025-030-quiz-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain what the CA public-key hash protects during a join
+  source_readings:
+  - sections/section-030/module-03/course-02-bootstrap-tokens-and-the-ca-hash.md
+  prompt: A `kubeadm join` command has both `--token` and `--discovery-token-ca-cert-hash`.
+    What does the hash protect against?
+  options:
+  - id: a
+    text: An expired bootstrap token.
+    explanation: Token expiry is checked by the API server, not by the hash.
+  - id: b
+    text: A fake API server that presents a different CA, because the node compares
+      the hash with the CA public key it receives.
+    explanation: Correct. The hash pins the cluster CA public key. A node that reaches
+      an impostor sees a different key and stops the join.
+  - id: c
+    text: A kubelet that uses the wrong cgroup driver.
+    explanation: The cgroup driver has nothing to do with discovery.
+  - id: d
+    text: A worker node with a duplicate hostname.
+    explanation: Hostname uniqueness is a host prerequisite and is not checked by
+      this hash.
+  correct_option: b
+  explanation: The hash pins the cluster CA public key. A node that reaches an impostor
+    sees a different key and stops the join.
+- id: ats025-030-quiz-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Describe the lifetime of bootstrap tokens
+  source_readings:
+  - sections/section-030/module-03/course-02-bootstrap-tokens-and-the-ca-hash.md
+  prompt: A token was created with `kubeadm token create` and no extra flags. When
+    does it stop working?
+  options:
+  - id: a
+    text: After 24 hours, the default time to live.
+    explanation: Correct. The default `--ttl` is 24 hours. After that the API server
+      ignores the token and removes its Secret.
+  - id: b
+    text: After the first node joins with it.
+    explanation: A token can be used by many nodes until it expires.
+  - id: c
+    text: Never; tokens do not expire unless deleted.
+    explanation: Only `--ttl 0` creates a token that never expires.
+  - id: d
+    text: After one hour.
+    explanation: One hour is not the default.
+  correct_option: a
+  explanation: The default `--ttl` is 24 hours. After that the API server ignores
+    the token and removes its Secret.
+- id: ats025-030-quiz-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Locate bootstrap tokens in the API
+  source_readings:
+  - sections/section-030/module-03/course-02-bootstrap-tokens-and-the-ca-hash.md
+  prompt: Where does the API server store a bootstrap token?
+  options:
+  - id: a
+    text: As a ConfigMap in `kube-public`.
+    explanation: "`kube-public` holds `cluster-info`, which has no secret."
+  - id: b
+    text: As a file in `/etc/kubernetes/pki` on each worker.
+    explanation: Workers do not keep tokens in the pki directory.
+  - id: c
+    text: In the `kubeadm-config` ConfigMap.
+    explanation: That ConfigMap stores the cluster configuration, not tokens.
+  - id: d
+    text: As a Secret of type `bootstrap.kubernetes.io/token` named `bootstrap-token-<token
+      ID>` in `kube-system`.
+    explanation: Correct. The token ID, the token secret, the expiration and the usages
+      are fields of that Secret.
+  correct_option: d
+  explanation: The token ID, the token secret, the expiration and the usages are fields
+    of that Secret.
+- id: ats025-030-quiz-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain how a kubelet obtains its client certificate during
+    a join
+  source_readings:
+  - sections/section-030/module-03/course-03-joining-a-node-and-resetting-it.md
+  prompt: After discovery, how does the new kubelet get the client certificate it
+    uses as `system:node:<name>`?
+  options:
+  - id: a
+    text: kubeadm copies the CA private key to the worker and the kubelet signs its
+      own certificate.
+    explanation: The CA private key is never copied to workers.
+  - id: b
+    text: An administrator must approve every request with `kubectl certificate approve`.
+    explanation: Approval of node client requests is automatic.
+  - id: c
+    text: It creates a CertificateSigningRequest with the token, an approving controller
+      approves it and the controller manager signs it with the cluster CA.
+    explanation: Correct. The binding `kubeadm:node-autoapprove-bootstrap` lets the
+      bootstrap group have node client requests approved automatically.
+  - id: d
+    text: The API server hands out a certificate to any anonymous client.
+    explanation: The request needs the bootstrap token.
+  correct_option: c
+  explanation: The binding `kubeadm:node-autoapprove-bootstrap` lets the bootstrap
+    group have node client requests approved automatically.
+- id: ats025-030-quiz-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Identify why a joined node is NotReady
+  source_readings:
+  - sections/section-030/module-03/course-03-joining-a-node-and-resetting-it.md
+  prompt: A worker has joined and appears in `kubectl get nodes`, but its status is
+    `NotReady`. The condition message says no CNI configuration was found. What is
+    the fix?
+  options:
+  - id: a
+    text: Run `kubeadm token create` again.
+    explanation: The token is not involved after the join.
+  - id: b
+    text: Install a network add-on so that it writes a CNI configuration to `/etc/cni/net.d`.
+    explanation: Correct. The runtime reports its network as not ready until a CNI
+      configuration exists, and the kubelet then keeps the node NotReady.
+  - id: c
+    text: Delete the `kube-root-ca.crt` ConfigMap.
+    explanation: That ConfigMap is unrelated to node readiness.
+  - id: d
+    text: Increase the certificate lifetime.
+    explanation: The node already has a valid certificate.
+  correct_option: b
+  explanation: The runtime reports its network as not ready until a CNI configuration
+    exists, and the kubelet then keeps the node NotReady.
+- id: ats025-030-quiz-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Check certificate expiry and renew certificates
+  source_readings:
+  - sections/section-030/module-03/course-01-pki-files-and-certificate-lifetimes.md
+  prompt: Which command shows the expiry of the certificates that kubeadm manages
+    on a control-plane node?
+  options:
+  - id: a
+    text: "`kubeadm certs check-expiration`."
+    explanation: Correct. The command lists leaf certificates and CAs with the residual
+      time. It does not list the kubelet client certificate, which the kubelet rotates.
+  - id: b
+    text: "`kubectl get certificates -A`."
+    explanation: "`certificates` is a custom resource of other tools, not a kubeadm
+      view."
+  - id: c
+    text: "`kubeadm token list`."
+    explanation: That command lists bootstrap tokens.
+  - id: d
+    text: "`kubectl get csr`."
+    explanation: That lists signing requests, not the expiry of installed certificates.
+  correct_option: a
+  explanation: The command lists leaf certificates and CAs with the residual time.
+    It does not list the kubelet client certificate, which the kubelet rotates.
+- id: ats025-030-quiz-q07
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Apply a certificate renewal correctly
+  source_readings:
+  - sections/section-030/module-03/course-01-pki-files-and-certificate-lifetimes.md
+  prompt: You ran `kubeadm certs renew apiserver`, but clients still see the old certificate.
+    What is missing?
+  options:
+  - id: a
+    text: The renewal must be repeated every ten minutes.
+    explanation: One renewal is enough.
+  - id: b
+    text: The CA must be replaced first.
+    explanation: Renewing a leaf certificate does not require a new CA.
+  - id: c
+    text: The kubelet has to be reinstalled.
+    explanation: Reinstalling is unnecessary.
+  - id: d
+    text: The kube-apiserver static pod must restart to load the new files.
+    explanation: Correct. A renewal writes new files, but the running process keeps
+      the old certificate in memory.
+  correct_option: d
+  explanation: A renewal writes new files, but the running process keeps the old certificate
+    in memory.
+- id: ats025-030-quiz-q08
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Name the configuration kinds that kubeadm reads
+  source_readings:
+  - sections/section-030/module-02/course-01-configuration-kinds-and-fields.md
+  prompt: Which two kinds does a `kubeadm init --config` file normally carry for the
+    control plane?
+  options:
+  - id: a
+    text: "`JoinConfiguration` and `ResetConfiguration`."
+    explanation: Those kinds are for join and reset, not init.
+  - id: b
+    text: "`Pod` and `Deployment`."
+    explanation: Those are Kubernetes workload kinds, not kubeadm kinds.
+  - id: c
+    text: "`InitConfiguration` and `ClusterConfiguration`."
+    explanation: Correct. `InitConfiguration` holds settings for this node and the
+      token. `ClusterConfiguration` holds settings for the cluster. `KubeletConfiguration`
+      and `KubeProxyConfiguration` are optional extra kinds.
+  - id: d
+    text: "`CertificateConfiguration` and `EtcdConfiguration`."
+    explanation: These kinds do not exist.
+  correct_option: c
+  explanation: "`InitConfiguration` holds settings for this node and the token. `ClusterConfiguration`
+    holds settings for the cluster. `KubeletConfiguration` and `KubeProxyConfiguration`
+    are optional extra kinds."
+- id: ats025-030-quiz-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read the stored cluster configuration
+  source_readings:
+  - sections/section-030/module-02/course-02-init-phases-and-the-stored-configuration.md
+  prompt: Where can you read the `ClusterConfiguration` of a running kubeadm cluster
+    through the API?
+  options:
+  - id: a
+    text: In the ConfigMap `cluster-info` in `kube-public`.
+    explanation: "`cluster-info` holds a small kubeconfig for discovery."
+  - id: b
+    text: In the ConfigMap `kubeadm-config` in `kube-system`.
+    explanation: Correct. kubeadm stores the ClusterConfiguration there so that later
+      commands such as upgrade can read it.
+  - id: c
+    text: In the Secret `bootstrap-token-*`.
+    explanation: Those Secrets hold tokens.
+  - id: d
+    text: In the `Node` object.
+    explanation: The Node object does not carry the cluster configuration.
+  correct_option: b
+  explanation: kubeadm stores the ClusterConfiguration there so that later commands
+    such as upgrade can read it.
+- id: ats025-030-quiz-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain what kubeadm reset leaves behind
+  source_readings:
+  - sections/section-030/module-03/course-03-joining-a-node-and-resetting-it.md
+  prompt: You run `kubeadm reset` on a worker and want to reuse the machine. What
+    remains that you must clean yourself?
+  options:
+  - id: a
+    text: The CNI configuration in `/etc/cni/net.d`, iptables or IPVS rules and kubeconfig
+      files in the home directory.
+    explanation: Correct. kubeadm reset removes what init or join wrote, but it leaves
+      these items.
+  - id: b
+    text: The kubelet binary and the container runtime package.
+    explanation: Reset does not uninstall packages, but they are not state that blocks
+      a new join.
+  - id: c
+    text: The `/etc/kubernetes/pki` directory and its keys.
+    explanation: Reset deletes files that kubeadm wrote under `/etc/kubernetes`.
+  - id: d
+    text: Nothing; reset restores the machine to a clean state.
+    explanation: Reset does not clean all network and kubeconfig state.
+  correct_option: a
+  explanation: kubeadm reset removes what init or join wrote, but it leaves these
+    items.
+- id: ats025-030-quiz-q11
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Reason about discovery trust
+  source_readings:
+  - sections/section-030/module-03/course-02-bootstrap-tokens-and-the-ca-hash.md
+  prompt: Why is `--discovery-token-unsafe-skip-ca-verification` unsafe?
+  options:
+  - id: a
+    text: It disables the TLS bootstrap completely.
+    explanation: The TLS bootstrap still runs.
+  - id: b
+    text: It makes the token valid forever.
+    explanation: Token lifetime is unchanged.
+  - id: c
+    text: It deletes the cluster CA.
+    explanation: Nothing is deleted.
+  - id: d
+    text: The node accepts whatever CA the cluster-info ConfigMap carries, so a token
+      holder on the network path can substitute a fake cluster.
+    explanation: Correct. The signature on cluster-info proves only that its author
+      holds the token, and tokens are shared widely.
+  correct_option: d
+  explanation: The signature on cluster-info proves only that its author holds the
+    token, and tokens are shared widely.
+- id: ats025-030-quiz-q12
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Describe the order of initialization
+  source_readings:
+  - sections/section-030/module-01/course-01-understanding-kubeadm-initialization-and-node-joining.md
+  prompt: What is the order of the first stages of `kubeadm init`?
+  options:
+  - id: a
+    text: Static pods first, certificates last.
+    explanation: The static pods need the certificates to start.
+  - id: b
+    text: Join phase first, then init.
+    explanation: Join runs on other nodes after init finished.
+  - id: c
+    text: Preflight checks, certificate and kubeconfig generation, static pod manifests,
+      then the control plane starts and kubeadm uploads configuration.
+    explanation: Correct. Certificates and kubeconfig files must exist before the
+      static pods that use them are started.
+  - id: d
+    text: The network add-on first.
+    explanation: Add-ons are installed after the control plane is up.
+  correct_option: c
+  explanation: Certificates and kubeconfig files must exist before the static pods
+    that use them are started.

@@ -1,0 +1,310 @@
+# Knowledge check for section 060. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats025-060-quiz
+course_id: ATS025
+exam_code: CKA
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: section
+  id: section-060
+  title: Use Helm and Kustomize to install cluster components
+questions:
+- id: ats025-060-quiz-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain what a chart, a release and a rendered manifest are
+  source_readings:
+  - sections/section-060/module-01/course-01-charts-values-and-the-rendered-application.md
+  - sections/section-060/module-02/course-01-chart-anatomy-and-rendering.md
+  prompt: A team installs the same chart twice in one cluster, once as `crew` and
+    once as `scan`. Which statement is correct?
+  options:
+  - id: a
+    text: The two releases share one revision history because they share the chart.
+    explanation: Revision history belongs to a release, not to a chart.
+  - id: b
+    text: Each release is a separate installation with its own name, values and revision
+      history; the chart is only the package.
+    explanation: Correct. A chart is a package and a release is one installed instance
+      of it, so two releases can use the same chart with different values.
+  - id: c
+    text: The second install replaces the first because the chart name is the same.
+    explanation: Different release names do not collide.
+  - id: d
+    text: Helm refuses the second install unless the chart version differs.
+    explanation: The chart version has no influence on installing a second release.
+  correct_option: b
+  explanation: A chart is a package and a release is one installed instance of it,
+    so two releases can use the same chart with different values.
+- id: ats025-060-quiz-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Trace a value from values.yaml or --set into a rendered field
+  source_readings:
+  - sections/section-060/module-02/course-01-chart-anatomy-and-rendering.md
+  prompt: 'A chart has `replicaCount: 1` in `values.yaml`. You run `helm template
+    crew shuttle --set replicas=3` and the output still shows `replicas: 1`. What
+    is the most likely cause?'
+  options:
+  - id: a
+    text: "`helm template` ignores `--set`."
+    explanation: "`helm template` applies `--set` to the values."
+  - id: b
+    text: No template reads the key `replicas`; the template reads `replicaCount`.
+    explanation: Correct. A value has an effect only when a template reads it, and
+      an unknown key is accepted silently.
+  - id: c
+    text: Helm caps replicas at the chart default.
+    explanation: Helm has no such cap.
+  - id: d
+    text: The API server resets the value.
+    explanation: "`helm template` does not contact the API server."
+  correct_option: b
+  explanation: A value has an effect only when a template reads it, and an unknown
+    key is accepted silently.
+- id: ats025-060-quiz-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Distinguish chart version from application version
+  source_readings:
+  - sections/section-060/module-02/course-01-chart-anatomy-and-rendering.md
+  prompt: Which field of `Chart.yaml` identifies the version of the chart package
+    itself?
+  options:
+  - id: a
+    text: "`appVersion`"
+    explanation: "`appVersion` is information about the packaged application."
+  - id: b
+    text: "`version`"
+    explanation: Correct. `version` is the chart package version.
+  - id: c
+    text: "`apiVersion`"
+    explanation: "`apiVersion: v2` marks the chart format."
+  - id: d
+    text: "`type`"
+    explanation: "`type` is `application` or `library`."
+  correct_option: b
+  explanation: "`version` is the chart package version."
+- id: ats025-060-quiz-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: State the order in which value sources override each other
+  source_readings:
+  - sections/section-060/module-02/course-02-values-and-the-release-lifecycle.md
+  prompt: 'A chart default sets `logLevel: info`. You run `helm install` with `-f
+    prod.yaml` (which sets `logLevel: warn`) and `--set logLevel=debug`. What is the
+    effective value?'
+  options:
+  - id: a
+    text: "`info`"
+    explanation: The chart default has the lowest priority.
+  - id: b
+    text: "`warn`"
+    explanation: Files override the defaults, but `--set` overrides files.
+  - id: c
+    text: "`debug`"
+    explanation: Correct. `--set` has the highest priority.
+  - id: d
+    text: The command fails because the sources conflict.
+    explanation: Conflicts are resolved by order, not reported as errors.
+  correct_option: c
+  explanation: "`--set` has the highest priority."
+- id: ats025-060-quiz-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain why helm upgrade can reset values
+  source_readings:
+  - sections/section-060/module-02/course-02-values-and-the-release-lifecycle.md
+  prompt: A release was installed with `--set replicaCount=2`. Later you run `helm
+    upgrade scan probe --set logLevel=debug` and the Deployment drops to one replica.
+    Why?
+  options:
+  - id: a
+    text: The upgrade started from the chart defaults plus only the values in this
+      command.
+    explanation: Correct. Without `--reuse-values` or a values file, earlier supplied
+      values are not carried over.
+  - id: b
+    text: Helm rolled back to the previous revision.
+    explanation: A rollback needs `helm rollback`.
+  - id: c
+    text: "`--wait` was missing."
+    explanation: "`--wait` only waits for readiness."
+  - id: d
+    text: "`logLevel` is a reserved key."
+    explanation: No key is reserved for this.
+  correct_option: a
+  explanation: Without `--reuse-values` or a values file, earlier supplied values
+    are not carried over.
+- id: ats025-060-quiz-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Find where Helm stores release records
+  source_readings:
+  - sections/section-060/module-02/course-02-values-and-the-release-lifecycle.md
+  prompt: Where does Helm 3 keep the record of each release revision by default?
+  options:
+  - id: a
+    text: In a Deployment named after the release in `kube-system`
+    explanation: No such Deployment exists.
+  - id: b
+    text: In Secrets of type `helm.sh/release.v1` in the namespace of the release
+    explanation: Correct. Each revision is a Secret named `sh.helm.release.v1.<release>.v<revision>`.
+  - id: c
+    text: In a Tiller pod in the cluster
+    explanation: Tiller was removed in Helm 3.
+  - id: d
+    text: In `~/.helm` on the machine that ran the install
+    explanation: The record is in the cluster, so any machine with access can read
+      it.
+  correct_option: b
+  explanation: Each revision is a Secret named `sh.helm.release.v1.<release>.v<revision>`.
+- id: ats025-060-quiz-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Describe what a rollback does
+  source_readings:
+  - sections/section-060/module-02/course-02-values-and-the-release-lifecycle.md
+  prompt: A release has revisions 1 and 2. You run `helm rollback scan 1`. What does
+    `helm history scan` show afterwards?
+  options:
+  - id: a
+    text: Only revision 1, because revision 2 is deleted
+    explanation: History is never rewound.
+  - id: b
+    text: Revisions 1, 2 and a new revision 3 described as a rollback to 1
+    explanation: Correct. A rollback adds a new revision with the content of the chosen
+      one.
+  - id: c
+    text: Revisions 1 and 2, with revision 1 marked deployed again
+    explanation: The revision numbers do not change; a new one is added.
+  - id: d
+    text: An error, because a rollback needs `--force`
+    explanation: No flag is needed.
+  correct_option: b
+  explanation: A rollback adds a new revision with the content of the chosen one.
+- id: ats025-060-quiz-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Adopt an existing object into a release
+  source_readings:
+  - sections/section-060/module-02/course-02-values-and-the-release-lifecycle.md
+  prompt: "`helm install` fails because a Deployment with the same name was applied
+    by hand and has no Helm metadata. What lets Helm adopt it without deleting it?"
+  options:
+  - id: a
+    text: 'Add the label `app.kubernetes.io/managed-by: Helm` and the annotations
+      `meta.helm.sh/release-name` and `meta.helm.sh/release-namespace` to the object'
+    explanation: Correct. Helm checks exactly this metadata and then takes over the
+      object.
+  - id: b
+    text: Run the install with `--dry-run`
+    explanation: A dry run changes nothing.
+  - id: c
+    text: Delete the Deployment and let Helm create it
+    explanation: This works but recreates the object and loses its identity.
+  - id: d
+    text: Add an owner reference to the release Secret
+    explanation: Ownership is checked through labels and annotations.
+  correct_option: a
+  explanation: Helm checks exactly this metadata and then takes over the object.
+- id: ats025-060-quiz-q09
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Describe a base and an overlay
+  source_readings:
+  - sections/section-060/module-03/course-01-bases-overlays-and-transformers.md
+  - sections/section-060/module-01/course-02-composing-resources-with-kustomize.md
+  prompt: What is the relationship between a base and an overlay in Kustomize?
+  options:
+  - id: a
+    text: An overlay copies the base files and edits them
+    explanation: Nothing is copied.
+  - id: b
+    text: An overlay lists the base in `resources` and adds changes, and the base
+      stays unchanged
+    explanation: Correct. The base stays valid on its own.
+  - id: c
+    text: A base is generated from an overlay by `kubectl apply -k`
+    explanation: Rendering always goes from the base to the overlay.
+  - id: d
+    text: Overlays cannot share one base
+    explanation: Several overlays can share one base.
+  correct_option: b
+  explanation: The base stays valid on its own.
+- id: ats025-060-quiz-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Use Kustomize transformers and understand their limits
+  source_readings:
+  - sections/section-060/module-03/course-01-bases-overlays-and-transformers.md
+  prompt: 'An existing Deployment was created without extra labels. You add `labels`
+    with `includeSelectors: true` to an overlay and run `kubectl apply -k`. What happens?'
+  options:
+  - id: a
+    text: The API server rejects the update because a Deployment selector is immutable
+    explanation: Correct. A selector cannot change after creation, and the transformer
+      changes it.
+  - id: b
+    text: The labels are added to the pods and the update succeeds
+    explanation: The change touches the selector, so it cannot succeed.
+  - id: c
+    text: Kustomize ignores `includeSelectors` for existing objects
+    explanation: Kustomize renders the change and cannot see the cluster.
+  - id: d
+    text: The Deployment is recreated automatically
+    explanation: "`kubectl apply` does not delete and recreate."
+  correct_option: a
+  explanation: A selector cannot change after creation, and the transformer changes
+    it.
+- id: ats025-060-quiz-q11
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Choose between strategic merge and JSON 6902 patches
+  source_readings:
+  - sections/section-060/module-03/course-02-patches-generators-and-applying.md
+  prompt: You must change one element of a list by its position, for example the first
+    port of a Service. Which patch fits best?
+  options:
+  - id: a
+    text: A strategic merge patch with only `ports`
+    explanation: It merges lists by a key and cannot address a position.
+  - id: b
+    text: 'A JSON 6902 patch with a `target` and `op: replace` on `/spec/ports/0/port`'
+    explanation: Correct. A JSON 6902 patch addresses an exact path, including a list
+      index.
+  - id: c
+    text: The `namePrefix` transformer
+    explanation: "`namePrefix` changes names only."
+  - id: d
+    text: A `configMapGenerator`
+    explanation: A generator creates ConfigMaps or Secrets.
+  correct_option: b
+  explanation: A JSON 6902 patch addresses an exact path, including a list index.
+- id: ats025-060-quiz-q12
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain the generator hash suffix
+  source_readings:
+  - sections/section-060/module-03/course-02-patches-generators-and-applying.md
+  prompt: Why does `configMapGenerator` add a hash of the content to the ConfigMap
+    name?
+  options:
+  - id: a
+    text: To make the name unique across clusters
+    explanation: The hash comes from the content, not from the cluster.
+  - id: b
+    text: So a change in content gives a new name, which changes the pod template
+      and triggers a rolling update
+    explanation: Correct. The Deployment refers to the new name, so its pods are replaced.
+  - id: c
+    text: Because Kubernetes requires a suffix on generated objects
+    explanation: No such requirement exists.
+  - id: d
+    text: To encrypt the values
+    explanation: A hash is not encryption.
+  correct_option: b
+  explanation: The Deployment refers to the new name, so its pods are replaced.

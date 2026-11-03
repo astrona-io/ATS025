@@ -76,6 +76,21 @@ Execution depends on several integration contracts, and failure evidence should 
 
 Execution depends on several integration contracts, and failure evidence should identify which responsibility is unresolved.
 
+## Find Each Interface In The Cluster
+
+<!-- astrona:playground:renew -->
+
+Each interface leaves a visible trace in the API. Read all three.
+
+```sh
+kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{" "}{.status.nodeInfo.containerRuntimeVersion}{"\n"}{end}'
+kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{" "}{.spec.podCIDR}{"\n"}{end}'
+kubectl get storageclass
+kubectl get csidrivers
+```
+
+The first command shows the runtime that each kubelet talks to through the runtime interface. The second shows the Pod address range given to each node, which the network plugin uses. The last two list the storage classes and the registered storage drivers. An empty driver list is a valid result, because a cluster can run without any installed driver.
+
 ## Common pitfalls
 
 > [!WARNING]

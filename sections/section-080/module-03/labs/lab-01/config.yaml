@@ -1,0 +1,69 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Wire An Operator With Least Privilege (LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-025-lab-080-03-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    preloadImages:
+      - docker.io/library/busybox:1.37.0
+
+# Starting state: the Beacon CRD and an operator Deployment that still runs as the default ServiceAccount, without permissions.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the CRD, the namespaces and the unwired operator Deployment
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: identity-wired
+      description: "The operator Deployment uses the ServiceAccount beacon-operator and is available"
+      type: file
+      source: validation/validate-identity.sh
+      hint: "Create the ServiceAccount in beacon-system and set serviceAccountName on the Deployment."
+    - name: permissions-granted
+      description: "The ServiceAccount can do what the controller loop needs"
+      type: file
+      source: validation/validate-permissions.sh
+      hint: "Cover beacons, beacons/status, leases in coordination.k8s.io and events."
+    - name: least-privilege
+      description: "The ServiceAccount cannot delete beacons or nodes, or read secrets"
+      type: file
+      source: validation/validate-least-privilege.sh
+      hint: "Do not use wildcards; list only the verbs the loop needs."
+    - name: no-wildcards
+      description: "The bound ClusterRole has no wildcard rule"
+      type: file
+      source: validation/validate-no-wildcards.sh
+      hint: "Write explicit apiGroups, resources and verbs."
+    - name: watch-namespace
+      description: "The Deployment sets WATCH_NAMESPACE to starfleet"
+      type: file
+      source: validation/validate-watch-namespace.sh
+      hint: "Use kubectl set env on the Deployment."
+    - name: first-resource
+      description: "A Beacon named first-beacon with channel alpha exists in starfleet"
+      type: file
+      source: validation/validate-first-resource.sh
+      hint: "Create the object after the CRD is established."
+
+teardown:
+  keepCluster: false

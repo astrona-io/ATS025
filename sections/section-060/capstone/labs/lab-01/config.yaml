@@ -1,0 +1,69 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Adopt, Release And Customize A Cluster Component (CAPSTONE). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-025-lab-060-capstone-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    preloadImages:
+      - docker.io/library/busybox:1.37.0
+
+# Starting state: a hand-applied relay Deployment and Service in starfleet without Helm metadata, an empty outpost namespace and the unrelated bridge Deployment.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the hand-applied relay objects, record their UIDs and create the bridge Deployment
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: adopted-not-recreated
+      description: "The relay Deployment and Service keep the UIDs they had at the start"
+      type: file
+      source: validation/validate-uids.sh
+      hint: "Add the Helm ownership labels and annotations to the existing objects, then run helm install."
+    - name: release-deployed
+      description: "Release relay in starfleet is deployed from chart relay-chart 0.1.0 and records replicaCount 2 and logLevel debug"
+      type: file
+      source: validation/validate-release.sh
+      hint: "Install with --set or -f; helm get values relay shows the recorded values."
+    - name: helm-owned-live
+      description: "The relay Deployment has 2 available replicas, LOG_LEVEL debug and Helm ownership annotations"
+      type: file
+      source: validation/validate-owned.sh
+      hint: "Adopted objects are updated to the rendered manifest during install."
+    - name: kustomize-overlay
+      description: "Deployment relay-outpost in outpost has 4 available replicas and is not owned by Helm"
+      type: file
+      source: validation/validate-outpost.sh
+      hint: "Render with helm template, save the output as the base and apply an overlay with kubectl apply -k."
+    - name: overlay-patches
+      description: "relay-outpost has the label tier: outpost on its pods and the memory limit 64Mi, and its Service has endpoints"
+      type: file
+      source: validation/validate-patches.sh
+      hint: "Use a labels transformer and a strategic merge patch in the overlay."
+    - name: separation
+      description: "No release named relay-outpost exists and the bridge Deployment is unchanged"
+      type: file
+      source: validation/validate-separation.sh
+      hint: "Do not run helm install for the outpost copy."
+
+teardown:
+  keepCluster: false

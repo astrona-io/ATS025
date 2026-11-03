@@ -1,0 +1,69 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Join Review For A kubeadm Cluster (CAPSTONE). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-025-lab-030-capstone-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+    nodes:
+      workers: 1
+
+# Starting state: a stale init-review record that describes an old cluster.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the stale join review
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: record-complete
+      description: "The review has all eight keys and no stale value"
+      type: file
+      source: validation/validate-record-complete.sh
+      hint: "Keep the ConfigMap init-review in starfleet and give every key a value read from the cluster."
+    - name: cluster-config
+      description: "kubernetesVersion, podSubnet and certificatesDir match the stored ClusterConfiguration"
+      type: file
+      source: validation/validate-cluster-config.sh
+      hint: "Read the ClusterConfiguration key of the kubeadm-config ConfigMap in kube-system. podSubnet is under networking."
+    - name: join-endpoint
+      description: "apiServerEndpoint equals the server in cluster-info"
+      type: file
+      source: validation/validate-join-endpoint.sh
+      hint: "Read the kubeconfig key of the cluster-info ConfigMap in kube-public and copy the server line value."
+    - name: bootstrap-rbac
+      description: "joinGroup and autoApproveRole match the kubeadm bootstrap binding"
+      type: file
+      source: validation/validate-bootstrap-rbac.sh
+      hint: "Read the ClusterRoleBinding kubeadm:node-autoapprove-bootstrap: the subject name and the roleRef name."
+    - name: worker-name
+      description: "workerNodeName is the name of the worker node"
+      type: file
+      source: validation/validate-worker-name.sh
+      hint: "List the nodes without the control-plane role label."
+    - name: kubelet-dns
+      description: "clusterDNS equals the first address in the stored kubelet configuration"
+      type: file
+      source: validation/validate-kubelet-dns.sh
+      hint: "Read the kubelet key of the kubelet-config ConfigMap and find clusterDNS."
+
+teardown:
+  keepCluster: false

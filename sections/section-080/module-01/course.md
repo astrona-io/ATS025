@@ -16,10 +16,12 @@ This module develops custom APIs And Operator Installation. It connects the inte
 
 ## Before You Start
 
-Examples describe system behavior. No runtime is required. Read each field or diagnostic name as part of the stated contract.
+Use the module playground for guided practice. Graded exercises use independent environments and follow the readings they practise.
 
 ## Reading Order
 
 1. Reading A Custom Resource And Its Controller Contract
 2. Custom Resources And Operators
 3. Summary
+
+<!-- astrona:playground -->

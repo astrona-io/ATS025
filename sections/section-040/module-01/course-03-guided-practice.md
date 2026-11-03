@@ -78,6 +78,18 @@ kubectl -n starfleet exec shuttle -- wget -q -T 3 -O- http://probe/
 Respect disruption limits while draining and returning an isolated worker to service. The commands above deliberately target one environment. Keep its remaining components available so an unrelated failure cannot stand in for the required denial or correction. No example command output is presented as evidence of a completed run. A matching field alone does not establish that a process used it or that a controller reconciled it.
 
 
+## Compare Before And After
+
+Finish by repeating the read commands and comparing them with the state you recorded at the start.
+
+```sh
+kubectl get nodes
+kubectl get pods --all-namespaces --field-selector=status.phase!=Running
+kubectl get events --all-namespaces --sort-by=.lastTimestamp
+```
+
+The node list should show every node as Ready and schedulable. The Pod query lists Pods that are not running, so an empty result means nothing is stuck. The event list, sorted by time, shows the last changes the cluster recorded. Any difference from your starting record needs an explanation before you call the task done.
+
 ## Common pitfalls
 
 > [!WARNING]

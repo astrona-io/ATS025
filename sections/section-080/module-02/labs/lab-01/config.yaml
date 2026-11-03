@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Tighten A CustomResourceDefinition Schema (LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-025-lab-080-02-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+
+# Starting state: a Beacon CRD that accepts any content, and one stored Beacon object.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the loose Beacon CRD and the stored object
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: crd-established
+      description: "The Beacon CRD is established and serves version v1 as the storage version"
+      type: file
+      source: validation/validate-crd-established.sh
+      hint: "Edit the CRD beacons.training.astrona.io; keep version v1 with served and storage true."
+    - name: schema-rejects-bad-input
+      description: "The API server rejects a bad channel and a missing channel, and accepts a valid object"
+      type: file
+      source: validation/validate-schema.sh
+      hint: "Set channel to required with an enum of alpha, beta and gamma in the v1 schema."
+    - name: interval-range-and-default
+      description: "interval is limited to 5 through 3600 and defaults to 60"
+      type: file
+      source: validation/validate-interval.sh
+      hint: "Give interval type integer, minimum 5, maximum 3600 and default 60."
+    - name: channel-immutable
+      description: "channel cannot be changed after creation, interval can"
+      type: file
+      source: validation/validate-immutable.sh
+      hint: "Add a CEL rule with oldSelf on spec."
+    - name: printer-columns
+      description: "kubectl get shows the Channel and Interval columns"
+      type: file
+      source: validation/validate-columns.sh
+      hint: "Add additionalPrinterColumns with jsonPath .spec.channel and .spec.interval."
+    - name: status-subresource
+      description: "The status subresource is enabled"
+      type: file
+      source: validation/validate-status.sh
+      hint: "Add subresources with status: {} to version v1."
+
+teardown:
+  keepCluster: false

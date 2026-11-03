@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: starfleet
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mission-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mission-operator
+  namespace: mission-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mission-operator
+  template:
+    metadata:
+      labels:
+        app: mission-operator
+    spec:
+      containers:
+        - name: manager
+          image: docker.io/library/busybox:1.37.0
+          command: ["sleep", "infinity"]

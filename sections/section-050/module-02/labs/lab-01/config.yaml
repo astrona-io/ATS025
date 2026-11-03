@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Record The Control Plane Topology And Check A Quorum Proposal (LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-025-lab-050-02-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
+
+# Starting state: a topology-review record full of placeholder values, and a proposal that asks for four etcd members.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the placeholder record and the proposal
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: record-complete
+      description: "The record topology-review has all ten keys and no placeholder value"
+      type: file
+      source: validation/validate-record-complete.sh
+      hint: "Keep the ConfigMap topology-review in starfleet and give every key a value read from the cluster."
+    - name: endpoint-and-topology
+      description: "controlPlaneEndpoint and etcdTopology match the kubeadm ClusterConfiguration"
+      type: file
+      source: validation/validate-endpoint-topology.sh
+      hint: "Read the ConfigMap kubeadm-config in kube-system. Stacked means etcd.local, external means etcd.external."
+    - name: live-counts
+      description: "controlPlaneNodes, etcdMembers and etcdClientUrl match the running cluster"
+      type: file
+      source: validation/validate-live-counts.sh
+      hint: "Count nodes with the control-plane label and etcd pods in kube-system. Read the client URL from the etcd pod annotation."
+    - name: live-quorum
+      description: "quorum and faultTolerance follow from the live member count"
+      type: file
+      source: validation/validate-live-quorum.sh
+      hint: "quorum is members divided by two, rounded down, plus one. faultTolerance is members minus quorum."
+    - name: proposal-math
+      description: "The four-member proposal is judged correctly"
+      type: file
+      source: validation/validate-proposal.sh
+      hint: "Apply the quorum formula to the members value in ha-proposal. The odd alternative has the same fault tolerance."
+    - name: cluster-intact
+      description: "The cluster is ready and the source objects are unchanged"
+      type: file
+      source: validation/validate-cluster-intact.sh
+      hint: "Only change topology-review. Do not edit kubeadm-config, ha-proposal or the etcd pod."
+
+teardown:
+  keepCluster: false

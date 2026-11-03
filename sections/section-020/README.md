@@ -7,9 +7,9 @@ exam_objectives:
 
 The installer starts, but nodes cannot reach the advertised API endpoint. Installation depends on a supported host, runtime and network contract before application objects can become useful.
 
-The explanations identify the responsible components, compare intended and observed state, and work through the decisions needed to preserve the requirement. Read the worked examples as reasoning about a proposed system; no environment is started by this section.
+The explanations identify the responsible components, compare intended and observed state, and work through the decisions needed to preserve the requirement. Each module has a playground for hands-on practice and a graded lab, and the section closes with a capstone lab and a knowledge check.
 
-Each module begins with its goals and ends with a summary. Reusable YAML knowledge checks follow the section summary and are registered separately for future presentation.
+Each module begins with its goals and ends with a summary.
 
 ## Learning Outcomes
 

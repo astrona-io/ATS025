@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: node-report
+  namespace: starfleet
+data:
+  node: astro-ats-025-playground-070-01-control-plane

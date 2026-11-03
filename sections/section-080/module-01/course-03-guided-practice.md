@@ -59,6 +59,40 @@ kubectl -n starfleet wait --for=jsonpath='{.status.ready}'=true probesetting/gre
 Create ProbeSetting `greeting` in `starfleet` using `training.astrona.io/v1`, with `spec.message: configured`. The supplied controller must mark it ready and produce ConfigMap `settings-greeting` with `data.message: configured`. Keep the controller running. Do not manually create the output ConfigMap instead of the custom resource.
 
 
+## Read The Result Layer By Layer
+
+When the wait command succeeds, read each layer on its own, so you know why it worked and where to look when it does not.
+
+```sh
+kubectl -n starfleet get probesetting greeting -o jsonpath='{.metadata.generation}{" "}{.status.observedGeneration}{"\n"}'
+kubectl -n starfleet get configmap settings-greeting -o jsonpath='{.data.message}{"\n"}'
+kubectl get pods --all-namespaces | grep -i controller
+```
+
+The first command prints two numbers. The generation is the revision of the desired state, and the observed generation is the revision that the controller last handled. When the two numbers are equal, the status describes the current request. The second command prints the message that the controller copied into the output ConfigMap. The third command finds the Pod that runs the controller, which is the component that did the work.
+
+## Change The Request And Watch It Follow
+
+Reconciliation is a loop, not a single action. Change the message and see that the output follows:
+
+```sh
+kubectl -n starfleet patch probesetting greeting --type=merge -p '{"spec":{"message":"updated"}}'
+kubectl -n starfleet wait --for=jsonpath='{.data.message}'=updated configmap/settings-greeting --timeout=120s
+```
+
+The patch changes `spec`, so the generation increases. The controller polls accepted objects, notices the new message and rewrites the ConfigMap. If the wait times out, check the controller Pod first and then its log, because the request itself was accepted by the API server.
+
+## Clean Up The Request
+
+Delete the custom object when you are done. The controller owns the output ConfigMap, so check what remains afterward:
+
+```sh
+kubectl -n starfleet delete probesetting greeting
+kubectl -n starfleet get configmap settings-greeting
+```
+
+Whether the ConfigMap disappears depends on whether the controller set an owner reference on it. If it remains, the controller did not link the two objects, and cleanup is a manual step.
+
 ## Common pitfalls
 
 > [!WARNING]

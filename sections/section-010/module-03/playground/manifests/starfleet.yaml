@@ -1,0 +1,113 @@
+# Starting state for the cluster-scope playground: two namespaces, a Secret,
+# two PersistentVolumes, a scout ServiceAccount with no rights and a
+# rolemaker ServiceAccount that may create Roles and RoleBindings in starfleet
+# but holds almost nothing itself.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: starfleet
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: outpost
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: scout
+  namespace: starfleet
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: rolemaker
+  namespace: starfleet
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: warp-key
+  namespace: starfleet
+type: Opaque
+stringData:
+  key: not-a-real-key
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-starfleet-a
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes: ["ReadWriteOnce"]
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /tmp/pv-starfleet-a
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-starfleet-b
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes: ["ReadWriteOnce"]
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /tmp/pv-starfleet-b
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: rbac-editor
+  namespace: starfleet
+rules:
+  - apiGroups: ["rbac.authorization.k8s.io"]
+    resources: ["roles", "rolebindings"]
+    verbs: ["get", "list", "create"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: rolemaker-rbac-editor
+  namespace: starfleet
+subjects:
+  - kind: ServiceAccount
+    name: rolemaker
+    namespace: starfleet
+roleRef:
+  kind: Role
+  name: rbac-editor
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drifter
+  namespace: outpost
+  labels:
+    app: drifter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: drifter
+  template:
+    metadata:
+      labels:
+        app: drifter
+    spec:
+      containers:
+        - name: drifter
+          image: curlimages/curl:8.22.0
+          command: ["sleep", "86400"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              memory: 32Mi

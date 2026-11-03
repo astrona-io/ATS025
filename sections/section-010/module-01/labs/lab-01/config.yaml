@@ -1,32 +1,63 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Grant A ServiceAccount Pod Read Access With A Role (LAB). Graded against the live cluster.
 apiVersion: astrona.io/v1
 metadata:
   name: ats-025-lab-010-01-01
   docs:
-    prerequisites: docs/prerequisites.md
-    examQuestion: question.md
-    caseStudy: docs/case-study.md
-    guide: solution.md
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
 runtime:
   type: kind
   kind:
     image: kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f
-    preloadImages:
-    - docker.io/library/python:3.13-alpine
-    - docker.io/library/busybox:1.37.0
+
+# Starting state: two namespaces, the ServiceAccount shuttle, a Secret and a
+# leftover RoleBinding in outpost that gives shuttle the built-in edit role.
 bootstrap:
   init:
-  - name: seed-rbac
-    type: file
-    source: bootstrap/setup.sh
-teardown:
-  keepCluster: false
+    - name: seed-cluster
+      description: Create the namespaces, the ServiceAccount and the leftover binding
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
 testing:
   init:
-  - name: reference-repair
-    type: file
-    source: solution/apply.sh
+    - name: apply-solution
+      description: Create the Role and the RoleBinding and remove the leftover binding
+      type: file
+      source: solution/apply.sh
+
 validation:
-  script:
-    name: verify-rbac
-    type: file
-    source: validate.sh
+  scripts:
+    - name: role-pod-reader
+      description: Role pod-reader in starfleet allows get, list and watch on core pods only
+      type: file
+      source: validation/validate-role-pod-reader.sh
+      hint: The rule needs apiGroups [""], resources ["pods"] and the verbs get, list and watch. Use one rule, no wildcard and no resourceNames.
+    - name: rolebinding-shuttle
+      description: RoleBinding shuttle-pod-reader in starfleet binds pod-reader to the ServiceAccount shuttle only
+      type: file
+      source: validation/validate-rolebinding-shuttle.sh
+      hint: The subject is a ServiceAccount, so it needs the namespace starfleet. The roleRef is kind Role, not ClusterRole.
+    - name: shuttle-reads-pods
+      description: shuttle can get, list and watch pods in starfleet
+      type: file
+      source: validation/validate-shuttle-reads-pods.sh
+      hint: Check with kubectl auth can-i list pods -n starfleet --as=system:serviceaccount:starfleet:shuttle.
+    - name: shuttle-nothing-more-in-starfleet
+      description: In starfleet, shuttle cannot write pods, read Secrets, logs or other resources
+      type: file
+      source: validation/validate-shuttle-nothing-more-in-starfleet.sh
+      hint: Grant read verbs on pods only. A rule for pods does not cover pods/log or pods/exec.
+    - name: no-other-grants-for-shuttle
+      description: No other binding gives shuttle access, and shuttle has nothing in outpost
+      type: file
+      source: validation/validate-no-other-grants-for-shuttle.sh
+      hint: List the RoleBindings in every namespace with kubectl get rolebindings -A and find the one that names shuttle in outpost. RBAC grants add up, so it must be deleted.
+
+teardown:
+  keepCluster: false

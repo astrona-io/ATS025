@@ -72,6 +72,22 @@ Type registration enables the request, while executable controller logic produce
 
 You can now distinguish an extension schema from an operational implementation. Controller availability, permissions and supported behavior determine how accepted intent becomes useful application state.
 
+## Separate the three layers with commands
+
+The three layers of a custom application are the type, the controller and the output. Each has its own object to read, so a failure can be placed in one layer.
+
+<!-- astrona:playground:renew -->
+
+```sh
+kubectl get crd probesettings.training.astrona.io
+kubectl -n starfleet get probesettings
+kubectl -n starfleet get configmap
+```
+
+The first command checks the type layer. The second lists the accepted objects, which shows what users asked for. The third lists the output ConfigMaps that the controller created. If the second command lists an object and the third has no matching ConfigMap, the type and the request are fine and the failure is in the controller or in its permissions. If the second command lists nothing, no request was accepted, and the controller is not the cause.
+
+Read the controller itself last, because it is the most detailed source: its Pod status shows whether it runs, and its log shows the error when it runs and fails.
+
 ## Common pitfalls
 
 > [!WARNING]

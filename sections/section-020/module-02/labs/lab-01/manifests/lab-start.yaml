@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: starfleet
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: host-readiness
+  namespace: starfleet
+data:
+  cgroupDriver: cgroupfs-legacy
+  failSwapOn: unknown
+  containerRuntimeVersion: containerd://1.0.0
+  kubeletVersion: v1.20.0
+  kernelVersion: 4.4.0-legacy
+  osImage: Legacy Linux 1.0

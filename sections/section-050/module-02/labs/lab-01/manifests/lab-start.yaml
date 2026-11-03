@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: starfleet
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: topology-review
+  namespace: starfleet
+data:
+  controlPlaneEndpoint: unknown
+  etcdTopology: unknown
+  controlPlaneNodes: unknown
+  etcdMembers: unknown
+  etcdClientUrl: unknown
+  quorum: unknown
+  faultTolerance: unknown
+  proposalQuorum: unknown
+  proposalTolerance: unknown
+  proposalOddMembers: unknown
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ha-proposal
+  namespace: starfleet
+data:
+  members: "4"
+  note: The team proposes four etcd members to improve resilience.

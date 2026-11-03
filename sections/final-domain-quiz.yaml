@@ -1,0 +1,638 @@
+# Final domain knowledge check across all eight sections.
+schema_version: 1
+kind: question_bank
+id: ats025-final
+course_id: ATS025
+exam_code: CKA
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: domain
+  id: cluster-architecture-installation-configuration
+  title: Cluster Architecture, Installation & Configuration
+questions:
+- id: ats025-final-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Write a Role rule with the correct API group, resource and verbs
+  source_readings:
+  - sections/section-010/module-01/course-01-roles-rules-and-verbs.md
+  prompt: A Role in `starfleet` must let a workload read Deployments there. Which
+    rule is correct?
+  options:
+  - id: a
+    text: 'A rule with `apiGroups: ["apps"]`, `resources: ["deployment"]` and `verbs:
+      ["read"]`.'
+    explanation: The resource name must be the plural `deployments`, and `read` is
+      not a verb.
+  - id: b
+    text: 'A rule with `apiGroups: ["apps"]`, `resources: ["deployments"]` and `verbs:
+      ["get", "list", "watch"]`.'
+    explanation: Correct. Deployments are in the `apps` API group, the resource name
+      is the lowercase plural `deployments`, and `get`, `list` and `watch` are real
+      verbs.
+  - id: c
+    text: 'A rule with `apiGroups: [""]`, `resources: ["deployments"]` and `verbs:
+      ["get", "list", "watch"]`.'
+    explanation: The empty string is the core group, and Deployments are not in it,
+      so this rule matches nothing.
+  - id: d
+    text: 'A rule with `resources: ["deployments"]` and `verbs: ["get", "list", "watch"]`
+      and no `apiGroups` field.'
+    explanation: A rule without `apiGroups` matches no group, so it matches no request.
+  correct_option: b
+  explanation: Each rule needs a matching API group, resource name and verb. Deployments
+    belong to `apps`, the name is plural, and the verbs are `get`, `list` and `watch`.
+- id: ats025-final-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Evaluate effective permissions when several bindings apply
+  source_readings:
+  - sections/section-010/module-01/course-03-additive-grants-and-indirect-privilege.md
+  prompt: The ServiceAccount `shuttle` is bound to a Role that allows only `get` on
+    pods. A review removes `delete` from every Role that names pods, but `shuttle`
+    can still delete pods. What explains this?
+  options:
+  - id: a
+    text: A Role cannot remove verbs once the ServiceAccount exists.
+    explanation: A Role can be edited at any time.
+  - id: b
+    text: Another binding, for example a ClusterRoleBinding or a group binding, still
+      grants `delete`, because grants add up.
+    explanation: Correct. RBAC has no deny rule. The effective permissions are the
+      union of every applicable grant, so the remaining binding must be found and
+      removed.
+  - id: c
+    text: RBAC caches the old Role for one hour.
+    explanation: Rules are read from the API on every decision, so there is no hour
+      of delay.
+  - id: d
+    text: The `get` verb implies `delete` in the core group.
+    explanation: Verbs do not imply each other.
+  correct_option: b
+  explanation: Permissions are the union of all grants for the user, its groups and
+    its ServiceAccount groups. Removing a permission means removing every grant that
+    gives it.
+- id: ats025-final-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Choose the right ServiceAccount token settings for a pod
+  source_readings:
+  - sections/section-010/module-02/course-03-serviceaccount-tokens-and-automounting.md
+  prompt: The pod `probe` never calls the Kubernetes API. How do you stop the kubelet
+    from placing a ServiceAccount token in the pod?
+  options:
+  - id: a
+    text: Remove all RoleBindings for the ServiceAccount.
+    explanation: Bindings control permissions, not whether the token is mounted.
+  - id: b
+    text: 'Set `automountServiceAccountToken: false` on the pod or on its ServiceAccount.'
+    explanation: Correct. The field switches off the token mount. The setting on the
+      pod takes precedence over the one on the ServiceAccount.
+  - id: c
+    text: Delete the ServiceAccount after the pod starts.
+    explanation: A running pod keeps its mounted token until the pod is replaced,
+      and deleting the account does not stop the mount for a new pod.
+  - id: d
+    text: Add `get` on `serviceaccounts` to a Role.
+    explanation: A Role grants permissions and does not control mounting.
+  correct_option: b
+  explanation: Pods that do not need the API should not receive a token. The pod field
+    wins over the ServiceAccount field.
+- id: ats025-final-q04
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Identify host identity and capacity prerequisites
+  source_readings:
+  - sections/section-020/module-03/course-01-packages-and-host-identity.md
+  prompt: Two new worker nodes were cloned from the same virtual machine image. `kubeadm
+    join` works on the first node but the second node never appears as a separate
+    node. Which host property is the most likely cause?
+  options:
+  - id: a
+    text: The two machines have different CPU architectures.
+    explanation: Different architectures would be a different problem and would show
+      up when the binaries run, not as a missing node object.
+  - id: b
+    text: The two machines have the same hostname, so they register under the same
+      node name.
+    explanation: Correct. Node objects are named after the hostname by default, so
+      a duplicate hostname makes the second registration collide with the first. Hostname,
+      MAC address and `product_uuid` must be unique on every node.
+  - id: c
+    text: The kubelet package is newer than the kubectl package.
+    explanation: A minor version difference between kubelet and kubectl does not prevent
+      a node from registering.
+  - id: d
+    text: The container runtime uses the systemd cgroup driver.
+    explanation: The cgroup driver affects pod stability, not the identity of the
+      node object.
+  correct_option: b
+  explanation: Node objects are named after the hostname by default, so a duplicate
+    hostname makes the second registration collide with the first. Hostname, MAC address
+    and `product_uuid` must be unique on every node.
+- id: ats025-final-q05
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Read the KubeletConfiguration that kubeadm stores in the cluster
+  source_readings:
+  - sections/section-020/module-02/course-02-the-cgroup-driver-and-kubelet-configuration.md
+  prompt: Without logging in to a node, where can you read the `KubeletConfiguration`
+    that kubeadm created for the cluster?
+  options:
+  - id: a
+    text: In the Secret `kubelet-config` in the `default` namespace.
+    explanation: It is a ConfigMap, and it lives in `kube-system`.
+  - id: b
+    text: In the `Node` object under `spec.kubeletConfig`.
+    explanation: The Node object has no such field in current versions.
+  - id: c
+    text: In the ConfigMap `kubelet-config` in the `kube-system` namespace.
+    explanation: Correct. kubeadm stores the cluster-wide kubelet configuration in
+      the `kubelet-config` ConfigMap in `kube-system`.
+  - id: d
+    text: In the kube-apiserver static pod manifest.
+    explanation: The API server manifest holds API server flags only.
+  correct_option: c
+  explanation: kubeadm stores the cluster-wide kubelet configuration in the `kubelet-config`
+    ConfigMap in `kube-system`.
+- id: ats025-final-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read the ports of control plane components from their static
+    pods
+  source_readings:
+  - sections/section-020/module-03/course-02-ports-and-preflight-checks.md
+  prompt: Which command output proves which port the API server uses on a running
+    kubeadm cluster?
+  options:
+  - id: a
+    text: The `kube-proxy` ConfigMap.
+    explanation: The proxy configuration describes proxying, not the API server port.
+  - id: b
+    text: The `/etc/hosts` file of the node.
+    explanation: The hosts file maps names to addresses, not ports.
+  - id: c
+    text: The labels of the `default` namespace.
+    explanation: Namespace labels carry no port information.
+  - id: d
+    text: The `--secure-port` flag, or the probe port, in the `kube-apiserver` pod
+      in `kube-system`.
+    explanation: Correct. Static pods declare their flags and probes in the pod spec,
+      so the cluster itself states the port the component listens on.
+  correct_option: d
+  explanation: Static pods declare their flags and probes in the pod spec, so the
+    cluster itself states the port the component listens on.
+- id: ats025-final-q07
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain what the CA public-key hash protects during a join
+  source_readings:
+  - sections/section-030/module-03/course-02-bootstrap-tokens-and-the-ca-hash.md
+  prompt: A `kubeadm join` command has both `--token` and `--discovery-token-ca-cert-hash`.
+    What does the hash protect against?
+  options:
+  - id: a
+    text: An expired bootstrap token.
+    explanation: Token expiry is checked by the API server, not by the hash.
+  - id: b
+    text: A fake API server that presents a different CA, because the node compares
+      the hash with the CA public key it receives.
+    explanation: Correct. The hash pins the cluster CA public key. A node that reaches
+      an impostor sees a different key and stops the join.
+  - id: c
+    text: A kubelet that uses the wrong cgroup driver.
+    explanation: The cgroup driver has nothing to do with discovery.
+  - id: d
+    text: A worker node with a duplicate hostname.
+    explanation: Hostname uniqueness is a host prerequisite and is not checked by
+      this hash.
+  correct_option: b
+  explanation: The hash pins the cluster CA public key. A node that reaches an impostor
+    sees a different key and stops the join.
+- id: ats025-final-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Identify why a joined node is NotReady
+  source_readings:
+  - sections/section-030/module-03/course-03-joining-a-node-and-resetting-it.md
+  prompt: A worker has joined and appears in `kubectl get nodes`, but its status is
+    `NotReady`. The condition message says no CNI configuration was found. What is
+    the fix?
+  options:
+  - id: a
+    text: Run `kubeadm token create` again.
+    explanation: The token is not involved after the join.
+  - id: b
+    text: Install a network add-on so that it writes a CNI configuration to `/etc/cni/net.d`.
+    explanation: Correct. The runtime reports its network as not ready until a CNI
+      configuration exists, and the kubelet then keeps the node NotReady.
+  - id: c
+    text: Delete the `kube-root-ca.crt` ConfigMap.
+    explanation: That ConfigMap is unrelated to node readiness.
+  - id: d
+    text: Increase the certificate lifetime.
+    explanation: The node already has a valid certificate.
+  correct_option: b
+  explanation: The runtime reports its network as not ready until a CNI configuration
+    exists, and the kubelet then keeps the node NotReady.
+- id: ats025-final-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read the stored cluster configuration
+  source_readings:
+  - sections/section-030/module-02/course-02-init-phases-and-the-stored-configuration.md
+  prompt: Where can you read the `ClusterConfiguration` of a running kubeadm cluster
+    through the API?
+  options:
+  - id: a
+    text: In the ConfigMap `cluster-info` in `kube-public`.
+    explanation: "`cluster-info` holds a small kubeconfig for discovery."
+  - id: b
+    text: In the ConfigMap `kubeadm-config` in `kube-system`.
+    explanation: Correct. kubeadm stores the ClusterConfiguration there so that later
+      commands such as upgrade can read it.
+  - id: c
+    text: In the Secret `bootstrap-token-*`.
+    explanation: Those Secrets hold tokens.
+  - id: d
+    text: In the `Node` object.
+    explanation: The Node object does not carry the cluster configuration.
+  correct_option: b
+  explanation: kubeadm stores the ClusterConfiguration there so that later commands
+    such as upgrade can read it.
+- id: ats025-final-q10
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain why kubeadm upgrades one minor version at a time
+  source_readings:
+  - sections/section-040/module-02/course-01-the-kubeadm-upgrade-workflow.md
+  prompt: A cluster runs Kubernetes v1.33.2. An administrator wants v1.35.0. Which
+    plan does kubeadm support?
+  options:
+  - id: a
+    text: Run `kubeadm upgrade apply v1.35.0` once.
+    explanation: kubeadm refuses to skip a minor version.
+  - id: b
+    text: Upgrade to a v1.34 release first, and then to v1.35.0.
+    explanation: Correct. Each minor release migrates stored data and configuration
+      only from the minor release before it, so kubeadm moves one minor version at
+      a time.
+  - id: c
+    text: Upgrade only the kubelets to v1.35.0 and leave the control plane.
+    explanation: A kubelet newer than the API server is not supported.
+  - id: d
+    text: Upgrade to v1.35.0 on the workers first and then on the control plane.
+    explanation: The control plane is always upgraded first.
+  correct_option: b
+  explanation: Each minor release migrates stored data and configuration only from
+    the minor release before it, so kubeadm moves one minor version at a time.
+- id: ats025-final-q11
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Apply the version skew policy to the control plane components
+  source_readings:
+  - sections/section-040/module-02/course-02-version-skew-policy-and-reading-versions.md
+  prompt: The kube-apiserver runs v1.35.0. Which kube-controller-manager version is
+    supported?
+  options:
+  - id: a
+    text: v1.36.0.
+    explanation: No component except kubectl may be newer than the API server.
+  - id: b
+    text: v1.34.5 or v1.35.0.
+    explanation: Correct. The controller manager may be the same minor version as
+      the API server or one minor version older, never newer.
+  - id: c
+    text: v1.33.0.
+    explanation: The controller manager may be only one minor version older.
+  - id: d
+    text: v1.32.0.
+    explanation: Three minor versions is the limit for the kubelet and kube-proxy,
+      not for the controller manager.
+  correct_option: b
+  explanation: The controller manager may be the same minor version as the API server
+    or one minor version older, never newer.
+- id: ats025-final-q12
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain what etcdutl snapshot status proves
+  source_readings:
+  - sections/section-040/module-03/course-01-taking-and-checking-an-etcd-snapshot.md
+  prompt: What does `etcdutl snapshot status` tell you about a snapshot file?
+  options:
+  - id: a
+    text: That the cluster can be restored on any node.
+    explanation: A rehearsed restore is the proof of that.
+  - id: b
+    text: Its hash, its revision, its number of keys and its size, so you can see
+      that the file has content.
+    explanation: Correct. The command reads the file and needs no running etcd.
+  - id: c
+    text: That the snapshot contains the Persistent Volume data.
+    explanation: A snapshot holds only the stored objects.
+  - id: d
+    text: That the Secrets in the snapshot are encrypted.
+    explanation: Encryption depends on the API server configuration, not on this command.
+  correct_option: b
+  explanation: The command reads the file and needs no running etcd.
+- id: ats025-final-q13
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Calculate etcd quorum
+  source_readings:
+  - sections/section-050/module-01/course-01-highly-available-api-access-and-datastore-quorum.md
+  prompt: A cluster runs five etcd members. How many members must be reachable for
+    etcd to accept writes?
+  options:
+  - id: a
+    text: Two
+    explanation: Two is not a majority of five.
+  - id: b
+    text: Three
+    explanation: Correct. The quorum is five divided by two, rounded down, plus one.
+  - id: c
+    text: Four
+    explanation: Four is more than a majority needs.
+  - id: d
+    text: Five
+    explanation: Five is every member. etcd needs only a majority.
+  correct_option: b
+  explanation: A majority of five members is three, so the cluster tolerates two failed
+    members.
+- id: ats025-final-q14
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Find the topology in a running cluster
+  source_readings:
+  - sections/section-050/module-02/course-01-stacked-and-external-etcd-topologies.md
+  prompt: Where does kubeadm keep the ClusterConfiguration that shows whether etcd
+    is local or external?
+  options:
+  - id: a
+    text: In the ConfigMap `kubeadm-config` in `kube-system`.
+    explanation: Correct. The etcd block holds local or external.
+  - id: b
+    text: In the Secret `kubeadm-certs`.
+    explanation: That Secret holds certificates for joining nodes, and it expires.
+  - id: c
+    text: In the Lease `kube-scheduler`.
+    explanation: That Lease records the scheduler leader.
+  - id: d
+    text: In the `default` namespace under `kubernetes`.
+    explanation: That Service lists API server addresses.
+  correct_option: a
+  explanation: kubeadm stores the ClusterConfiguration in kubeadm-config.
+- id: ats025-final-q15
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain the certificate name rule
+  source_readings:
+  - sections/section-050/module-03/course-01-api-server-endpoints-and-health-checks.md
+  prompt: Clients connect through `api.starfleet.example`, but the API server certificate
+    does not list that name. What happens?
+  options:
+  - id: a
+    text: Clients connect and skip name checks.
+    explanation: Clients check the name by default.
+  - id: b
+    text: Clients refuse the connection with a certificate error.
+    explanation: Correct. The name must be in the subject alternative names.
+  - id: c
+    text: The load balancer adds the name.
+    explanation: A load balancer does not change the server certificate.
+  - id: d
+    text: etcd rejects the request.
+    explanation: The error happens before etcd.
+  correct_option: b
+  explanation: The endpoint name must appear in the certificate SANs.
+- id: ats025-final-q16
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain what a chart, a release and a rendered manifest are
+  source_readings:
+  - sections/section-060/module-01/course-01-charts-values-and-the-rendered-application.md
+  - sections/section-060/module-02/course-01-chart-anatomy-and-rendering.md
+  prompt: A team installs the same chart twice in one cluster, once as `crew` and
+    once as `scan`. Which statement is correct?
+  options:
+  - id: a
+    text: The two releases share one revision history because they share the chart.
+    explanation: Revision history belongs to a release, not to a chart.
+  - id: b
+    text: Each release is a separate installation with its own name, values and revision
+      history; the chart is only the package.
+    explanation: Correct. A chart is a package and a release is one installed instance
+      of it, so two releases can use the same chart with different values.
+  - id: c
+    text: The second install replaces the first because the chart name is the same.
+    explanation: Different release names do not collide.
+  - id: d
+    text: Helm refuses the second install unless the chart version differs.
+    explanation: The chart version has no influence on installing a second release.
+  correct_option: b
+  explanation: A chart is a package and a release is one installed instance of it,
+    so two releases can use the same chart with different values.
+- id: ats025-final-q17
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain why helm upgrade can reset values
+  source_readings:
+  - sections/section-060/module-02/course-02-values-and-the-release-lifecycle.md
+  prompt: A release was installed with `--set replicaCount=2`. Later you run `helm
+    upgrade scan probe --set logLevel=debug` and the Deployment drops to one replica.
+    Why?
+  options:
+  - id: a
+    text: The upgrade started from the chart defaults plus only the values in this
+      command.
+    explanation: Correct. Without `--reuse-values` or a values file, earlier supplied
+      values are not carried over.
+  - id: b
+    text: Helm rolled back to the previous revision.
+    explanation: A rollback needs `helm rollback`.
+  - id: c
+    text: "`--wait` was missing."
+    explanation: "`--wait` only waits for readiness."
+  - id: d
+    text: "`logLevel` is a reserved key."
+    explanation: No key is reserved for this.
+  correct_option: a
+  explanation: Without `--reuse-values` or a values file, earlier supplied values
+    are not carried over.
+- id: ats025-final-q18
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Describe a base and an overlay
+  source_readings:
+  - sections/section-060/module-03/course-01-bases-overlays-and-transformers.md
+  - sections/section-060/module-01/course-02-composing-resources-with-kustomize.md
+  prompt: What is the relationship between a base and an overlay in Kustomize?
+  options:
+  - id: a
+    text: An overlay copies the base files and edits them
+    explanation: Nothing is copied.
+  - id: b
+    text: An overlay lists the base in `resources` and adds changes, and the base
+      stays unchanged
+    explanation: Correct. The base stays valid on its own.
+  - id: c
+    text: A base is generated from an overlay by `kubectl apply -k`
+    explanation: Rendering always goes from the base to the overlay.
+  - id: d
+    text: Overlays cannot share one base
+    explanation: Several overlays can share one base.
+  correct_option: b
+  explanation: The base stays valid on its own.
+- id: ats025-final-q19
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Distinguish CNI, CSI and CRI responsibilities
+  source_readings:
+  - sections/section-070/module-01/course-01-cni-csi-and-cri-extension-responsibilities.md
+  prompt: A node can start containers, but a pod cannot get its volume and its address.
+    Which statement about the three interfaces is correct?
+  options:
+  - id: a
+    text: CRI connects the kubelet to the container runtime, CNI configures pod networking,
+      and CSI provisions and mounts storage.
+    explanation: Correct. Each interface covers one boundary and one extension does
+      not satisfy the others.
+  - id: b
+    text: CRI configures pod networking, CNI runs containers, and CSI manages images.
+    explanation: This swaps the three responsibilities.
+  - id: c
+    text: One runtime that works also guarantees pod networking and storage.
+    explanation: The runtime handles execution only. Networking and storage need their
+      own extensions.
+  - id: d
+    text: CSI replaces CRI when a cluster uses persistent volumes.
+    explanation: CSI never replaces the runtime interface.
+  correct_option: a
+  explanation: The three interfaces are separate boundaries. A working runtime does
+    not imply working networking or storage.
+- id: ats025-final-q20
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Locate the failing layer from reachability symptoms
+  source_readings:
+  - sections/section-070/module-02/course-02-pod-addresses-services-and-dns.md
+  prompt: From the `shuttle` pod, a request to the IP address of a `probe` pod works.
+    A request to the cluster IP of the `probe` Service times out. A request to the
+    name `probe` fails to resolve. Which two areas do you check first?
+  options:
+  - id: a
+    text: kube-proxy (or its replacement) for the cluster IP, and CoreDNS for the
+      name.
+    explanation: Correct. The cluster IP rewrite is done by kube-proxy or a replacement,
+      and name resolution is done by CoreDNS.
+  - id: b
+    text: The StorageClass and the claim of the pod.
+    explanation: Storage has no part in network reachability.
+  - id: c
+    text: The CNI plugin and the node pod range.
+    explanation: Pod-to-pod traffic works, so the pod network is not the problem.
+  - id: d
+    text: The container runtime and its socket.
+    explanation: The pods run, so the runtime works.
+  correct_option: a
+  explanation: Pod IP works, cluster IP and DNS do not. Those two functions belong
+    to the Service layer.
+- id: ats025-final-q21
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain WaitForFirstConsumer
+  source_readings:
+  - sections/section-070/module-03/course-01-storageclass-claims-and-provisioning.md
+  prompt: 'A claim uses a class with `volumeBindingMode: WaitForFirstConsumer`. No
+    pod uses the claim and the claim is `Pending`. What is the correct conclusion?'
+  options:
+  - id: a
+    text: The class is missing the `provisioner` field.
+    explanation: A class without a provisioner is invalid and is rejected.
+  - id: b
+    text: The claim needs the access mode `ReadWriteMany`.
+    explanation: The access mode does not cause this wait.
+  - id: c
+    text: Provisioning failed and the driver must be restarted.
+    explanation: This state is the normal wait for a consumer.
+  - id: d
+    text: The claim is waiting for a pod. The scheduler picks a node, and then the
+      volume is created for that node.
+    explanation: Correct. The mode delays creation until the placement of the pod
+      is known.
+  correct_option: d
+  explanation: A Pending claim with no pod is the expected state for this mode.
+- id: ats025-final-q22
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain what a CRD alone does
+  source_readings:
+  - sections/section-080/module-01/course-01-reading-a-custom-resource-and-its-controller-contract.md
+  prompt: A CRD for `Beacon` is applied and a `Beacon` object is created, but no controller
+    is installed. What is the result?
+  options:
+  - id: a
+    text: A pod is started for the object.
+    explanation: Only a controller creates pods for a custom object.
+  - id: b
+    text: The object is stored and served by the API server, and nothing else happens.
+    explanation: Correct. The CRD makes the API server store and validate the type.
+      Acting on objects needs a controller.
+  - id: c
+    text: The API server rejects the object until a controller registers.
+    explanation: The API server needs no controller to accept an object.
+  - id: d
+    text: The object is kept in memory and lost on restart.
+    explanation: Custom objects are stored in etcd like built-in objects.
+  correct_option: b
+  explanation: The CRD makes the API server store and validate the type. Acting on
+    objects needs a controller.
+- id: ats025-final-q23
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain when defaults apply
+  source_readings:
+  - sections/section-080/module-02/course-02-defaults-pruning-and-cel-validation-rules.md
+  prompt: A default is added to a CRD field after objects already exist. When do the
+    old objects show the default?
+  options:
+  - id: a
+    text: Never, because defaults apply to new objects only.
+    explanation: Defaults are also applied on read.
+  - id: b
+    text: The next time they are read, because defaults are also applied when objects
+      are read from etcd.
+    explanation: Correct. Defaulting happens on write and on read from etcd.
+  - id: c
+    text: Only after every object is deleted and created again.
+    explanation: Re-creation is not required.
+  - id: d
+    text: Only after the operator restarts.
+    explanation: The API server applies the default; the operator is not involved.
+  correct_option: b
+  explanation: Defaulting happens on write and on read from etcd.
+- id: ats025-final-q24
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Describe the status subresource
+  source_readings:
+  - sections/section-080/module-02/course-03-versions-subresources-and-printer-columns.md
+  prompt: With the `status` subresource enabled, a user patches the main endpoint
+    with a new `status` value. What happens to that `status`?
+  options:
+  - id: a
+    text: It is stored as usual.
+    explanation: With the subresource, the main endpoint ignores status.
+  - id: b
+    text: It is ignored; only the `/status` endpoint changes `status`.
+    explanation: Correct. The subresource splits the write paths of `spec` and `status`.
+  - id: c
+    text: The whole request is rejected.
+    explanation: The request succeeds for the other fields.
+  - id: d
+    text: It is copied to `spec`.
+    explanation: The API server does not copy values between sections.
+  correct_option: b
+  explanation: The subresource splits the write paths of `spec` and `status`.

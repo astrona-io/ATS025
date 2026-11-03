@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: starfleet
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mission-system
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mission-controller
+  namespace: mission-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: mission-edit
+  namespace: mission-system
+subjects:
+  - kind: ServiceAccount
+    name: mission-controller
+    namespace: mission-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: edit
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ha-proposal
+  namespace: starfleet
+data:
+  members: "6"
+  note: The team proposes six etcd members across two sites.
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ha-report
+  namespace: starfleet
+data:
+  controlPlaneEndpoint: unknown
+  etcdTopology: unknown
+  etcdMembers: unknown
+  quorum: unknown
+  faultTolerance: unknown
+  schedulerLeader: unknown
+  controllerManagerLeader: unknown
+  proposalQuorum: unknown
+  proposalTolerance: unknown
+  proposalOddMembers: unknown
+  verdict: unknown

@@ -1,0 +1,55 @@
+{
+  "context": "kind-astro-ats-025-playground-060-01",
+  "resources": [
+    {
+      "kind": "deployment",
+      "name": "helm-probe",
+      "expected": {
+        "metadata": {
+          "name": "helm-probe"
+        },
+        "spec": {
+          "replicas": 2,
+          "template": {
+            "spec": {
+              "containers": [
+                {
+                  "name": "probe",
+                  "image": "docker.io/library/python:3.13-alpine",
+                  "env": [
+                    {
+                      "name": "VERSION",
+                      "value": "v1"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      },
+      "state": "deployment"
+    }
+  ],
+  "behavior": [
+    {
+      "args": [
+        "kubectl",
+        "-n",
+        "starfleet",
+        "exec",
+        "shuttle",
+        "--",
+        "wget",
+        "-q",
+        "-T",
+        "3",
+        "-O-",
+        "http://helm-probe/"
+      ],
+      "contains": [
+        "version=v1 host=helm-probe-"
+      ]
+    }
+  ]
+}

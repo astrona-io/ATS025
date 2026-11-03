@@ -76,6 +76,20 @@ A datastore restore preserves one state boundary and must be coordinated with th
 
 A datastore restore preserves one state boundary and must be coordinated with the other systems the application depends on.
 
+## Find The Datastore Facts With Commands
+
+<!-- astrona:playground:renew -->
+
+A snapshot is only useful if you know which datastore it protects and how to reach it. Read those facts from the control plane Pod.
+
+```sh
+kubectl -n kube-system get pods -l component=etcd -o name
+kubectl -n kube-system get pod -l component=etcd -o jsonpath='{.items[0].spec.containers[0].command}{"\n"}'
+kubectl get --raw /readyz?verbose
+```
+
+The first command finds the datastore Pod. The second prints the flags it runs with, including the data directory, the listen addresses and the certificate paths that a snapshot command needs. The third asks the API server for its readiness checks, which include the datastore check. A passing readiness result shows that the API server can reach the datastore, and it is one of the signals to collect before and after a restore.
+
 ## Common pitfalls
 
 > [!WARNING]

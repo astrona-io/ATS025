@@ -1,0 +1,291 @@
+# Knowledge check for section-050. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats025-050-quiz
+course_id: ATS025
+exam_code: CKA
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: section
+  id: section-050
+  title: Implement and configure a highly-available control plane
+questions:
+- id: ats025-050-quiz-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Calculate etcd quorum
+  source_readings:
+  - sections/section-050/module-01/course-01-highly-available-api-access-and-datastore-quorum.md
+  prompt: A cluster runs five etcd members. How many members must be reachable for
+    etcd to accept writes?
+  options:
+  - id: a
+    text: Two
+    explanation: Two is not a majority of five.
+  - id: b
+    text: Three
+    explanation: Correct. The quorum is five divided by two, rounded down, plus one.
+  - id: c
+    text: Four
+    explanation: Four is more than a majority needs.
+  - id: d
+    text: Five
+    explanation: Five is every member. etcd needs only a majority.
+  correct_option: b
+  explanation: A majority of five members is three, so the cluster tolerates two failed
+    members.
+- id: ats025-050-quiz-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Compare fault tolerance of member counts
+  source_readings:
+  - sections/section-050/module-02/course-02-reading-quorum-and-members.md
+  prompt: A team has three etcd members and adds a fourth. What happens to the fault
+    tolerance?
+  options:
+  - id: a
+    text: It rises from one to two failed members.
+    explanation: Four members have a quorum of three, so only one can fail.
+  - id: b
+    text: It stays at one failed member.
+    explanation: Correct. Four members need three for a quorum, so one can fail, as
+      with three members.
+  - id: c
+    text: It falls to zero.
+    explanation: Four members still tolerate one failure.
+  - id: d
+    text: It doubles.
+    explanation: A fourth member adds load, not tolerance.
+  correct_option: b
+  explanation: An even member count adds a member without adding fault tolerance.
+- id: ats025-050-quiz-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain why two members are a poor choice
+  source_readings:
+  - sections/section-050/module-02/course-02-reading-quorum-and-members.md
+  prompt: Why is a two-member etcd cluster worse than a one-member cluster for availability?
+  options:
+  - id: a
+    text: Two members cannot elect a leader.
+    explanation: Two members can elect a leader while both are up.
+  - id: b
+    text: Both members are needed for the quorum, so losing either member stops the
+      cluster, and there are two members that can fail.
+    explanation: Correct. The quorum of two is two, so the fault tolerance is zero
+      with twice the chance of a failure.
+  - id: c
+    text: Two members cannot use TLS.
+    explanation: The member count does not affect TLS.
+  - id: d
+    text: Two members always split the data in half.
+    explanation: Every member holds the full data set.
+  correct_option: b
+  explanation: The quorum of two members is two, so nothing can fail.
+- id: ats025-050-quiz-q04
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Compare stacked and external etcd
+  source_readings:
+  - sections/section-050/module-02/course-01-stacked-and-external-etcd-topologies.md
+  prompt: What is the main weakness of a stacked etcd topology?
+  options:
+  - id: a
+    text: It cannot use TLS.
+    explanation: Stacked etcd uses TLS like any other.
+  - id: b
+    text: One node failure removes an API server and an etcd member together.
+    explanation: Correct. The two programs share a node and a failure group.
+  - id: c
+    text: It needs more machines than an external topology.
+    explanation: It needs fewer machines.
+  - id: d
+    text: It cannot run more than one member.
+    explanation: Each control-plane node runs one member.
+  correct_option: b
+  explanation: Stacked nodes share one failure group for the API server and the member.
+- id: ats025-050-quiz-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Find the topology in a running cluster
+  source_readings:
+  - sections/section-050/module-02/course-01-stacked-and-external-etcd-topologies.md
+  prompt: Where does kubeadm keep the ClusterConfiguration that shows whether etcd
+    is local or external?
+  options:
+  - id: a
+    text: In the ConfigMap `kubeadm-config` in `kube-system`.
+    explanation: Correct. The etcd block holds local or external.
+  - id: b
+    text: In the Secret `kubeadm-certs`.
+    explanation: That Secret holds certificates for joining nodes, and it expires.
+  - id: c
+    text: In the Lease `kube-scheduler`.
+    explanation: That Lease records the scheduler leader.
+  - id: d
+    text: In the `default` namespace under `kubernetes`.
+    explanation: That Service lists API server addresses.
+  correct_option: a
+  explanation: kubeadm stores the ClusterConfiguration in kubeadm-config.
+- id: ats025-050-quiz-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: State when the control plane endpoint is set
+  source_readings:
+  - sections/section-050/module-02/course-01-stacked-and-external-etcd-topologies.md
+  prompt: When must `--control-plane-endpoint` be passed to `kubeadm init` if the
+    cluster is to become highly available?
+  options:
+  - id: a
+    text: When the first control-plane node is created.
+    explanation: Correct. The kubeconfig files and the certificate carry the endpoint
+      from the start.
+  - id: b
+    text: Only when the third node joins.
+    explanation: By then the first node has no endpoint in its files.
+  - id: c
+    text: Never, because etcd handles the endpoint.
+    explanation: etcd does not provide an API endpoint.
+  - id: d
+    text: After the cluster has run for two hours.
+    explanation: There is no such rule.
+  correct_option: a
+  explanation: kubeadm does not convert a cluster that started without an endpoint.
+- id: ats025-050-quiz-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Remove a dead etcd member
+  source_readings:
+  - sections/section-050/module-02/course-02-reading-quorum-and-members.md
+  prompt: A control-plane node is destroyed and cannot run commands. What must you
+    do about its etcd member?
+  options:
+  - id: a
+    text: Nothing, etcd forgets it after a while.
+    explanation: The dead member stays in the list and counts toward the majority.
+  - id: b
+    text: Remove it with `etcdctl member remove` from a healthy member, and delete
+      the node object.
+    explanation: Correct. This restores the correct member count.
+  - id: c
+    text: Run `kubeadm reset` on the dead node.
+    explanation: The node cannot run commands.
+  - id: d
+    text: Restart the API servers.
+    explanation: Restarting does not change the member list.
+  correct_option: b
+  explanation: A dead member must be removed by its ID.
+- id: ats025-050-quiz-q08
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Choose the load balancer health path
+  source_readings:
+  - sections/section-050/module-03/course-01-api-server-endpoints-and-health-checks.md
+  prompt: Which API server path should a load balancer check?
+  options:
+  - id: a
+    text: "`/livez`"
+    explanation: Liveness stays green when the datastore is unreachable.
+  - id: b
+    text: "`/readyz`"
+    explanation: Correct. It includes the datastore check and turns red during shutdown.
+  - id: c
+    text: "`/version`"
+    explanation: That path returns the version and checks nothing.
+  - id: d
+    text: "`/metrics`"
+    explanation: That path exposes metrics, not health.
+  correct_option: b
+  explanation: Readiness says whether the server can handle requests.
+- id: ats025-050-quiz-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain the certificate name rule
+  source_readings:
+  - sections/section-050/module-03/course-01-api-server-endpoints-and-health-checks.md
+  prompt: Clients connect through `api.starfleet.example`, but the API server certificate
+    does not list that name. What happens?
+  options:
+  - id: a
+    text: Clients connect and skip name checks.
+    explanation: Clients check the name by default.
+  - id: b
+    text: Clients refuse the connection with a certificate error.
+    explanation: Correct. The name must be in the subject alternative names.
+  - id: c
+    text: The load balancer adds the name.
+    explanation: A load balancer does not change the server certificate.
+  - id: d
+    text: etcd rejects the request.
+    explanation: The error happens before etcd.
+  correct_option: b
+  explanation: The endpoint name must appear in the certificate SANs.
+- id: ats025-050-quiz-q10
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Find the scheduler leader
+  source_readings:
+  - sections/section-050/module-03/course-02-leader-election-with-leases.md
+  prompt: Where do you read which scheduler copy is the leader?
+  options:
+  - id: a
+    text: In the `holderIdentity` field of the Lease `kube-scheduler` in `kube-system`.
+    explanation: Correct. The holder identity names the leader.
+  - id: b
+    text: In the etcd member list.
+    explanation: etcd members do not name scheduler leaders.
+  - id: c
+    text: In the `kubeadm-config` ConfigMap.
+    explanation: That ConfigMap holds the cluster configuration.
+  - id: d
+    text: In the node labels.
+    explanation: Labels do not record leadership.
+  correct_option: a
+  explanation: The Lease holds the leader name.
+- id: ats025-050-quiz-q11
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Estimate a failover gap
+  source_readings:
+  - sections/section-050/module-03/course-02-leader-election-with-leases.md
+  prompt: The default lease duration is 15 seconds. What happens to new pods while
+    the scheduler leader is dead and the Lease has not expired?
+  options:
+  - id: a
+    text: The other scheduler copies place them at once.
+    explanation: They wait for the Lease to expire.
+  - id: b
+    text: They stay Pending until another copy takes the Lease.
+    explanation: Correct. No copy schedules during the gap.
+  - id: c
+    text: The API server schedules them.
+    explanation: The API server does not schedule pods.
+  - id: d
+    text: They are deleted.
+    explanation: Pods are not deleted by a missing scheduler.
+  correct_option: b
+  explanation: The gap is about the lease duration plus one retry period.
+- id: ats025-050-quiz-q12
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Grant least-privilege leader election access
+  source_readings:
+  - sections/section-050/module-03/course-02-leader-election-with-leases.md
+  prompt: Which permissions does a controller need on Leases for leader election?
+  options:
+  - id: a
+    text: "`get`, `create` and `update` on `leases` in its own namespace."
+    explanation: Correct. That is what leader election needs.
+  - id: b
+    text: All verbs on all resources.
+    explanation: This gives far more than needed.
+  - id: c
+    text: "`delete` and `list` on Secrets."
+    explanation: Secrets are not needed for leases.
+  - id: d
+    text: "`get` on nodes."
+    explanation: Nodes are not part of leader election.
+  correct_option: a
+  explanation: A Role with three verbs on leases is enough.

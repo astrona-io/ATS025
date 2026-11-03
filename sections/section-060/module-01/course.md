@@ -16,10 +16,12 @@ This module develops packaging Cluster Components. It connects the intended appl
 
 ## Before You Start
 
-Examples describe system behavior. No runtime is required. Read each field or diagnostic name as part of the stated contract.
+Use the module playground for guided practice. Graded exercises use independent environments and follow the readings they practise.
 
 ## Reading Order
 
 1. Charts, Values And The Rendered Application
 2. Composing Resources With Kustomize
 3. Summary
+
+<!-- astrona:playground -->

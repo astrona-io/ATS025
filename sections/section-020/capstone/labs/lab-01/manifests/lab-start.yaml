@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: starfleet
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: readiness-review
+  namespace: starfleet
+data:
+  criSocket: unix:///var/run/dockershim.sock
+  containerRuntimeVersion: docker://19.3.0
+  cgroupDriver: cgroupfs-legacy
+  failSwapOn: unknown
+  apiserverPort: "8080"
+  etcdClientPort: "4001"
+  podCIDR: 192.168.0.0/16
+  serviceCIDR: 10.0.0.0/8

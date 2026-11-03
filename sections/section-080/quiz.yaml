@@ -1,0 +1,299 @@
+# Knowledge check for section-080. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats025-080-quiz
+course_id: ATS025
+exam_code: CKA
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: section
+  id: section-080
+  title: Understand CRDs, install and configure operators
+questions:
+- id: ats025-080-quiz-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain what a CRD alone does
+  source_readings:
+  - sections/section-080/module-01/course-01-reading-a-custom-resource-and-its-controller-contract.md
+  prompt: A CRD for `Beacon` is applied and a `Beacon` object is created, but no controller
+    is installed. What is the result?
+  options:
+  - id: a
+    text: A pod is started for the object.
+    explanation: Only a controller creates pods for a custom object.
+  - id: b
+    text: The object is stored and served by the API server, and nothing else happens.
+    explanation: Correct. The CRD makes the API server store and validate the type.
+      Acting on objects needs a controller.
+  - id: c
+    text: The API server rejects the object until a controller registers.
+    explanation: The API server needs no controller to accept an object.
+  - id: d
+    text: The object is kept in memory and lost on restart.
+    explanation: Custom objects are stored in etcd like built-in objects.
+  correct_option: b
+  explanation: The CRD makes the API server store and validate the type. Acting on
+    objects needs a controller.
+- id: ats025-080-quiz-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: State the required name of a CRD
+  source_readings:
+  - sections/section-080/module-02/course-01-crd-structure-and-the-openapi-schema.md
+  prompt: What must the `metadata.name` of a CRD be?
+  options:
+  - id: a
+    text: The plural name and the group joined by a dot, such as `beacons.training.astrona.io`.
+    explanation: Correct. The API server requires `<plural>.<group>` and refuses any
+      other name.
+  - id: b
+    text: The kind in lower case, such as `beacon`.
+    explanation: The kind alone is not accepted; the plural and the group are required.
+  - id: c
+    text: Any DNS label chosen by the author.
+    explanation: The name is fixed by the plural and the group.
+  - id: d
+    text: The group followed by the version.
+    explanation: The version is not part of the name.
+  correct_option: a
+  explanation: The API server requires `<plural>.<group>` and refuses any other name.
+- id: ats025-080-quiz-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Describe where schema validation runs
+  source_readings:
+  - sections/section-080/module-02/course-01-crd-structure-and-the-openapi-schema.md
+  prompt: 'A user applies a `Beacon` with `channel: delta`, but the schema allows
+    only `alpha`, `beta` and `gamma`. Which component rejects it?'
+  options:
+  - id: a
+    text: The operator, after it reads the object.
+    explanation: The object would already be stored; the API server checks first.
+  - id: b
+    text: The kubelet, when it receives the object.
+    explanation: The kubelet does not receive custom objects.
+  - id: c
+    text: etcd, when it stores the value.
+    explanation: etcd stores bytes and does not know the schema.
+  - id: d
+    text: The API server, during the request and before the object is written to etcd.
+    explanation: Correct. Schema checks run inside the API server on every create,
+      update and patch.
+  correct_option: d
+  explanation: Schema checks run inside the API server on every create, update and
+    patch.
+- id: ats025-080-quiz-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain pruning
+  source_readings:
+  - sections/section-080/module-02/course-02-defaults-pruning-and-cel-validation-rules.md
+  prompt: An object has a field `spec.colour` that the structural schema does not
+    declare, and strict validation is off. What happens to the field?
+  options:
+  - id: a
+    text: The field is stored and ignored.
+    explanation: Unknown fields are removed, not stored.
+  - id: b
+    text: The whole request fails with a 500 error.
+    explanation: Pruning is silent; it is not a server error.
+  - id: c
+    text: The API server removes it before storing the object.
+    explanation: Correct. Pruning drops unknown fields unless the node preserves unknown
+      fields.
+  - id: d
+    text: The field is moved to the annotations.
+    explanation: The API server does not relocate fields.
+  correct_option: c
+  explanation: Pruning drops unknown fields unless the node preserves unknown fields.
+- id: ats025-080-quiz-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain when defaults apply
+  source_readings:
+  - sections/section-080/module-02/course-02-defaults-pruning-and-cel-validation-rules.md
+  prompt: A default is added to a CRD field after objects already exist. When do the
+    old objects show the default?
+  options:
+  - id: a
+    text: Never, because defaults apply to new objects only.
+    explanation: Defaults are also applied on read.
+  - id: b
+    text: The next time they are read, because defaults are also applied when objects
+      are read from etcd.
+    explanation: Correct. Defaulting happens on write and on read from etcd.
+  - id: c
+    text: Only after every object is deleted and created again.
+    explanation: Re-creation is not required.
+  - id: d
+    text: Only after the operator restarts.
+    explanation: The API server applies the default; the operator is not involved.
+  correct_option: b
+  explanation: Defaulting happens on write and on read from etcd.
+- id: ats025-080-quiz-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Describe a transition rule
+  source_readings:
+  - sections/section-080/module-02/course-02-defaults-pruning-and-cel-validation-rules.md
+  prompt: A validation rule uses `oldSelf`. When does it run?
+  options:
+  - id: a
+    text: Only on update, because on create there is no old object.
+    explanation: Correct. Rules that mention `oldSelf` are transition rules and are
+      skipped on create.
+  - id: b
+    text: On every create and update.
+    explanation: On create there is no old value, so the rule is skipped.
+  - id: c
+    text: Only when the CRD is applied.
+    explanation: Rules run for objects, not for the CRD.
+  - id: d
+    text: Only when the operator is running.
+    explanation: The API server runs rules without any controller.
+  correct_option: a
+  explanation: Rules that mention `oldSelf` are transition rules and are skipped on
+    create.
+- id: ats025-080-quiz-q07
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Choose the right conversion strategy
+  source_readings:
+  - sections/section-080/module-02/course-03-versions-subresources-and-printer-columns.md
+  prompt: A new version renames a field. Which conversion strategy is needed?
+  options:
+  - id: a
+    text: "`None`, because the API server renames fields by itself."
+    explanation: The API server does not rename fields.
+  - id: b
+    text: Neither; only one version may exist.
+    explanation: Several versions are allowed.
+  - id: c
+    text: A second CRD with a new group.
+    explanation: Versions of one type are handled inside one CRD.
+  - id: d
+    text: A webhook, because the `None` strategy changes only `apiVersion`.
+    explanation: Correct. The `None` strategy keeps field names, so a rename needs
+      a conversion webhook.
+  correct_option: d
+  explanation: The `None` strategy keeps field names, so a rename needs a conversion
+    webhook.
+- id: ats025-080-quiz-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain storedVersions
+  source_readings:
+  - sections/section-080/module-02/course-03-versions-subresources-and-printer-columns.md
+  prompt: Why does the API server refuse to remove a version that is listed in `status.storedVersions`?
+  options:
+  - id: a
+    text: The version is still marked as served.
+    explanation: Serving is a separate field.
+  - id: b
+    text: The version has a webhook.
+    explanation: Webhooks are not the reason.
+  - id: c
+    text: Objects stored in that version might still be in etcd.
+    explanation: Correct. The list records every version used to write objects.
+  - id: d
+    text: The version is the default for kubectl.
+    explanation: kubectl has no such default.
+  correct_option: c
+  explanation: The list records every version used to write objects.
+- id: ats025-080-quiz-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Describe the status subresource
+  source_readings:
+  - sections/section-080/module-02/course-03-versions-subresources-and-printer-columns.md
+  prompt: With the `status` subresource enabled, a user patches the main endpoint
+    with a new `status` value. What happens to that `status`?
+  options:
+  - id: a
+    text: It is stored as usual.
+    explanation: With the subresource, the main endpoint ignores status.
+  - id: b
+    text: It is ignored; only the `/status` endpoint changes `status`.
+    explanation: Correct. The subresource splits the write paths of `spec` and `status`.
+  - id: c
+    text: The whole request is rejected.
+    explanation: The request succeeds for the other fields.
+  - id: d
+    text: It is copied to `spec`.
+    explanation: The API server does not copy values between sections.
+  correct_option: b
+  explanation: The subresource splits the write paths of `spec` and `status`.
+- id: ats025-080-quiz-q10
+  type: single_choice
+  difficulty: beginner
+  learning_objective: List what gives an operator its permissions
+  source_readings:
+  - sections/section-080/module-03/course-01-the-objects-that-make-up-an-operator.md
+  prompt: Which two things decide what an operator can do against the API server?
+  options:
+  - id: a
+    text: The CRD it watches and the RBAC bound to its ServiceAccount.
+    explanation: Correct. The operator is a normal Deployment that calls the API as
+      a ServiceAccount.
+  - id: b
+    text: The image tag and the number of replicas.
+    explanation: These do not grant API permissions.
+  - id: c
+    text: The namespace name and the node labels.
+    explanation: Neither grants permissions.
+  - id: d
+    text: The CRD short name and the printer columns.
+    explanation: These affect display only.
+  correct_option: a
+  explanation: The operator is a normal Deployment that calls the API as a ServiceAccount.
+- id: ats025-080-quiz-q11
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Choose a safe install order
+  source_readings:
+  - sections/section-080/module-03/course-02-installing-in-order-and-verifying.md
+  prompt: Which install order is safe for an operator?
+  options:
+  - id: a
+    text: The Deployment first, then the CRD.
+    explanation: The controller would start without its type and permissions.
+  - id: b
+    text: A custom object in the same file as the CRD, with no wait.
+    explanation: The API server may not have registered the type yet.
+  - id: c
+    text: The ClusterRoleBinding last, after the first custom object.
+    explanation: The controller needs its permissions when it first runs.
+  - id: d
+    text: The CRD, then wait for `Established`, then the identity and permissions,
+      then the Deployment, then a custom object.
+    explanation: Correct. The type must exist before objects or a controller depends
+      on it, and permissions should exist before the first pod.
+  correct_option: d
+  explanation: The type must exist before objects or a controller depends on it, and
+    permissions should exist before the first pod.
+- id: ats025-080-quiz-q12
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Explain the effect of deleting a CRD
+  source_readings:
+  - sections/section-080/module-03/course-03-configuring-status-finalizers-and-removal.md
+  prompt: An administrator deletes the CRD for `Beacon` while objects exist in several
+    namespaces. What happens to the objects?
+  options:
+  - id: a
+    text: They stay in etcd and are read again when the CRD returns.
+    explanation: The objects are removed with the type.
+  - id: b
+    text: Only the objects in the default namespace are deleted.
+    explanation: All namespaces are affected.
+  - id: c
+    text: They are all deleted, because they cannot exist without the type.
+    explanation: Correct. Deleting a CRD removes every custom object of that type.
+  - id: d
+    text: They are converted to ConfigMaps.
+    explanation: The API server does not convert them.
+  correct_option: c
+  explanation: Deleting a CRD removes every custom object of that type.

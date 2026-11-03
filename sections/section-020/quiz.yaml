@@ -1,0 +1,291 @@
+# Knowledge check for section-020. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats025-020-quiz
+course_id: ATS025
+exam_code: CKA
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: section
+  id: section-020
+  title: Prepare underlying infrastructure for installing a Kubernetes cluster
+questions:
+- id: ats025-020-quiz-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Identify host identity and capacity prerequisites
+  source_readings:
+  - sections/section-020/module-03/course-01-packages-and-host-identity.md
+  prompt: Two new worker nodes were cloned from the same virtual machine image. `kubeadm
+    join` works on the first node but the second node never appears as a separate
+    node. Which host property is the most likely cause?
+  options:
+  - id: a
+    text: The two machines have different CPU architectures.
+    explanation: Different architectures would be a different problem and would show
+      up when the binaries run, not as a missing node object.
+  - id: b
+    text: The two machines have the same hostname, so they register under the same
+      node name.
+    explanation: Correct. Node objects are named after the hostname by default, so
+      a duplicate hostname makes the second registration collide with the first. Hostname,
+      MAC address and `product_uuid` must be unique on every node.
+  - id: c
+    text: The kubelet package is newer than the kubectl package.
+    explanation: A minor version difference between kubelet and kubectl does not prevent
+      a node from registering.
+  - id: d
+    text: The container runtime uses the systemd cgroup driver.
+    explanation: The cgroup driver affects pod stability, not the identity of the
+      node object.
+  correct_option: b
+  explanation: Node objects are named after the hostname by default, so a duplicate
+    hostname makes the second registration collide with the first. Hostname, MAC address
+    and `product_uuid` must be unique on every node.
+- id: ats025-020-quiz-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain what swap does to the kubelet and how failSwapOn changes
+    that
+  source_readings:
+  - sections/section-020/module-02/course-01-kernel-modules-sysctl-and-swap.md
+  prompt: A host has swap enabled and the kubelet configuration does not set `failSwapOn`.
+    What happens when the kubelet starts?
+  options:
+  - id: a
+    text: The kubelet fails to start, because `failSwapOn` defaults to true.
+    explanation: 'Correct. With swap on and the default `failSwapOn: true`, the kubelet
+      exits at start-up. Setting `failSwapOn: false` (or disabling swap) lets it run.'
+  - id: b
+    text: The kubelet starts and silently disables swap for the node.
+    explanation: The kubelet never changes host swap settings.
+  - id: c
+    text: The kubelet starts but refuses to schedule pods with memory limits.
+    explanation: Memory limits are not the reason; the kubelet process itself stops.
+  - id: d
+    text: The kubelet starts and only logs a warning.
+    explanation: The default is to fail, not to warn.
+  correct_option: a
+  explanation: 'With swap on and the default `failSwapOn: true`, the kubelet exits
+    at start-up. Setting `failSwapOn: false` (or disabling swap) lets it run.'
+- id: ats025-020-quiz-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain why the kubelet and the container runtime must use the
+    same cgroup driver
+  source_readings:
+  - sections/section-020/module-02/course-02-the-cgroup-driver-and-kubelet-configuration.md
+  prompt: 'The kubelet runs with `cgroupDriver: systemd` and containerd uses `SystemdCgroup
+    = false`. What is the main risk?'
+  options:
+  - id: a
+    text: Pods will not be able to pull images.
+    explanation: Image pulls do not depend on the cgroup driver.
+  - id: b
+    text: The API server will refuse the kubelet certificate.
+    explanation: Certificates are unrelated to cgroup drivers.
+  - id: c
+    text: The kube-proxy will use iptables instead of nftables.
+    explanation: The proxy mode is not selected by the cgroup driver.
+  - id: d
+    text: Two cgroup managers describe the same resources differently, so pods can
+      become unstable under resource pressure.
+    explanation: Correct. The kubelet and the runtime must use the same driver so
+      that one manager owns each cgroup. A mismatch can cause pods and system services
+      to be seen with inconsistent resource limits.
+  correct_option: d
+  explanation: The kubelet and the runtime must use the same driver so that one manager
+    owns each cgroup. A mismatch can cause pods and system services to be seen with
+    inconsistent resource limits.
+- id: ats025-020-quiz-q04
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Read the KubeletConfiguration that kubeadm stores in the cluster
+  source_readings:
+  - sections/section-020/module-02/course-02-the-cgroup-driver-and-kubelet-configuration.md
+  prompt: Without logging in to a node, where can you read the `KubeletConfiguration`
+    that kubeadm created for the cluster?
+  options:
+  - id: a
+    text: In the Secret `kubelet-config` in the `default` namespace.
+    explanation: It is a ConfigMap, and it lives in `kube-system`.
+  - id: b
+    text: In the `Node` object under `spec.kubeletConfig`.
+    explanation: The Node object has no such field in current versions.
+  - id: c
+    text: In the ConfigMap `kubelet-config` in the `kube-system` namespace.
+    explanation: Correct. kubeadm stores the cluster-wide kubelet configuration in
+      the `kubelet-config` ConfigMap in `kube-system`.
+  - id: d
+    text: In the kube-apiserver static pod manifest.
+    explanation: The API server manifest holds API server flags only.
+  correct_option: c
+  explanation: kubeadm stores the cluster-wide kubelet configuration in the `kubelet-config`
+    ConfigMap in `kube-system`.
+- id: ats025-020-quiz-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Make kernel module and sysctl settings persistent
+  source_readings:
+  - sections/section-020/module-02/course-01-kernel-modules-sysctl-and-swap.md
+  prompt: You must load `br_netfilter` and set `net.bridge.bridge-nf-call-iptables=1`
+    so that they survive a reboot. What is correct?
+  options:
+  - id: a
+    text: Run `modprobe br_netfilter` and `sysctl -w` once, which is enough for all
+      reboots.
+    explanation: Those commands change the running kernel only and the change is lost
+      at reboot.
+  - id: b
+    text: Put the module name in a file under `/etc/modules-load.d/` and the sysctl
+      setting in a file under `/etc/sysctl.d/`.
+    explanation: Correct. These two directories are read at boot to load modules and
+      apply sysctl values. Commands such as `modprobe` and `sysctl -w` change only
+      the running kernel.
+  - id: c
+    text: Add both to the kubelet configuration file.
+    explanation: The kubelet does not load kernel modules or write sysctl values for
+      the host network stack.
+  - id: d
+    text: Create a ConfigMap in `kube-system` with the values.
+    explanation: A ConfigMap does not change the host kernel.
+  correct_option: b
+  explanation: These two directories are read at boot to load modules and apply sysctl
+    values. Commands such as `modprobe` and `sysctl -w` change only the running kernel.
+- id: ats025-020-quiz-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Name the ports that control plane nodes need and the component
+    that uses each
+  source_readings:
+  - sections/section-020/module-03/course-02-ports-and-preflight-checks.md
+  prompt: A firewall rule must allow other control plane nodes to reach etcd for client
+    requests. Which port and component does that name?
+  options:
+  - id: a
+    text: TCP 2379, used by etcd for client requests.
+    explanation: Correct. etcd uses 2379 for client requests and 2380 for peer communication
+      between members.
+  - id: b
+    text: TCP 6443, used by etcd for client requests.
+    explanation: 6443 is the API server port.
+  - id: c
+    text: TCP 10250, used by etcd for client requests.
+    explanation: 10250 is the kubelet API port.
+  - id: d
+    text: TCP 10257, used by etcd for client requests.
+    explanation: 10257 is the kube-controller-manager secure port.
+  correct_option: a
+  explanation: etcd uses 2379 for client requests and 2380 for peer communication
+    between members.
+- id: ats025-020-quiz-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read the ports of control plane components from their static
+    pods
+  source_readings:
+  - sections/section-020/module-03/course-02-ports-and-preflight-checks.md
+  prompt: Which command output proves which port the API server uses on a running
+    kubeadm cluster?
+  options:
+  - id: a
+    text: The `kube-proxy` ConfigMap.
+    explanation: The proxy configuration describes proxying, not the API server port.
+  - id: b
+    text: The `/etc/hosts` file of the node.
+    explanation: The hosts file maps names to addresses, not ports.
+  - id: c
+    text: The labels of the `default` namespace.
+    explanation: Namespace labels carry no port information.
+  - id: d
+    text: The `--secure-port` flag, or the probe port, in the `kube-apiserver` pod
+      in `kube-system`.
+    explanation: Correct. Static pods declare their flags and probes in the pod spec,
+      so the cluster itself states the port the component listens on.
+  correct_option: d
+  explanation: Static pods declare their flags and probes in the pod spec, so the
+    cluster itself states the port the component listens on.
+- id: ats025-020-quiz-q08
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Run kubeadm preflight checks and explain when to ignore an error
+  source_readings:
+  - sections/section-020/module-03/course-02-ports-and-preflight-checks.md
+  prompt: Preflight reports that swap is on. Which response is the correct engineering
+    decision?
+  options:
+  - id: a
+    text: Pass `--ignore-preflight-errors=all` so that nothing else can fail.
+    explanation: "`all` hides every check, including real faults."
+  - id: b
+    text: Ignore the message, because swap never matters to Kubernetes.
+    explanation: The kubelet fails to start with swap on by default.
+  - id: c
+    text: 'Fix the cause, or set `failSwapOn: false` on purpose and ignore only the
+      named swap check, and record the decision.'
+    explanation: Correct. `--ignore-preflight-errors` takes named checks. Ignoring
+      one check on purpose is acceptable when you understand the effect. Ignoring
+      all errors hides real problems.
+  - id: d
+    text: Delete the kubeadm package and install it again.
+    explanation: Reinstalling does not change the host swap state.
+  correct_option: c
+  explanation: "`--ignore-preflight-errors` takes named checks. Ignoring one check
+    on purpose is acceptable when you understand the effect. Ignoring all errors hides
+    real problems."
+- id: ats025-020-quiz-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Pin and explain the roles of kubeadm, kubelet and kubectl
+  source_readings:
+  - sections/section-020/module-03/course-01-packages-and-host-identity.md
+  prompt: Why are kubeadm, kubelet and kubectl commonly held at a pinned package version
+    after installation?
+  options:
+  - id: a
+    text: Because the packages stop working after 30 days.
+    explanation: Packages have no such expiry.
+  - id: b
+    text: An unplanned package upgrade could move the kubelet to a version the control
+      plane does not support, so upgrades are done on purpose.
+    explanation: Correct. The kubelet may not be newer than the API server and the
+      version skew policy limits how far apart components may be. Holding the packages
+      makes upgrades a deliberate step.
+  - id: c
+    text: Because kubectl has to be newer than the API server by two minor versions.
+    explanation: kubectl supports one minor version of skew in either direction.
+  - id: d
+    text: Because pinning also pins the container images of pods.
+    explanation: Package pins do not affect pod images.
+  correct_option: b
+  explanation: The kubelet may not be newer than the API server and the version skew
+    policy limits how far apart components may be. Holding the packages makes upgrades
+    a deliberate step.
+- id: ats025-020-quiz-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Plan non-overlapping network address ranges
+  source_readings:
+  - sections/section-020/module-01/course-01-preparing-hosts-runtime-and-network-infrastructure.md
+  prompt: The planned pod network is `10.0.0.0/8` and the nodes live in `10.1.0.0/16`.
+    What is the problem?
+  options:
+  - id: a
+    text: The ranges overlap, so a pod address can collide with a node address and
+      routing breaks.
+    explanation: Correct. Pod, service and node ranges must not overlap. A pod IP
+      inside the node range cannot be told apart from a real node address.
+  - id: b
+    text: 'None: pod ranges and node ranges share one address space on purpose.'
+    explanation: They must be distinct to route correctly.
+  - id: c
+    text: The pod range is too small for any cluster.
+    explanation: A /8 is a very large range.
+  - id: d
+    text: Only IPv6 can be used for pods.
+    explanation: IPv4 pod networks are valid.
+  correct_option: a
+  explanation: Pod, service and node ranges must not overlap. A pod IP inside the
+    node range cannot be told apart from a real node address.

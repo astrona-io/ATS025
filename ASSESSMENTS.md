@@ -28,3 +28,20 @@ ID, not display position, so a later renderer can shuffle choices safely.
 
 The banks contain answer keys and are public learning material, so this is not
 a secure examination bank. Do not treat scores as an official CKA result.
+
+## Hands-On Coverage
+
+This course has 8 ungraded module playgrounds and 10 draft independent labs. Tasks and solutions are registered around each lab immediately after its teaching reading. Static configuration, shell/Python/YAML, parser, lifecycle and offline grader checks pass. Live execution remains pending because the session cannot access Podman; installed CLI configuration validation is separately blocked by its maintenance lock.
+
+| Module | Labs in teaching order |
+| --- | --- |
+| 010/01 | Grant Namespace Pod Read Access |
+| 020/01 | Inspect Node Runtime And Host Prerequisites |
+| 030/01 | Prepare Short-Lived Node Discovery Credentials |
+| 040/01 | Drain And Return A Worker To Service |
+| 040/01 | Save And Inspect An Etcd Snapshot |
+| 050/01 | Inspect A Three-Member Control Plane |
+| 060/01 | Install A Chart With Explicit Values |
+| 060/01 | Apply A Kustomize Base |
+| 070/01 | Trace The Runtime And Network Interfaces |
+| 080/01 | Reconcile A Custom Resource |

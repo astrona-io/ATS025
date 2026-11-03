@@ -71,6 +71,22 @@ A current observation should correspond to the desired generation being assessed
 
 You can now read a custom contract without assigning universal meaning to its fields. Reconciliation, output permissions and cleanup must be checked against the actual implementation rather than inferred from a type name.
 
+## Read the registered type with commands
+
+Three read-only commands show what the API server knows about a type. They change nothing, so they are safe to run in the playground at any time.
+
+<!-- astrona:playground:renew -->
+
+```sh
+kubectl get crd probesettings.training.astrona.io
+kubectl get crd probesettings.training.astrona.io -o jsonpath='{.spec.scope}{"\n"}{.spec.versions[*].name}{"\n"}'
+kubectl explain probesetting.spec --api-version=training.astrona.io/v1
+```
+
+The first command shows that the definition exists and when it was created. The second prints the scope (`Namespaced` or `Cluster`) and the version names that the definition lists. The third reads the schema from the API server and prints the fields that a `ProbeSetting` accepts in `spec`. Together they answer three questions before any object is created: does the type exist, at what scope and version can a client use it, and which fields does it accept.
+
+None of these commands shows whether a controller is running. To check that, read the Deployment or Pod that runs the controller, which is a normal workload object and has no relation to the definition.
+
 ## Common pitfalls
 
 > [!WARNING]
