@@ -57,7 +57,7 @@ sections:
       after_reading: sections/section-010/module-01/course-02-rbac-scope-and-least-privilege.md
       objective: Grant a ServiceAccount only Pod read access in the required namespace
         and verify denied operations.
-      status: draft
+      status: alpha
       runtime_verification: pending
     practice_readings:
     - sections/section-010/module-01/course-03-guided-practice.md
@@ -89,7 +89,7 @@ sections:
       after_reading: sections/section-020/module-01/course-01-preparing-hosts-runtime-and-network-infrastructure.md
       objective: Collect actual node prerequisites and distinguish the runtime, kubelet
         and network configuration.
-      status: draft
+      status: alpha
       runtime_verification: pending
     practice_readings:
     - sections/section-020/module-01/course-02-guided-practice.md
@@ -125,7 +125,7 @@ sections:
       after_reading: sections/section-030/module-01/course-01-understanding-kubeadm-initialization-and-node-joining.md
       objective: Create short-lived bootstrap discovery credentials and record the
         trusted CA public-key hash.
-      status: draft
+      status: alpha
       runtime_verification: pending
     practice_readings:
     - sections/section-030/module-01/course-02-guided-practice.md
@@ -160,14 +160,14 @@ sections:
       after_reading: sections/section-040/module-01/course-02-datastore-snapshots-and-the-limits-of-recovery.md
       objective: Respect disruption limits while draining and returning an isolated
         worker to service.
-      status: draft
+      status: alpha
       runtime_verification: pending
     - id: lab-02
       path: sections/section-040/module-01/labs/lab-02
       after_reading: sections/section-040/module-01/course-02-datastore-snapshots-and-the-limits-of-recovery.md
       objective: Save a real datastore snapshot and inspect its revision and key count
         without restoring the live cluster.
-      status: draft
+      status: alpha
       runtime_verification: pending
     practice_readings:
     - sections/section-040/module-01/course-03-guided-practice.md
@@ -203,7 +203,7 @@ sections:
       after_reading: sections/section-050/module-01/course-01-highly-available-api-access-and-datastore-quorum.md
       objective: Relate actual datastore membership to majority requirements and API
         availability.
-      status: draft
+      status: alpha
       runtime_verification: pending
     practice_readings:
     - sections/section-050/module-01/course-02-guided-practice.md
@@ -238,14 +238,14 @@ sections:
       after_reading: sections/section-060/module-01/course-01-charts-values-and-the-rendered-application.md
       objective: Install an existing bundled chart and verify release ownership and
         effective values.
-      status: draft
+      status: alpha
       runtime_verification: pending
     - id: lab-02
       path: sections/section-060/module-01/labs/lab-02
       after_reading: sections/section-060/module-01/course-02-composing-resources-with-kustomize.md
       objective: Compose and apply a self-contained Kustomize base with a declared
         Pod label.
-      status: draft
+      status: alpha
       runtime_verification: pending
     practice_readings:
     - sections/section-060/module-01/course-03-guided-practice.md
@@ -280,7 +280,7 @@ sections:
       after_reading: sections/section-070/module-01/course-02-runtimes-and-kubernetes-integration.md
       objective: Collect actual node prerequisites and distinguish the runtime, kubelet
         and network configuration.
-      status: draft
+      status: alpha
       runtime_verification: pending
     practice_readings:
     - sections/section-070/module-01/course-03-guided-practice.md
@@ -315,7 +315,7 @@ sections:
       after_reading: sections/section-080/module-01/course-02-custom-resources-and-operators.md
       objective: Create a served custom resource and verify its controller-managed
         output.
-      status: draft
+      status: alpha
       runtime_verification: pending
     practice_readings:
     - sections/section-080/module-01/course-03-guided-practice.md
